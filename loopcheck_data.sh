@@ -69,7 +69,7 @@ while [ $n -lt ${nlines} ]; do
       bsub -q 8nh submit_ReferenceAnalysis_${samplename}_4mu.sh
   elif  [ $1 = ${SFNAL} ]; then
       echo "Submitting jobs4mu via CONDOR at FNAL"
-      # condor_submit condor_ReferenceAnalysis_data_${samplename}_$4.cfg
+      condor_submit condor_ReferenceAnalysis_data_${samplename}_$4.cfg
   elif  [ $1 = ${SDESY} ]; then
       echo "Submitting jobs via SGE"
       qsub submit_ReferenceAnalysis_${samplename}_4mu.sh   
