@@ -25,8 +25,6 @@ int main (int argc, char ** argv){
   
   string dataconf=argv[8];
   
-
-  if (dataconf.find("2012_postICHEP")<15) dataconf="2012";
   cout << dataconf << " data configuration" <<endl;
   
   string mcconf=argv[9];
@@ -47,74 +45,33 @@ int main (int argc, char ** argv){
   }
   
   
-  // 
-  
-  float lumifb=4710./1000.;
-  
-  Double_t mH=150.;
-  cout << "mH= " << mH << endl;
-  
-  
   // data
-  bool runondata=true;
-  
-  if (runondata==true){
     
-    bool itera=false;
-    
-    //if (mH<=160.){
-    //  if (i==0) itera=true;  
-    //}
-    //else {
-    itera=true;
-    //}
-    
-    for(int i=0;i<ndata && itera==true;i++){
+  for(int i=0;i<ndata;i++){
       
       string name= "roottree_leptons_crab_";
       name.append(datasamples[i]);
       name.append(".root");
       TString dirInput;
-      
+      cout << name.c_str() << endl;
       if ( site.find("CERN")<5 ){
 	dirInput="/castor/cern.ch/user/n/ndefilip/Paper/data";    // to run at CERN
       }
       else if (site.find("DESY")<5){
 	dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/data"; //to run at DESY
       }
-      else if ( site.find("FNAL")<5 && name.find("2011")<38){
-	dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/data/2011";
-      }
-      else if ( site.find("FNAL")<5 && name.find("2012")<38){
-        dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/data/2012";
-      }
-      else if (site.find("FNAL")<5 && dataconf.find("2016")<5 ){
-	dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Data2016_MonoHiggs_13TeV_merged";
+      else if (site.find("FNAL")<5){
+	dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Data2016_MonoHiggs_13TeV_merged";
       }
       else {
-        cout << name.find("Mu_") << " " << name.find("EG_") << " " << name.find("Electron_") << endl;
-        if ( name.find("Mu_")<18 || name.find("EG_")<18  || (name.find("Electron_")<18 && name.find("2010B")<85 ) ) {
-	  dirInput="/lustre/cms/store/user/ndefilip/Data2010_merged";	  
-	}
-	else if ( name.find("2011")<38 ) {
-	  dirInput="/lustre/cms/store/user/defilip/Data2011_paper_step_analysis_merged";	
-	}
-        else if ( name.find("2012A")<38 || name.find("2012B")<38 || name.find("2012C")<38 || name.find("2012D")<38 ){
-	  dirInput="/lustre/cms/store/user/defilip/Data2012_paper_step_analysis_merged";	  
-	}
-        else if ( name.find("2015")<38){
-          dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Data2015_MonoHiggs_13TeV_76X_merged";
-        }
-        else if ( name.find("2016")<38){
-          dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Data2016_MonoHiggs_13TeV_merged/";
+        if ( name.find("2016")<38){
+          dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Data2016_MonoHiggs_13TeV_merged/";
         }
       }
 
       cout << "Input directory is:" << dirInput<< endl;
 
       TString dataFile=name;
-      if (dataFile.Contains("miniaod")) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Data2016_MonoHiggs_13TeV_merged/";  
-
       
       Char_t nome[300];
       sprintf(nome,"%s/%s",dirInput.Data(),name.c_str());
@@ -147,10 +104,8 @@ int main (int argc, char ** argv){
       delete tree3;
       file3 -> Close();
       
-    }
-    
   }
-  
+    
   return 0; 
 
 }
