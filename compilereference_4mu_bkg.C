@@ -57,23 +57,14 @@ int main (int argc, char ** argv){
   //if (mcconf.find("Spring16")<5) lumifb=26.958;
 
   Double_t mH=150.;
-  cout << "mH= " << mH << endl;
+  //cout << "mH= " << mH << endl;
     
   // Run on bkg
   bool runonbkg=true;
    
   if (runonbkg==true){
 
-      bool itera=false;
-      
-      //if (mH<=160.){
-      //	if (i==0) itera=true;  
-      //}
-      //else {
-      itera=true;
-      //}
-      
-      for(int i=0;i<nlines && itera==true;i++){
+      for(int i=0;i<nlines;i++){
 	
 	string name= "roottree_leptons_crab_"+bkgsamples[i]+".root";
 	
@@ -85,24 +76,9 @@ int main (int argc, char ** argv){
 	else if (site.find("DESY")<5){
 	  dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/bkg"; //to run at DESY
 	}
-        else if (site.find("FNAL")<5 && mcconf.find("Fall11")<5){
-          dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/bkg/Fall11";
+        else if (site.find("FNAL")<5){
+          if (mcconf.find("Spring16")<5 ) dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Spring16_merged";
         }
-        else if (site.find("FNAL")<5 && mcconf.find("Summer12")<5 ){
-          dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/bkg/Summer12";
-        }
-        else if (site.find("FNAL")<5 && mcconf.find("Spring16")<5 ){
-          dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
-        }
-	else if (mcconf.find("Fall11")<5){
-          dirInput="/lustre/cms/store/user/defilip/Fall11_445_paper_step_analysis_merged";
-	}
-	else if (mcconf.find("Summer12")<5){
-          dirInput="/lustre/cms/store/user/defilip/Summer12_53X_paper_step_analysis_merged";
-	}
-        else if (mcconf.find("Fall15")<5){
-	  dirInput="/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged";  
-	}
         else if (mcconf.find("Spring16")<5){
           dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Spring16_merged";
         }
@@ -123,14 +99,15 @@ int main (int argc, char ** argv){
             ){
           TString datasetName=bkgFile.ReplaceAll("_","_");
           bkgFile=datasetName;
-          dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged";  
+          if (site.find("BARI")<5) dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged";  
+	  if (site.find("FNAL")<5) dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged";
         }
 
 	if (bkgFile.Contains("ZZTo4L_13TeV_powheg_pythia8")){
 	  cout << "Processing ZZ" << endl;
 	  TString datasetName=bkgFile.ReplaceAll("_","_");
           bkgFile=datasetName;
-          dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";  
+          if (site.find("BARI")<5) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";  
         }
 		
 	Char_t nome[300];
@@ -144,10 +121,16 @@ int main (int argc, char ** argv){
 	        
 	if (bkgFile.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")){
 	  TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
-	  chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
-	  chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
-	  chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_2.root");
-	  
+	  if (site.find("BARI")<5) {
+	   chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
+	   chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
+	   chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_2.root");
+	  }
+          if (site.find("FNAL")<5) {
+           chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
+           chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
+           chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
+          }
 	  tree3 = chain;
         }
 
