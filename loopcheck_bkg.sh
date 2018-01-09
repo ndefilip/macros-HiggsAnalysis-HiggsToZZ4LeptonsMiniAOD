@@ -19,8 +19,10 @@ SBARI="BARI";
 
 # Tar CMSSW enviroment
 if  [ $1 = ${SFNAL} ]; then
+ macrosdir=`echo ${PWD}`  
  tarname=`basename ${CMSSW_BASE}`
- tar --exclude=tmp --exclude="*.root" --exclude-caches-all --exclude-vcs  -zcvf ${tarname}.tgz ${CMSSW_BASE}
+ cd ${CMSSW_BASE}; tar  --exclude=tmp -zcvf ${macrosdir}/${tarname}.tgz .
+ cd ${macrosdir};
 else 
  tarname="dummy"
 fi
@@ -76,7 +78,7 @@ while [ $n -lt ${nlines} ]; do
       bsub -q 8nh  submit_ReferenceAnalysis_bkg_${samplename}_4mu.sh
   elif  [ $1 = ${SFNAL} ]; then
       echo "Submitting jobs via CONDOR at FNAL"
-      condor_submit  condor_ReferenceAnalysis_bkg_${samplename}_$4.cfg
+      # condor_submit  condor_ReferenceAnalysis_bkg_${samplename}_$4.cfg
   elif  [ $1 = ${SDESY} ]; then
       echo "Submitting jobs via SGE"
       qsub submit_ReferenceAnalysis_bkg_${samplename}_4mu.sh   

@@ -21,8 +21,10 @@ SBARI="BARI";
 
 # Tar CMSSW enviroment
 if  [ $1 = ${SFNAL} ]; then
+ macrosdir=`echo ${PWD}`  
  tarname=`basename ${CMSSW_BASE}`
- tar --exclude=tmp --exclude="*.root" --exclude-caches-all --exclude-vcs  -zcvf ${tarname}.tgz ${CMSSW_BASE}
+ cd ${CMSSW_BASE}; tar  --exclude=tmp -zcvf ${macrosdir}/${tarname}.tgz .
+ cd ${macrosdir};
 else
  tarname="dummy"
 fi
