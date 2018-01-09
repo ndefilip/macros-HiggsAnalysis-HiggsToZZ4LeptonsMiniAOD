@@ -9,7 +9,7 @@ melaincdir=${CMSSW_BASE}/src
 cmsswlibdir=$CMSSW_RELEASE_BASE/lib/slc6_amd64_gcc530
 cmsswincdir=$CMSSW_RELEASE_BASE/src
 
-export LD_LIBRARY_PATH=${melalibdir}:${cmsswlibdir}:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=${melalibdir}:${cmsswlibdir}:${CMSSW_BASE}/src/ZZMatrixElement/MELA/data/$SCRAM_ARCH:$LD_LIBRARY_PATH
 
 if [ "$1" == "" ]; then
     echo "Please provide an arguments to the script: 4e, 4mu, 2e2mu or all"

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-mkdir -p /eos/uscms/store/user/`whoami`/80X/jobdir
-mkdir -p /eos/uscms/store/user/`whoami`/80X/histodir
+# mkdir -p /eos/uscms/store/user/`whoami`/80X/jobdir
+# mkdir -p /eos/uscms/store/user/`whoami`/80X/histodir
 
 workdir=${PWD}
 echo "Running Mono-HtoZZto4Leptons Analysis with executables RunHZZ4LeptonsAnalysis"
@@ -14,14 +14,17 @@ if [ -d "$_CONDOR_SCRATCH_DIR/" ]; then
 fi
 
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-scramv1 project CMSSW TAR
-cd TAR     
-tar -zxvf ../TAR.tgz
-rm ../TAR.tgz
+export SCRAM_ARCH=arch
+scramv1 project CMSSW TARfile
+cd TARfile     
+tar -zxvf ../TARfile.tgz
+rm ../TARfile.tgz
 cd src
 scramv1 b ProjectRename
 eval `scramv1 runtime -sh`
 cd ${workdir}
+
+export LD_LIBRARY_PATH=${CMSSW_BASE}/src/ZZMatrixElement/MELA/data/$SCRAM_ARCH:$LD_LIBRARY_PATH
 
 savedir=`echo root://cmseos.fnal.gov///store/user/`wchoami`/80X/histodir`
 
