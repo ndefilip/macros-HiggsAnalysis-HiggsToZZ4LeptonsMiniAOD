@@ -26,7 +26,7 @@ cd ${workdir}
 
 export LD_LIBRARY_PATH=${CMSSW_BASE}/src/ZZMatrixElement/MELA/data/$SCRAM_ARCH:$LD_LIBRARY_PATH
 
-savedir=`echo root://cmseos.fnal.gov///store/user/`wchoami`/80X/histodir`
+savedir=`echo root://cmseos.fnal.gov///store/user/`whoami`/80X/histodir`
 
 echo "Path is" $PATH
 
