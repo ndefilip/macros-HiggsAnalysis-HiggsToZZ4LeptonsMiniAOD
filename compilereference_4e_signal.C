@@ -137,8 +137,8 @@ int main (int argc, char ** argv){
       make3.Loop(nome);
       
       cout << "Create file with name: " << nome << endl;
-      delete tree3;
-      file3 -> Close();
+      // delete tree3;
+      // file3 -> Close();
     }
 
     
