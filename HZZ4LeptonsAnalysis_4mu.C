@@ -266,8 +266,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    bool useMatchingRecoToGen=false;
 
    // Book Histos ***
-   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weighted", 21, 0., 21.);
-   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 21, 0., 21.);
+   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weighted", 22, 0., 22.);
+   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 22, 0., 22.);
 
    TH1F *hgenmu_eta              = new TH1F("hgenmu_eta", "hgenmu_eta",2000,-10.,10.);  
    TH1F *hgenmu_pt               = new TH1F("hgenmu_pt", "hgenmu_pt",5000,0.,500.);  
