@@ -19,6 +19,16 @@ SFNAL="FNAL";
 SDESY="DESY";
 SBARI="BARI";
 
+# Tar CMSSW enviroment
+if  [ $1 = ${SFNAL} ]; then
+ macrosdir=`echo ${PWD}`  
+ tarname=`basename ${CMSSW_BASE}`
+ cd ${CMSSW_BASE}; tar  --exclude=tmp -zcvf ${macrosdir}/${tarname}.tgz .
+ cd ${macrosdir};
+else
+ tarname="dummy"
+fi
+
 ###### Signal
 
 n=0;
@@ -51,14 +61,14 @@ while [ $n -lt ${nlines} ]; do
      mkdir -p /eos/uscms/store/user/`whoami`/80X/jobs$4_25ns
      mkdir -p /eos/uscms/store/user/`whoami`/80X/histos$4_25ns
 
-     cat submit_HZZ4LeptonsAnalysis_FNAL.sh | sed "s?site?$1?g" | sed "s?CMSSW_SEARCH_PATH_DIR?${CMSSW_SEARCH_PATH}?g" | sed "s?CMSSW_BASE_DIR?${CMSSW_BASE}?g" | sed "s?path?$PATH?g"  | sed "s?lib:?$LD_LIBRARY_PATH:?g" | sed "s?4mu?$4?g" | sed "s?mc?$3?g" |sed "s?year?$2?g" | sed "s?HZZ4LeptonsAnalysis?RunReferenceAnalysis?g" | sed "s?jobdir?jobs$4_25ns?g" | sed "s?histodir?histos$4_25ns?g" | sed "s?output?output_${samplename}?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?sig_input_${n}.txt?g" | sed "s?_log?_${samplename}_$4.log?g" > jobs$4/submit_ReferenceAnalysis_sig_${samplename}_$4.sh
-     cat condor_template.cfg  | sed "s?4mu?$4?g" | sed "s?submit_HZZ4LeptonsAnalysis_BARI?submit_ReferenceAnalysis_sig_${samplename}_$4?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?SigCards$4$3/sig_input_${n}.txt?g" | sed "s?mail?`whoami`?g" > jobs$4/condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
+     cat submit_HZZ4LeptonsAnalysis_FNAL.sh | sed "s?site?$1?g" | sed "s?CMSSW_SEARCH_PATH_DIR?${CMSSW_SEARCH_PATH}?g" | sed "s?CMSSW_BASE_DIR?${CMSSW_BASE}?g" | sed "s?path?$PATH?g"  | sed "s?lib:?$LD_LIBRARY_PATH:?g" | sed "s?4mu?$4?g" | sed "s?mc?$3?g" |sed "s?year?$2?g" | sed "s?HZZ4LeptonsAnalysis?RunReferenceAnalysis?g" | sed "s?jobdir?jobs$4_25ns?g" | sed "s?histodir?histos$4_25ns?g" | sed "s?output?output_${samplename}?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?sig_input_${n}.txt?g" | sed "s?_log?_${samplename}_$4.log?g" | sed  "s?TARfile?${tarname}?g"  | sed "s?arch?${SCRAM_ARCH}?g" > jobs$4/submit_ReferenceAnalysis_sig_${samplename}_$4.sh
+     cat condor_template.cfg  | sed "s?4mu?$4?g" | sed "s?submit_HZZ4LeptonsAnalysis_BARI?submit_ReferenceAnalysis_sig_${samplename}_$4?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?SigCards$4$3/sig_input_${n}.txt?g" | sed "s?mail?`whoami`?g" | sed  "s?TARfile?${tarname}.tgz?g" > jobs$4/condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
 
     elif  [ $1 = ${SDESY} ]; then
      cat submit_HZZ4LeptonsAnalysis_DESY.sh | sed "s?site?$1?g" | sed "s?mc?$3?g" |sed "s?year?$2?g" | sed "s?HZZ4LeptonsAnalysis?RunReferenceAnalysis?g" | sed "s?jobdir?jobs$4_25ns?g" | sed "s?histodir?histos$4_25ns?g" | sed "s?output?output_${samplename}?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?SigCards$4$3/sig_input_${n}.txt?g" | sed "s?_log?_${samplename}_$4.log?g" > jobs$4/submit_ReferenceAnalysis_sig_${samplename}_$4.sh
     elif  [ $1 = ${SBARI} ]; then
-	cat submit_HZZ4LeptonsAnalysis_BARI.sh | sed "s?CMSSW_BASE_DIR?${CMSSW_BASE}?g" | sed "s?path?$PATH?g"  | sed "s?lib:?$LD_LIBRARY_PATH:?g" | sed "s?4mu?$4?g" | sed "s?mc?$3?g" |sed "s?year?$2?g" | sed "s?HZZ4LeptonsAnalysis?RunReferenceAnalysis?g" | sed "s?jobdir?jobs$4_25ns?g" | sed "s?histodir?histos$4_25ns?g" | sed "s?output?output_${samplename}?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?sig_input_${n}.txt?g" | sed "s?_log?_${samplename}_$4.log?g" > jobs$4/submit_ReferenceAnalysis_sig_${samplename}_$4.sh
-	cat condor_template.cfg  | sed "s?4mu?$4?g" | sed "s?submit_HZZ4LeptonsAnalysis_BARI?submit_ReferenceAnalysis_sig_${samplename}_$4?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?SigCards$4$3/sig_input_${n}.txt?g" | sed "s?mail?`whoami`?g" > jobs$4/condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
+	cat submit_HZZ4LeptonsAnalysis_BARI.sh | sed "s?CMSSW_BASE_DIR?${CMSSW_BASE}?g" | sed "s?path?$PATH?g"  | sed "s?lib:?$LD_LIBRARY_PATH:?g" | sed "s?4mu?$4?g" | sed "s?mc?$3?g" |sed "s?year?$2?g" | sed "s?HZZ4LeptonsAnalysis?RunReferenceAnalysis?g" | sed "s?jobdir?jobs$4_25ns?g" | sed "s?histodir?histos$4_25ns?g" | sed "s?output?output_${samplename}?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?sig_input_${n}.txt?g" | sed "s?_log?_${samplename}_$4.log?g"  | sed  "s?TAR?${tarname}?g" > jobs$4/submit_ReferenceAnalysis_sig_${samplename}_$4.sh
+	cat condor_template.cfg  | sed "s?4mu?$4?g" | sed "s?submit_HZZ4LeptonsAnalysis_BARI?submit_ReferenceAnalysis_sig_${samplename}_$4?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?SigCards$4$3/sig_input_${n}.txt?g" | sed "s?mail?`whoami`?g"  | sed  "s?TAR?${tarname}.tgz?g" > jobs$4/condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
     else 
      cat submit_HZZ4LeptonsAnalysis.sh | sed "s?mc?$3?g" |sed "s?year?$2?g" | sed "s?HZZ4LeptonsAnalysis?RunReferenceAnalysis?g" | sed "s?jobdir?jobs$4_25ns?g" | sed "s?histodir?histos$4_25ns?g" | sed "s?output?output_${samplename}?g" | sed "s?RunReferenceAnalysis?RunReference$4_signal?g" | sed "s?sig_input_h150.txt?SigCards$4$3/sig_input_${n}.txt?g" | sed "s?_log?_${samplename}_$4.log?g" > jobs$4/submit_ReferenceAnalysis_sig_${samplename}_$4.sh
     fi
@@ -72,7 +82,7 @@ while [ $n -lt ${nlines} ]; do
        bsub -q 8nh  submit_ReferenceAnalysis_sig_${samplename}_$4.sh
     elif  [ $1 = ${SFNAL} ]; then
        echo "Submitting jobs via CONDOR at FNAL"
-      condor_submit  condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
+       condor_submit  condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
     elif  [ $1 = ${SDESY} ]; then
        echo "Submitting jobs via SGE"
        qsub submit_ReferenceAnalysis_sig_${samplename}_$4.sh   

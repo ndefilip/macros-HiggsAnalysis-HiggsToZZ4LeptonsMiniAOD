@@ -113,190 +113,14 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    mHgen=atof(mhstring.Data());
    cout << "mHgen= " << mHgen << endl;
    
-   /////////////Line Shape Correction//////////
-   bool useLineShape=false;
-   if (isggH) useLineShape=true;
-   cout << "useLineShape "<< useLineShape << endl;
-   
-   double LineShapeWeight=1.,LineShapeWeightP=1.,LineShapeWeightM=1.;
-   std::vector<double> bincenters_;
-   std::vector<double> weightLineShape_;
-   std::vector<double> weightLineShapeP_;
-   std::vector<double> weightLineShapeM_; 
-   bincenters_.clear();
-   weightLineShape_.clear();
-   weightLineShapeP_.clear();
-   weightLineShapeM_.clear();
-   
-   //   if (useLineShape){
-   //      if (isSignal && mHgen >=400.){    
-   //        double bincenter, initial, pow, powp, powm, out, outp, outm;
-   //        char st1[]="LineShape/mZZ_Higgs";
-   //        char st2[500];
-   //        sprintf(st2,mhstring.Data());
-   //        //char st3[]="_8TeV_Lineshape+Interference.txt";
-   //        char st3[500];
-   //        if (datasetBase.Contains("8TeV")) sprintf(st3,"_8TeV_Lineshape+Interference.txt");
-   //        if (datasetBase.Contains("7TeV")) sprintf(st3,"_7TeV_Lineshape+Interference.txt");
-   //        strcat(st2,st3);
-   //        strcat(st1,st2);
-   //        cout <<"Fileshape is " << st1 << endl;
-   //        std::ifstream ifs(st1);
-   
-   //        while( ifs.good() ) {
-   // 	 ifs >> bincenter >> initial >> pow >> powp >>  powm >> out>> outp >> outm;     
-   // 	 bincenters_.push_back(bincenter);
-   // 	 cout<<"bincenter===-==========-============-==============-=============-============ "<<bincenter<<endl;
-   // 	 if(initial > 0){
-   // 	   weightLineShape_.push_back(   TMath::Max(0.,out/initial) );
-   // 	   weightLineShapeP_.push_back(  TMath::Max(0.,outp/initial) );
-   // 	   weightLineShapeM_.push_back(  TMath::Max(0.,outm/initial) );
-   // 	 }else{//weights are not defined if initial distribution is 0 => set weight to 0
-   // 	   weightLineShape_.push_back( 0. );
-   // 	   weightLineShapeP_.push_back( 0. );
-   // 	   weightLineShapeM_.push_back( 0. );
-   // 	 }
-   //        }       
-   
-   //      }
-   //    }
-   
-   if (useLineShape){
-     
-     // Format: 
-     // m4l ; S_orig(old Powheg shape) ;  CPS shape ; CPS -> Interference shape ; CPS_plus -> Interference shape ; CPS_minus -> Interference shape ; CPS -> Interference_plus shape ; CPS -> Interference_minus shape
-     
-     if (isggH && mHgen >=400.){
-       
-       float Ratio=0.;
-       if(ispowheg15 && datasetBase.Contains("7TeV")){
-	 if(mHgen==400.) Ratio=1.00685;
-	 if(mHgen==450.) Ratio=1.00249;
-	 if(mHgen==500.) Ratio=0.991165;
-	 if(mHgen==550.) Ratio=0.975656;
-	 if(mHgen==600.) Ratio=0.989691;
-	 if(mHgen==650.) Ratio=0.963656;
-	 if(mHgen==700.) Ratio=0.935981;
-	 if(mHgen==800.) Ratio=0.862627;
-	 if(mHgen==900.) Ratio=0.797436;
-	 if(mHgen==1000.) Ratio=0.728721;
-       }
-       else if(ispowheg15 && datasetBase.Contains("8TeV")){
-	 if(mHgen==400.) Ratio=1.00907;
-	 if(mHgen==450.) Ratio=1.00611;
-	 if(mHgen==500.) Ratio=0.998143;
-	 if(mHgen==550.) Ratio=0.982971;
-	 if(mHgen==600.) Ratio=0.997586;
-	 if(mHgen==650.) Ratio=0.975372;
-	 if(mHgen==700.) Ratio=0.950402;
-	 if(mHgen==800.) Ratio=0.887968;
-	 if(mHgen==900.) Ratio=0.831853;
-	 if(mHgen==1000.) Ratio=0.771844;
-       }
-       
-       
-       double bincenter, initial, powcps, powcpsint, powpcpsint, powmcpsint, powcpsintp, powcpsintm;
-       char st1[]="LineShapeNew/mZZ_Higgs";
-       char st2[500];
-       sprintf(st2,mhstring.Data());
-       //char st3[]="_8TeV_Lineshape+Interference.txt";
-       char st3[500];
-       if (datasetBase.Contains("8TeV")) sprintf(st3,"_8TeV_Lineshape+Interference.txt");
-       if (datasetBase.Contains("7TeV")) sprintf(st3,"_7TeV_Lineshape+Interference.txt");
-       strcat(st2,st3);
-       strcat(st1,st2);
-       cout <<"Fileshape is " << st1 << endl;
-       std::ifstream ifs(st1);
-       
-       while( ifs.good() ) {
-	 ifs >> bincenter >> initial >> powcps >> powcpsint >> powpcpsint >>  powmcpsint >> powcpsintp >> powcpsintm;     
-	 bincenters_.push_back(bincenter);
-	 cout<<"bincenter===-==========-============-==============-=============-============ "<<bincenter<<endl;
-	 
-	 if (!ispowheg15 && initial > 0.) {
-	   weightLineShape_.push_back(  TMath::Max(0.,powcpsint/initial) );
-	   weightLineShapeP_.push_back(  TMath::Max(0.,powcpsintp/initial) );
-	   weightLineShapeM_.push_back(  TMath::Max(0.,powcpsintm/initial) );
-	 }
-	 else if (ispowheg15 && powcps > 0.) {
-	   weightLineShape_.push_back(  TMath::Max(0.,(powcpsint/powcps)*Ratio) );
-	   weightLineShapeP_.push_back(  TMath::Max(0.,(powcpsintp/powcps)*Ratio) );
-	   weightLineShapeM_.push_back(  TMath::Max(0.,(powcpsintm/powcps)*Ratio) );
-	 }
-	 else{//weights are not defined if initial distribution is 0 => set weight to 0
-	   weightLineShape_.push_back( 1. );
-	   weightLineShapeP_.push_back( 1. );
-	   weightLineShapeM_.push_back( 1. );
-	 }
-       }           
-     }
-     else{//weights are not defined if initial distribution is 0 => set weight to 1
-       cout << "No lineshape correction -> Setting the lineshape weights to 1" << endl;
-       weightLineShape_.push_back( 1. );
-       weightLineShapeP_.push_back( 1. );
-       weightLineShapeM_.push_back( 1. );
-     }
-   }
-   
-   ////////////////////////////////////////////////////////
-   ///////////// VBF Line Shape Correction//////////
-   bool useVBFLineShape=false;
-   if (isvbf) useVBFLineShape=true;
-   
-   double VBFLineShapeWeight=1.,VBFLineShapeWeightP=1.,VBFLineShapeWeightM=1.;
-   //std::vector<double> bincenters_;
-   //bincenters_.clear();
-   std::vector<double> weightVBFLineShape_;
-   std::vector<double> weightVBFLineShapeP_;
-   std::vector<double> weightVBFLineShapeM_; 
-   weightVBFLineShape_.clear();
-   weightVBFLineShapeP_.clear();
-   weightVBFLineShapeM_.clear();
-   
-   if (useVBFLineShape){
-     if (isvbf && mHgen >=400.){    
-       double bincenter, initial, powcps, powcpsint, powpcpsint, powmcpsint, powcpsintp, powcpsintm;
-       char st1[]="VBFLineShape/VBF_ratio";
-       char st2[500];
-       sprintf(st2,"%s.txt",mhstring.Data());
-       char st3[500];
-       if (datasetBase.Contains("8TeV")) sprintf(st3,"_8TeV_");
-       if (datasetBase.Contains("7TeV")) sprintf(st3,"_7TeV_");
-       strcat(st3,st2);
-       strcat(st1,st3);
-       cout <<"VBF Fileshape is " << st1 << endl;
-       std::ifstream ifs(st1);
-       
-       while( ifs.good() ) {
-	 ifs >> bincenter >> initial >> powcps >> powcpsint >> powpcpsint >>  powmcpsint >> powcpsintp >> powcpsintm;     
-	 cout<<"bincenter===-==========-============-==============-=============-============ "<<bincenter<<endl;
-	 bincenters_.push_back(bincenter);
-	 if(initial > 0){
-	   weightVBFLineShape_.push_back(   TMath::Max(0.,powcpsint/initial) );
-	   weightVBFLineShapeP_.push_back(  TMath::Max(0.,powcpsintp/initial) );
-	   weightVBFLineShapeM_.push_back(  TMath::Max(0.,powcpsintm/initial) );
-	 }else{//weights are not defined if initial distribution is 0 => set weight to 0
-	   weightVBFLineShape_.push_back( 1. );
-	   weightVBFLineShapeP_.push_back( 1. );
-	   weightVBFLineShapeM_.push_back( 1. );
-	 }
-       } 
-     }
-     else{//weights are not defined if initial distribution is 0 => set weight to 1
-       cout << "No VBF lineshape correction -> Setting the lineshape weights to 1" << endl;
-       weightVBFLineShape_.push_back( 1. );
-       weightVBFLineShapeP_.push_back( 1. );
-       weightVBFLineShapeM_.push_back( 1. );
-     }
-   }
-   ///////   
 
    // Pileup reweighting 2016 data vs Spring16 MC in 80x                                                                                                                                                  
 
    TFile *_filePU;
-   _filePU= TFile::Open("pileup_MC_80x_271036-276811_69200.root");
-   TH1D *puweight = (TH1D*)_filePU->Get("puweight");
-  
+   //_filePU= TFile::Open("pileup_MC_80x_271036-276811_69200.root");
+   //TH1D *puweight = (TH1D*)_filePU->Get("puweight");
+   _filePU= TFile::Open("puWeightsMoriond17_v2.root");     
+   TH1D *puweight = (TH1D*)_filePU->Get("weights"); 
 
    /////////////Lepton Efficiency Scale Factrons/////////////
    // Load histograms
@@ -316,6 +140,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    // TH2F *ele_scale_Sip2016_Cracks = (TH2F*)gDirectory->Get("hScaleFactors_SIP_Cracks"); 
    
    // correction to the error
+   /*
    TFile *ebe_corr2012= new TFile("ebeOverallCorrections.Legacy2013.v0.root");
    TH2F *ebe_mu_reco53x= (TH2F*)gDirectory->Get("mu_reco53x");
    TH2F *ebe_mu_mc53x= (TH2F*)gDirectory->Get("mu_mc53x");
@@ -323,6 +148,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TFile *ebe_corr2011= new TFile("ebeOverallCorrections.LegacyPaper.42x.root");
    TH2F *ebe_mu_reco42x= (TH2F*)gDirectory->Get("mu_reco42x");
    TH2F *ebe_mu_mc42x= (TH2F*)gDirectory->Get("mu_mc42x");
+   */
 
    // kfactor_ggZZ(float GENmassZZ, int finalState)     
    TString strSystTitle[9] ={
@@ -439,8 +265,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    double N_10_w = 0;
 
    // Book Histos ***
-   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 21, 0., 21.);
-   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 21, 0., 21.);
+   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 22, 0., 22.);
+   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 22, 0., 22.);
 
    TH1F *Gen_H_MASS              = new TH1F("Gen_H_MASS", "Gen_H_MASS",8000,0.,2000.);  
    TH1F *Gen_H_MASS_ReWeighted   = new TH1F("Gen_H_MASS_ReWeighted", "Gen_H_MASS_ReWeighted",8000,0.,2000.);  
@@ -1181,63 +1007,6 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 				   << endl ;
       
       
-      //////////// (VBF) Line Shape Correction///////////
-      if ( (isggH || isvbf) && mHgen >=400. && (useLineShape==true || useVBFLineShape==true) ){
-	cout << "Applying lineshape correction for masses= " << mHgen << " " << MC_MASS[0] << endl;
-	//cout << bincenters_.front() << " " <<  bincenters_.back() << endl;
-	if( MC_MASS[0] < bincenters_.front() || MC_MASS[0] >  bincenters_.back() ){ // set weights to 0 if out of range
-	  cout << " out of range " << endl;
-	  LineShapeWeight = 0.;
-	  LineShapeWeightP = 0.;
-	  LineShapeWeightM = 0.;
-	}
-	
-	std::vector<double>::iterator low;
-	low=lower_bound( bincenters_.begin(), bincenters_.end(),MC_MASS[0] ); 
-	int lowindex=(low-  bincenters_.begin());
-	//cout << "low " << bincenters_.begin() << endl;
-	if(MC_MASS[0] == *low ){//exact match
-	  cout << "Exact match " << endl;
-	  if (useLineShape==true) (LineShapeWeight) = weightLineShape_[lowindex];
-	  if (useVBFLineShape==true) (LineShapeWeight) = weightVBFLineShape_[lowindex]; 
-	}
-	else{//linear interpolation
-	  lowindex--; // lower_bound finds the first element not smaller than X
-	  if (useLineShape==true){ 
-	    cout << "use LineShape" << endl;
-	    LineShapeWeight = weightLineShape_[lowindex] +(MC_MASS[0]  - bincenters_[lowindex] )*(weightLineShape_[lowindex+1]-weightLineShape_[lowindex])/(bincenters_[lowindex+1]-bincenters_[lowindex]);
-	    cout << "LineShape weight= " << LineShapeWeight << endl;
-	    LineShapeWeightP = weightLineShapeP_[lowindex] +(MC_MASS[0]  - bincenters_[lowindex] )*(weightLineShapeP_[lowindex+1]-weightLineShape_[lowindex])/(bincenters_[lowindex+1]-bincenters_[lowindex]);
-	    LineShapeWeightM = weightLineShapeM_[lowindex] +(MC_MASS[0]  - bincenters_[lowindex] )*(weightLineShapeM_[lowindex+1]-weightLineShape_[lowindex])/(bincenters_[lowindex+1]-bincenters_[lowindex]);
-	  }
-	  if (useVBFLineShape==true){
-	    cout << "use VBF LineShape" << endl;
-	    LineShapeWeight = weightVBFLineShape_[lowindex] +(MC_MASS[0]  - bincenters_[lowindex] )*(weightVBFLineShape_[lowindex+1]-weightVBFLineShape_[lowindex])/(bincenters_[lowindex+1]-bincenters_[lowindex]);
-	    cout << "VBF LineShape weight= " << LineShapeWeight << endl;
-	    LineShapeWeightP = weightVBFLineShapeP_[lowindex] +(MC_MASS[0]  - bincenters_[lowindex] )*(weightVBFLineShapeP_[lowindex+1]-weightVBFLineShape_[lowindex])/(bincenters_[lowindex+1]-bincenters_[lowindex]);
-	    LineShapeWeightM = weightVBFLineShapeM_[lowindex] +(MC_MASS[0]  - bincenters_[lowindex] )*(weightVBFLineShapeM_[lowindex+1]-weightVBFLineShape_[lowindex])/(bincenters_[lowindex+1]-bincenters_[lowindex]);
-	  }
-	}
-
-	if (useLineShape==true){ 
-	  cout<<"Higgs Mass==== "<< MC_MASS[0]  <<" LineShapeWeight==== "<<LineShapeWeight<<endl;       
-	  Gen_H_MASS->Fill(MC_MASS[0]);
-	  if(MC_MASS[0]>10.)Gen_H_MASS_ReWeighted->Fill(MC_MASS[0],LineShapeWeight);
-	  if(MC_MASS[0]>10.)Gen_H_MASS_ReWeightedP->Fill(MC_MASS[0],LineShapeWeightP);
-	  if(MC_MASS[0]>10.)Gen_H_MASS_ReWeightedM->Fill(MC_MASS[0],LineShapeWeightM);
-	}
-	if (useVBFLineShape==true){ 
-	  cout<<"Higgs Mass==== "<< MC_MASS[0]  <<" VBFLineShapeWeight==== "<<LineShapeWeight<<endl;       
-	  Gen_H_MASS->Fill(MC_MASS[0]);
-	  if(MC_MASS[0]>10.)Gen_H_MASS_ReWeighted->Fill(MC_MASS[0],LineShapeWeight);
-	  if(MC_MASS[0]>10.)Gen_H_MASS_ReWeightedP->Fill(MC_MASS[0],LineShapeWeightP);
-	  if(MC_MASS[0]>10.)Gen_H_MASS_ReWeightedM->Fill(MC_MASS[0],LineShapeWeightM);
-	}	
-
-	// Changing the weight for pileup and LineShape
-	newweight=weight*pu_weight*LineShapeWeight;
-	cout << "Starting weight + pileup + LineShape= " << newweight << endl;
-      }
       //
       if (isSignal){
 	if( MC_PDGID[3] == 11 && MC_PDGID[4] == -11  
@@ -3303,7 +3072,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      int index_bjets[2]={-999,-999};
      
      for (int i=0;i<50;i++){
-       if (cSV_BTagJet_DISCR[i] > 0.8){ // 76x
+       if (cSV_BTagJet_DISCR[i] > 0.460){ // 76x
 	 if(cSV_BTagJet_PT[i]>30. && fabs(cSV_BTagJet_ETA[i])<4.7 ) cout << "Found a bjet (pT>30 and |eta|<2.4) with pT= " << cSV_BTagJet_PT[i] << endl;	 
 	 n_bjets++;
 	 if (n_bjets==1) index_bjets[0]=i; 
@@ -3354,8 +3123,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      for(int i=0;i<RECO_PFJET_N;i++){
        if (jetfail[i]!=0) continue;
        for (int j=0;j<50;j++){
-	 if (cSV_BTagJet_PT[j]==RECO_PFJET_PT[i] && cSV_BTagJet_DISCR[j]>0.8 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
-	   //if (cSV_BTagJet_DISCR[j]>0.8 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
+	 if (cSV_BTagJet_PT[j]==RECO_PFJET_PT[i] && cSV_BTagJet_DISCR[j]>0.460 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
+	   //if (cSV_BTagJet_DISCR[j]>0.460 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
 	   n_match_bjets++;
 	   //if (n_match_bjets==1) jet1=i;
 	   //if (n_match_bjets==2) jet2=i;

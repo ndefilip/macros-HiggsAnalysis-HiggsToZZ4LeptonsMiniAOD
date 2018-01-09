@@ -63,37 +63,24 @@ int main (int argc, char ** argv){
     else if (site.find("DESY")<5){
       dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/sig"; //to run at DESY
     }
-    else if (site.find("FNAL")<5 && mcconf.find("Fall11")<5){
-      dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/sig/Fall11";
+    else if (site.find("FNAL")<5){
+      if (mcconf.find("Spring16")<5 ) dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Spring16_merged";
     }
-    else if (site.find("FNAL")<5 && mcconf.find("Summer12")<5 ){
-      dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/sig/Summer12";
+    else if (site.find("BARI")<5){
+      if (mcconf.find("Spring16")<5) dirInput="/lustre/cms/store/user/dburns/MonoHiggs/Spring16_merged";
     }
-    else if (site.find("FNAL")<5 && mcconf.find("Spring16")<5 ){
-      dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
-    }
-    else if (mcconf.find("Fall11")<5){
-      dirInput="/lustre/cms/store/user/defilip/Fall11_445_paper_step_analysis_merged"; 
-    }
-    else if (mcconf.find("Summer12")<5){
-      dirInput="/lustre/cms/store/user/defilip/Summer12_53X_paper_step_analysis_merged";  
-    }
-    else if (mcconf.find("Phys14")<5){
-       dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Phys14_720_merged";  
-    }
-    else if (mcconf.find("Fall15")<5){
-       dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Signal_MonoHiggs_76X_merged";  
-    }
-    else if (mcconf.find("Spring16")<5){
-      dirInput="/lustre/cms/store/user/dburns/MonoHiggs/Spring16_merged";
-    }
-
 
     TString sigFile=name;
     sigFile=sigFile.ReplaceAll("-2e2mu","");
 
+    if (sigFile.Contains("2HDM") && site.find("BARI")<5 ) dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Spring16_merged";
+
+
     Char_t nome[300];
     sprintf(nome,"%s/%s",dirInput.Data(),sigFile.Data());
+
+    
+
 
     TString mhstring=sigFile.ReplaceAll("GluGluToHToZZTo4L_M-","");
     if (mcconf.find("Fall11")<5) { 
@@ -107,7 +94,7 @@ int main (int argc, char ** argv){
       mhstring=mhstring.ReplaceAll("GeV_13TeV","");
     }
     
-    mhstring=mhstring.ReplaceAll("roottree_leptons_crab_","");
+    mhstring=mhstring.ReplaceAll("roottree_leptons_crab","");
     mhstring=mhstring.ReplaceAll(".root","");
   
     Double_t mH=0.;
@@ -115,6 +102,7 @@ int main (int argc, char ** argv){
     
     
     float weight= lumifb*(sigxsection[i]*1000.*signskim[i]/signinput[i])/signskim[i];
+
 
     cout << "mH= " << mH << " weight= " << weight << endl;
 
