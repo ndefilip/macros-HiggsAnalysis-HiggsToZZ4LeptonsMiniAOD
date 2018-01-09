@@ -247,8 +247,7 @@ int main (int argc, char ** argv){
 		
 	cout << "Create file with name: " << nome << endl;
 	// delete tree3;
-	// file3 -> Close();
-	
+	// file3 -> Close();	
       }
 
   }
