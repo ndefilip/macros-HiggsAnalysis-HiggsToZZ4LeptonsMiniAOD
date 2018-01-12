@@ -74,8 +74,8 @@ PlotStack4l::PlotStack4l(){
   //LoadLib.Load("/cmshome/nicola/slc6/MonoHiggs/Analysis13TeV/CMSSW_7_2_0/lib/slc6_amd64_gcc481/libHiggsHiggs_CS_and_Width.so");
   //getMassWindow(500.);
     
-  //inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_m4l_MC.txt";
-  inputfile="filelist_4mu_2016_Spring16_AN_Bari_miniaod.txt";
+  inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_m4l_MC.txt";
+  //inputfile="filelist_4mu_2016_Spring16_AN_Bari_miniaod.txt";
 
   setSamplesNames4l(); 
   cout << "\t Analysing samples for " << whichchannel << " analysis" << endl; 
@@ -105,7 +105,7 @@ PlotStack4l::PlotStack4l(){
 
   // ****** Standard candle: Z1 selection: step 3 ******
 
-  //std::string histolabel = "hMZ_3";    // Z mass 
+  // std::string histolabel = "hMZ_3";    // Z mass 
   //std::string histolabel = "hMZBB_3";    // Z mass 
   //std::string histolabel = "hMZEE_3";    // Z mass 
   //std::string histolabel = "hPtZ_3"; // Z pt 
@@ -125,8 +125,8 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hDjj_3"; // delta eta between jets for VBF analysis
   //std::string histolabel = "hVD_3"; // Fisher discriminant for VBF analysis
 
-  //std::string histolabel = "hPFMET_3"; // PFMET
-
+  // std::string histolabel = "hPFMET_3"; // PFMET
+  //std::string histolabel = "hLogXPFMET_3"; //PF MET log
   // ****** After cuts on ,Z1, mZ2 and pT >20/10: step 5 ******
 
   //std::string histolabel = "hMZ1_5";    // Z1 mass   
@@ -167,7 +167,7 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hNbjets"; // Number of b-jets
   //std::string histolabel = "hNgood"; // Number of good leptons  
 
-  useLogY = false;
+  useLogY = true;
   useLogX = false;
 
   useRatio = true;
@@ -175,7 +175,7 @@ PlotStack4l::PlotStack4l(){
   useDYJets=true;
   useDYJetsFromData=false;
   
-  nRebin=4;
+  nRebin=2;
   std::cout << "Histogram label is= " << histolabel << std::endl;
   
   // Final yields
@@ -327,6 +327,19 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
   cout << "Ymax = " << Ymax << endl;
 
+  // logaritmic bin width
+  const int NMBINS = Nbins;
+  const double MMIN = Xmin, MMAX = Xmax;
+  double logMbins[NMBINS+1];
+
+  if (histlabel.find("hLogX")<10 ){
+    float binNormNr=0.;
+    for (int ibin = 0; ibin <= NMBINS; ibin++) {
+      logMbins[ibin] = exp(log(MMIN) + (log(MMAX)-log(MMIN))*ibin/NMBINS);
+      cout << logMbins[ibin] << endl;
+    }
+  }
+
   TH2F *hframe=NULL,*hframe2=NULL;
  
   hframe= new TH2F("hframe","hframe",80,70.,1000.,500,5.,700.);// 4l analysis mass nrebin=10 GeV
@@ -472,12 +485,13 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe2= new TH2F("hframe2","hframe2",6000, 0., 3., 1000, 0.5, 2.);// iso
   }
 
-  if (histlabel.find("hPFMET_3")<10){
+  if (histlabel.find("hPFMET_3")<10 || histlabel.find("hLogXPFMET_3")<10 ){
+    cout << "Plotting PFMET at step 3" << endl;
     hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 100000000.);// PFMET
     hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 2.);// PFMET
   }
   
-  if (histlabel.find("hPFMET_3")<10 && whichchannel.find("4l")<20){
+  if ( (histlabel.find("hPFMET_3")<10 || histlabel.find("hLogXPFMET_3")<10 ) && whichchannel.find("4l")<20){
     hframe= new TH2F("hframe","hframe",1000, 0., 1300., 1000, 0.000001, 10000000.);// PFMET
     hframe2= new TH2F("hframe2","hframe2",1000, 0., 1300., 1000, 0.5, 2.);// PFMET                                                                                 
   }
@@ -659,7 +673,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
     TH1D *nEvent_4l_w_new = (TH1D*)f1->Get("nEvent_4l_w");
 
     hfourlepbestmass_4l_afterSel_new = (TH1F*)f1->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new"*/);
-    TH1 *hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str()/*"hfourlepbestmass_4l_afterSel_new_new"*/);
+    TH1 *hfourlepbestmass_4l_afterSel_new_new;
+    if ( histlabel.find("hLogX")<10) {
+      hfourlepbestmass_4l_afterSel_new_new = (TH1F*)f1->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);    
+    }
+    else hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str()/*"hfourlepbestmass_4l_afterSel_new_new"*/);
     hfourlepbestmass_4l_afterSel_new_new->SetMarkerColor(1);
     hfourlepbestmass_4l_afterSel_new_new->SetMarkerStyle(20);
     hfourlepbestmass_4l_afterSel_new_new->SetMarkerSize(0.95);
@@ -803,7 +821,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
   // Background
 
-  TH1F *hfourlepbestmass_4l_afterSel_new_qqZZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_qqZZ", "hfourlepbestmass_4l_afterSel_new_qqZZ", Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_qqZZ;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_qqZZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_qqZZ","hfourlepbestmass_4l_afterSel_new_qqZZ",NMBINS, logMbins);
+  }
+  else  hfourlepbestmass_4l_afterSel_new_qqZZ = new TH1F("hfourlepbestmass_4l_afterSel_new_qqZZ", "hfourlepbestmass_4l_afterSel_new_qqZZ", Nbins, Xmin, Xmax);
   TH1D *nEvent_4l_w_qqZZ = new TH1D("nEvent_4l_w_qqZZ", "nEventComplete qqZZ Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_qqZZ = new TH1D("nEvent_4l_qqZZ", "nEventComplete qqZZ", 21, 0., 21.);
   nEvent_4l_w_qqZZ->Sumw2();
@@ -811,8 +833,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TList *listqqZZ_w = new TList;
   TList *listqqZZ = new TList;
 
-
-  TH1F *hfourlepbestmass_4l_afterSel_new_ggZZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_ggZZ", "hfourlepbestmass_4l_afterSel_new_ggZZ", Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_ggZZ;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_ggZZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_ggZZ","hfourlepbestmass_4l_afterSel_new_ggZZ",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_ggZZ = new TH1F("hfourlepbestmass_4l_afterSel_new_ggZZ", "hfourlepbestmass_4l_afterSel_new_ggZZ", Nbins, Xmin, Xmax);
   TH1D *nEvent_4l_w_ggZZ = new TH1D("nEvent_4l_w_ggZZ", "nEventComplete ggZZ Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_ggZZ = new TH1D("nEvent_4l_ggZZ", "nEventComplete ggZZ", 21, 0., 21.);
   nEvent_4l_w_ggZZ->Sumw2();
@@ -822,7 +847,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
 
 
-  TH1F *hfourlepbestmass_4l_afterSel_new_ZZ      = new TH1F("hfourlepbestmass_4l_afterSel_new_ZZ", "hfourlepbestmass_4l_afterSel_new_ZZ", Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_ZZ;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_ZZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_ZZ","hfourlepbestmass_4l_afterSel_new_ZZ",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_ZZ = new TH1F("hfourlepbestmass_4l_afterSel_new_ZZ", "hfourlepbestmass_4l_afterSel_new_ZZ", Nbins, Xmin, Xmax);
 
   TH1D *nEvent_4l_w_ZZ = new TH1D("nEvent_4l_w_ZZ", "nEventComplete ZZ Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_ZZ = new TH1D("nEvent_4l_ZZ", "nEventComplete ZZ", 21, 0., 21.);
@@ -964,7 +993,13 @@ void PlotStack4l::plotm4l(std::string histlabel){
        datasetnamebkg.find("TTZTo") < 200 
        ){
       
-      hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);
+   
+      if ( histlabel.find("hLogX")<10) {
+	hfourlepbestmass_4l_afterSel_new_new = (TH1F*)f2->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);
+      }
+      else hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str()/*"hfourlepbestmass_4l_afterSel_new_new"*/);
+
+      //hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);
       hfourlepbestmass_4l_afterSel_new_new->SetLineColor(Vcolorbkg.at(datasetId)/*datasetId+2*/);
       hfourlepbestmass_4l_afterSel_new_new->SetFillColor(Vcolorbkg.at(datasetId)/*datasetId+2*/);
       hfourlepbestmass_4l_afterSel_new_new->SetMarkerStyle(24);
@@ -992,7 +1027,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
 	char temp[328];
 	sprintf(temp,"%s",histosdir.c_str());
-	if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_ggH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_ggH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
 	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
 
 	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
@@ -1011,7 +1046,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
 	char temp[328];
 	sprintf(temp,"%s",histosdir.c_str());
-	if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_ttH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_ttH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
 	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
 
 	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
@@ -1030,7 +1065,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
 	char temp[328];
 	sprintf(temp,"%s",histosdir.c_str());
-	if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_VBFH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_VBFH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
 	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
 	
 	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
@@ -1055,7 +1090,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
         char temp[328];
         sprintf(temp,"%s",histosdir.c_str());
-        if(datasetnamebkg.find("WminusH") < 200 && histlabel.find("hM4l_7")>10 && datasetnamebkg.find(temp) < 200 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_WH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_WH,"WH, m_{H}=125 GeV", "F");  
+        //if(datasetnamebkg.find("WminusH") < 200 && histlabel.find("hM4l_7")>10 && datasetnamebkg.find(temp) < 200 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_WH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_WH,"WH, m_{H}=125 GeV", "F");  
         //hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
 
 	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
@@ -1081,7 +1116,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
 	char temp[328];
 	sprintf(temp,"%s",histosdir.c_str());
-	if(datasetnamebkg.find("ZH_H") < 200 && histlabel.find("hM4l_7")>10 && datasetnamebkg.find(temp) < 200 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_VH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//if(datasetnamebkg.find("ZH_H") < 200 && histlabel.find("hM4l_7")>10 && datasetnamebkg.find(temp) < 200 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_VH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
 	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
 
 	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
@@ -1733,8 +1768,10 @@ void PlotStack4l::plotm4l(std::string histlabel){
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding ggH" << endl;
-	   htotal->Add(hfourlepbestmass_4l_afterSel_new_ggH); 
-	   htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ggH); 	   
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_ggH); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ggH); 	   
+	   htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);                                                                                                             
+           htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);   
 	   nEvent_4l_totSM_H->Merge(listtotSM_H);
 	   nEvent_4l_w_totSM_H->Merge(listtotSM_H_w);	    
 	   //}
@@ -1746,8 +1783,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
           )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding WH" << endl;
-	   htotal->Add(hfourlepbestmass_4l_afterSel_new_WH); 
-	   htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_WH); 
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_WH); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_WH); 
 	   //}
        }
        if(datasetnamebkg.find(temppp) < 400 && (
@@ -1757,8 +1794,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding ZH" << endl;
-	   htotal->Add(hfourlepbestmass_4l_afterSel_new_ZH); 
-	   htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ZH); 
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_ZH); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ZH); 
 	   //}
        }
        if(datasetnamebkg.find(temppp) < 200 && (
@@ -1768,8 +1805,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding ttH" << endl;
-	   htotal->Add(hfourlepbestmass_4l_afterSel_new_ttH); 
-	   htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ttH); 
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_ttH); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ttH); 
 	   //}
        }
        if(datasetnamebkg.find(temppp) < 200 && (
@@ -1779,8 +1816,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding VBF" << endl;
-	   htotal->Add(hfourlepbestmass_4l_afterSel_new_VBFH); 
-	   htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_VBFH); 
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_VBFH); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_VBFH); 
 	   //}
        }
 
@@ -2330,11 +2367,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
   hfourlepbestmass_4l_afterSel_new_totSM_H->SetFillColor(kRed-4);
   
   //if (histlabel.find("hM4l_7")<10) {
-    cout << "Total higgs 125 rate is= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
-    htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);
-    htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H); 
-    legend->AddEntry(hfourlepbestmass_4l_afterSel_new_totSM_H,"H#rightarrowZZ#rightarrow 4l, m_{H}=125 GeV", "F");  
-    //}
+  cout << "Total higgs 125 rate is= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
+    //  htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);
+    // htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H); 
+  legend->AddEntry(hfourlepbestmass_4l_afterSel_new_totSM_H,"H#rightarrowZZ#rightarrow 4l, m_{H}=125 GeV", "F");  
+  //}
 
 
   hfourlepbestmass_4l_afterSel_new_monoH_DM1->SetMarkerSize(0.95);
@@ -2498,8 +2535,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
   //hfourlepbestmass_4l_afterSel_new_monoH_MZP800->Draw("hist same");
   //legend->AddEntry(hfourlepbestmass_4l_afterSel_new_monoH_MZP800,"m_{Z'}=800 GeV, m_{A_{0}}=300 GeV","L");
   //hfourlepbestmass_4l_afterSel_new_monoH_MZP1000->Draw("hist same");
-  //hfourlepbestmass_4l_afterSel_new_monoH_MZP1200->Draw("hist same");
-  htotal->Add(hfourlepbestmass_4l_afterSel_new_monoH_MZP1200);
+  hfourlepbestmass_4l_afterSel_new_monoH_MZP1200->Draw("hist same");
+  //htotal->Add(hfourlepbestmass_4l_afterSel_new_monoH_MZP1200);
   legend->AddEntry(hfourlepbestmass_4l_afterSel_new_monoH_MZP1200,"m_{Z'}=1200 GeV, m_{A_{0}}=300 GeV","L");
   //hfourlepbestmass_4l_afterSel_new_monoH_MZP1400->Draw("hist same");
   //hfourlepbestmass_4l_afterSel_new_monoH_MZP1700->Draw("hist same");
@@ -2510,12 +2547,12 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
   //hfourlepbestmass_4l_newZpBaryonic_MZp10_MChi1->Draw("hist same");
   //hfourlepbestmass_4l_newZpBaryonic_MZp100_MChi1->Draw("hist same");
-  htotal->Add(hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1);
+  //htotal->Add(hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1);
   hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1->Draw("hist same");
   //hfourlepbestmass_4l_newZpBaryonic_MZp50_MChi10->Draw("hist same");
   //legend->AddEntry(hfourlepbestmass_4l_newZpBaryonic_MZp10_MChi1,"m_{Z'B}=10 GeV, m_{#chi}=1 GeV","L");
   //legend->AddEntry(hfourlepbestmass_4l_newZpBaryonic_MZp100_MChi1,"m_{Z'B}=100 GeV, m_{#chi}=1 GeV","L");
-  //legend->AddEntry(hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1,"m_{Z'B}=500 GeV, m_{#chi}=1 GeV","L");
+  legend->AddEntry(hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1,"m_{Z'B}=500 GeV, m_{#chi}=1 GeV","L");
   //legend->AddEntry(hfourlepbestmass_4l_newZpBaryonic_MZp50_MChi10,"m_{Z'B}=50 GeV, m_{#chi}=10 GeV","L");
   
     
@@ -2523,6 +2560,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
   if (
       histlabel.find("hMELA_8")<10 || 
       histlabel.find("hPFMET_3")<10 ||
+      histlabel.find("h_hLogXPFMET_3")<10 ||
       histlabel.find("hPFMET_8")<10 ||
       histlabel.find("hMZ_3")<10  ||
       histlabel.find("hMZ1_5")<10  ||
@@ -3784,7 +3822,7 @@ void PlotStack4l::setSamplesNames4l()
 
       // W+jets
       // WJetsToLNu_TuneZ2_8TeV-madgraph-tauola 
-      if(inputfilename.find("WJetsToLNu")<200){
+      if(inputfilename.find("_WJetsToLNu")<200){
 	Vdatasetnamebkg.push_back(inputfilename);
 	Vlabelbkg.push_back("W+Jets");
 	Vxsectionbkg.push_back(1.); //pb
