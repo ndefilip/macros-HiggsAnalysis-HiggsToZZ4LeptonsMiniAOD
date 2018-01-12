@@ -74,8 +74,8 @@ PlotStack4l::PlotStack4l(){
   //LoadLib.Load("/cmshome/nicola/slc6/MonoHiggs/Analysis13TeV/CMSSW_7_2_0/lib/slc6_amd64_gcc481/libHiggsHiggs_CS_and_Width.so");
   //getMassWindow(500.);
     
-  inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_m4l_MC.txt";
-  //inputfile="filelist_4mu_2016_Spring16_AN_Bari_miniaod.txt";
+  //inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_m4l_MC.txt";
+  inputfile="filelist_4mu_2016_Spring16_AN_Bari_miniaod.txt";
 
   setSamplesNames4l(); 
   cout << "\t Analysing samples for " << whichchannel << " analysis" << endl; 
@@ -126,7 +126,7 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hVD_3"; // Fisher discriminant for VBF analysis
 
   // std::string histolabel = "hPFMET_3"; // PFMET
-  //std::string histolabel = "hLogXPFMET_3"; //PF MET log
+  std::string histolabel = "hLogXPFMET_3"; //PF MET log
   // ****** After cuts on ,Z1, mZ2 and pT >20/10: step 5 ******
 
   //std::string histolabel = "hMZ1_5";    // Z1 mass   
@@ -139,7 +139,7 @@ PlotStack4l::PlotStack4l(){
 
 
   // After full selection
-  std::string histolabel = "hM4l_7"; // 4l mass after full selection but m4l > 70
+  //std::string histolabel = "hM4l_7"; // 4l mass after full selection but m4l > 70
 
   //std::string histolabel = "hM4l_8"; // 4l mass after full selection
   //std::string histolabel = "hM4l_9"; // 4l mass after full selection
@@ -175,7 +175,7 @@ PlotStack4l::PlotStack4l(){
   useDYJets=true;
   useDYJetsFromData=false;
   
-  nRebin=2;
+  nRebin=1;
   std::cout << "Histogram label is= " << histolabel << std::endl;
   
   // Final yields
@@ -261,7 +261,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
     ll->AddText(0.65, 0.6, text);
   }
   else if (whichenergy.find("13TeV")<50) {
-    text = "#sqrt{s} = 13 TeV, L = 35.867 fb^{-1}" ;
+    text = "#sqrt{s} = 13 TeV, L = 35.9 fb^{-1}" ;
     //text = "#sqrt{s} = 13 TeV, L = 14.77 fb^{-1}" ;
     ll->AddText(0.65, 0.6, text);
   }
@@ -276,8 +276,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
   leg0->SetFillColor(kWhite);
   leg0->SetBorderSize(0);
  
-  TLegend* legend = new TLegend( 0.55, 0.6, 0.9, 0.92);
-  //TLegend* legend = new TLegend( 0.55, 0.3, 0.9, 0.62);                                                                                                                                                 
+  TLegend* legend = new TLegend( 0.55, 0.7, 0.9, 0.92);
+  //TLegend* legend = new TLegend( 0.55, 0.45, 0.9, 0.72);                                                                                                                                                 
   legend->SetFillColor(kWhite);
   legend->SetTextSize(0.020);
 
@@ -316,18 +316,15 @@ void PlotStack4l::plotm4l(std::string histlabel){
   else if(Vdatasetnamesig.size()>0)  
     ff = TFile::Open(Vdatasetnamesig.at(0).c_str());  
  
-  
   TH1F *hfourlepbestmass_4l_afterSel_new = (TH1F*)ff->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new"*/);
-
 
   Nbins = hfourlepbestmass_4l_afterSel_new->GetNbinsX() / nRebin;
   Xmin  = hfourlepbestmass_4l_afterSel_new->GetXaxis()->GetXmin();
   Xmax  = hfourlepbestmass_4l_afterSel_new->GetXaxis()->GetXmax() ;
   Ymax  = hfourlepbestmass_4l_afterSel_new->GetBinContent(hfourlepbestmass_4l_afterSel_new->GetMaximumBin()) * 580.;
-
   cout << "Ymax = " << Ymax << endl;
 
-  // logaritmic bin width
+  // logaritmic bin width                                                                                                                                              
   const int NMBINS = Nbins;
   const double MMIN = Xmin, MMAX = Xmax;
   double logMbins[NMBINS+1];
@@ -344,10 +341,6 @@ void PlotStack4l::plotm4l(std::string histlabel){
  
   hframe= new TH2F("hframe","hframe",80,70.,1000.,500,5.,700.);// 4l analysis mass nrebin=10 GeV
   hframe2= new TH2F("hframe2","hframe2",80,70.,1000.,1000, 0.5, 20.);// 4l analysis mass
-
-  //hframe= new TH2F("hframe","hframe",80,70.,810.,500,0.004,25.);// 4l analysis mass
-  //hframe= new TH2F("hframe","hframe",80,70.,900.,500,0.004,25.);// 4l analysis mass // animate gif 
-  //hframe2= new TH2F("hframe","hframe",80,70.,182.,1000, 0.5, 4.);// 4l analysis mass
 
   if (histlabel.find("hPFMET_0")<10){
     hframe= new TH2F("hframe","hframe",5000, 0., 5000., 1000, 0.00001, 10000000000000.);// PFMET
@@ -377,14 +370,14 @@ void PlotStack4l::plotm4l(std::string histlabel){
   if (histlabel.find("hM4l_7")<10 && 
       (whichchannel.find("4e")<20 || whichchannel.find("4#mu")<20 || whichchannel.find("2e2#mu")<20)){
     //hframe= new TH2F("hframe","hframe",80,70.,270.,500,0.004,42.);// 4l analysis mass nrebin=2 GeV
-    if (!useLogY)  hframe= new TH2F("hframe","hframe",80,70.,270.,500,0.0004,42.);
-    else hframe= new TH2F("hframe","hframe",80,70.,270.,500,0.0004,100000.);
-    hframe2= new TH2F("hframe2","hframe2",6000, 70., 270., 1000, 0.5, 2.);// 
+    if (!useLogY)  hframe= new TH2F("hframe","hframe",80,70.,300.,500,0.0004,42.);
+    else hframe= new TH2F("hframe","hframe",80,70.,300.,500,0.0004,100000.);
+    hframe2= new TH2F("hframe2","hframe2",6000, 70., 300., 1000, 0.5, 1.5);// 
   }
   if (histlabel.find("hM4l_7")<10 && whichchannel.find("4l")<20){
-    if (!useLogY)  hframe= new TH2F("hframe","hframe",80,70.,270.,500,0.004,110.);// 4l analysis mass nrebin=3
+    if (!useLogY)  hframe= new TH2F("hframe","hframe",80,70.,300.,500,0.004,110.);// 4l analysis mass nrebin=3
     else hframe= new TH2F("hframe","hframe",80,70.,300.,500,0.0004,300.);
-    hframe2= new TH2F("hframe2","hframe2",6000, 70., 300., 1000, 0.5, 2.);// 
+    hframe2= new TH2F("hframe2","hframe2",6000, 70., 300., 1000, 0.5, 1.5);// 
   }
 
   if (histlabel.find("hM4l_8")<10 && (whichchannel.find("4l")<20)){
@@ -488,12 +481,12 @@ void PlotStack4l::plotm4l(std::string histlabel){
   if (histlabel.find("hPFMET_3")<10 || histlabel.find("hLogXPFMET_3")<10 ){
     cout << "Plotting PFMET at step 3" << endl;
     hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 100000000.);// PFMET
-    hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 2.);// PFMET
+    hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 1.5);// PFMET
   }
   
   if ( (histlabel.find("hPFMET_3")<10 || histlabel.find("hLogXPFMET_3")<10 ) && whichchannel.find("4l")<20){
-    hframe= new TH2F("hframe","hframe",1000, 0., 1300., 1000, 0.000001, 10000000.);// PFMET
-    hframe2= new TH2F("hframe2","hframe2",1000, 0., 1300., 1000, 0.5, 2.);// PFMET                                                                                 
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000000001, 1000000000.);// PFMET
+    hframe2= new TH2F("hframe2","hframe2",1000, 0., 1000., 1000, 0.5, 1.5);// PFMET                                                                                 
   }
 
   if (histlabel.find("hMZ1_5")<10 && whichchannel.find("4#mu")<20){
@@ -567,7 +560,13 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
   //TH2F *hframe= new TH2F("hframe","hframe",6000, 0., 200., 1000, 0.004, 700000.);// ptZ
 
-  if (nRebin==1) hframe->SetYTitle("Events/1 GeV");
+  if (nRebin==1) {
+    if ( histlabel.find("hLogX")<10) {
+      hframe->SetYTitle("Events / GeV");
+    }
+    else hframe->SetYTitle("Events/1 GeV");
+  }
+      
   if (nRebin==2) hframe->SetYTitle("Events/2 GeV");
   if (nRebin==1 && histlabel.find("hNbjets")<10) hframe->SetYTitle("Events");  
   if (nRebin==1 && histlabel.find("hNgood")<10) hframe->SetYTitle("Events");
@@ -629,7 +628,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
   if (histlabel.find("hVD_3")<10) hframe->SetXTitle("D_{jet}"); // fisher
 
   if (histlabel.find("hMELA_8")<10) hframe->SetXTitle("D_{bkg}^{kin}"); // MELA
-  if (histlabel.find("hPFMET_8")<10 || histlabel.find("hPFMET_3")<10 ) hframe->SetXTitle("PF MET (GeV)"); // PFMET
+  if (histlabel.find("PFMET_8")<10 || histlabel.find("PFMET_3")<10 ) hframe->SetXTitle("PF MET (GeV)"); // PFMET
 
  
 
@@ -640,14 +639,27 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
   hframe->Draw();
 
-  TH1F *htotaldata = new TH1F("htotaldata", "htotaldata", Nbins, Xmin, Xmax);
-  //TH1F *htotaldata = new TH1F("htotaldata", "htotaldata", 51, 95., 605.);
-  //TH1F *htotaldata = new TH1F("htotaldata", "htotaldata", 50, 99.5, 599.5);
+  TH1F *htotaldata;
+  if ( histlabel.find("hLogX")<10) {
+    htotaldata    = new TH1F("htotaldata","htotaldata",NMBINS, logMbins);
+  }
+  else htotaldata = new TH1F("htotaldata", "htotaldata", Nbins, Xmin, Xmax);
+
+  //htotaldata->Sumw2();
   htotaldata->SetMarkerColor(1);
   htotaldata->SetMarkerStyle(20);
   THStack *htotal=new THStack("Nicola",""); 
-  TH1F *htotalHisto = new TH1F("htotalHisto", "htotalHisto", Nbins, Xmin, Xmax);
-  TH1F *htotalHistoRatio = new TH1F("htotalHistoRatio", "htotalHistoRatio", Nbins, Xmin, Xmax);
+
+  TH1F *htotalHisto,*htotalHistoRatio;
+
+  if ( histlabel.find("hLogX")<10) {
+    htotalHisto    = new TH1F("htotalHisto","htotalHisto",NMBINS, logMbins);
+    htotalHistoRatio    = new TH1F("htotalHistoRatio","htotalHistoRatio",NMBINS, logMbins);
+  }
+  else {
+    htotalHisto = new TH1F("htotalHisto", "htotalHisto", Nbins, Xmin, Xmax);
+    htotalHistoRatio = new TH1F("htotalHistoRatio", "htotalHistoRatio", Nbins, Xmin, Xmax);
+  }
 
   TH1D *nEvent_4l_w_totalbkgMC = new TH1D("nEvent_4l_w_totalbkgMC", "nEventComplete MC Weighted", 21, 0., 21.);
   nEvent_4l_w_totalbkgMC ->Sumw2();
@@ -673,11 +685,17 @@ void PlotStack4l::plotm4l(std::string histlabel){
     TH1D *nEvent_4l_w_new = (TH1D*)f1->Get("nEvent_4l_w");
 
     hfourlepbestmass_4l_afterSel_new = (TH1F*)f1->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new"*/);
-    TH1 *hfourlepbestmass_4l_afterSel_new_new;
+    //hfourlepbestmass_4l_afterSel_new->Sumw2();                                                                                                                 
+        
+    
+    TH1 *hfourlepbestmass_4l_afterSel_new_new=NULL;
+
     if ( histlabel.find("hLogX")<10) {
       hfourlepbestmass_4l_afterSel_new_new = (TH1F*)f1->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);    
     }
     else hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str()/*"hfourlepbestmass_4l_afterSel_new_new"*/);
+
+    //hfourlepbestmass_4l_afterSel_new_new->Sumw2();  
     hfourlepbestmass_4l_afterSel_new_new->SetMarkerColor(1);
     hfourlepbestmass_4l_afterSel_new_new->SetMarkerStyle(20);
     hfourlepbestmass_4l_afterSel_new_new->SetMarkerSize(0.95);
@@ -703,46 +721,53 @@ void PlotStack4l::plotm4l(std::string histlabel){
   nEvent_4l_w_data->Merge(listdata);
   cout << "Bin content data=" << nEvent_4l_w_data->GetBinContent(5)<< endl;
 
-  // Set Errors as in http://www-cdf.fnal.gov/physics/statistics/notes/pois_eb.txt
-  //Float_t x[51],y[51],exl[51],exh[51],eyl[51],eyh[51];
+  TGraphAsymmErrors *gr=NULL;
 
-  int* arraysize = new int[1];
-  arraysize[0] = htotaldata->GetNbinsX();
-  //std::cout << "arraysize = " << arraysize[0] << std::endl;
-  Float_t x[arraysize[0]],y[arraysize[0]],exl[arraysize[0]],exh[arraysize[0]],eyl[arraysize[0]],eyh[arraysize[0]];
-  delete [] arraysize;
-
-  float totaldataentries=0.,totaldataentries100=0.;
-
-  for (int nbins=1;nbins<=htotaldata->GetNbinsX(); nbins++){
-    // cout << "BinCenter=" << htotaldata->GetBinCenter(nbins) << " BinContent=" << htotaldata->GetBinContent(nbins) << " BinErrorContent=" << htotaldata->GetBinError(nbins) << endl;
-    x[nbins-1]=htotaldata->GetBinCenter(nbins);
-    y[nbins-1]=htotaldata->GetBinContent(nbins);
-    exl[nbins-1]=0.;
-    exh[nbins-1]=0.;
-    totaldataentries=totaldataentries+htotaldata->GetBinContent(nbins);
-    if (htotaldata->GetBinCenter(nbins)>100. && htotaldata->GetBinCenter(nbins)<800.) totaldataentries100=totaldataentries100+htotaldata->GetBinContent(nbins);
-    if (htotaldata->GetBinContent(nbins)>0){
+  if ( histlabel.find("hLogX")<10) {
+    cout << "Plotting htotaldata with log bins" << endl;
+  }
+  else {
+    // Set Errors as in http://www-cdf.fnal.gov/physics/statistics/notes/pois_eb.txt
+    //Float_t x[51],y[51],exl[51],exh[51],eyl[51],eyh[51];
+    
+    int* arraysize = new int[1];
+    arraysize[0] = htotaldata->GetNbinsX();
+    //std::cout << "arraysize = " << arraysize[0] << std::endl;
+    Float_t x[arraysize[0]],y[arraysize[0]],exl[arraysize[0]],exh[arraysize[0]],eyl[arraysize[0]],eyh[arraysize[0]];
+    delete [] arraysize;
+    
+    float totaldataentries=0.,totaldataentries100=0.;
+    
+    for (int nbins=1;nbins<=htotaldata->GetNbinsX(); nbins++){
+      // cout << "BinCenter=" << htotaldata->GetBinCenter(nbins) << " BinContent=" << htotaldata->GetBinContent(nbins) << " BinErrorContent=" << htotaldata->GetBinError(nbins) << endl;
+      x[nbins-1]=htotaldata->GetBinCenter(nbins);
+      y[nbins-1]=htotaldata->GetBinContent(nbins);
+      exl[nbins-1]=0.;
+      exh[nbins-1]=0.;
+      totaldataentries=totaldataentries+htotaldata->GetBinContent(nbins);
+      if (htotaldata->GetBinCenter(nbins)>100. && htotaldata->GetBinCenter(nbins)<800.) totaldataentries100=totaldataentries100+htotaldata->GetBinContent(nbins);
+      if (htotaldata->GetBinContent(nbins)>0){
         eyh[nbins-1]=+0.5 + sqrt(htotaldata->GetBinContent(nbins)+0.25);   
         eyl[nbins-1]=-0.5 + sqrt(htotaldata->GetBinContent(nbins)+0.25);
+      }
+      else{
+	x[nbins-1] = 0.;
+	eyl[nbins-1] = 0.;
+	eyh[nbins-1] = 0.;
+      }
     }
-    else{
-           x[nbins-1] = 0.;
-         eyl[nbins-1] = 0.;
-         eyh[nbins-1] = 0.;
-    }
+    
+    cout << "Total data= " << totaldataentries << endl;
+    //if (histlabel.find("hM4l_9")<10 ) outputyields << "Data " << totaldataentries << " +/- 0" << endl;
+    //cout << "Total data in the range m4l>100 and  m4l<800= " << totaldataentries100 << endl;
+    
+    gr = new TGraphAsymmErrors(Nbins,x,y,exl,exh,eyl,eyh);
+    gr->SetMarkerColor(1);
+    gr->SetMarkerStyle(20);
+    gr->SetMarkerSize(0.95);
+    //
   }
 
-  cout << "Total data= " << totaldataentries << endl;
-  //if (histlabel.find("hM4l_9")<10 ) outputyields << "Data " << totaldataentries << " +/- 0" << endl;
-  //cout << "Total data in the range m4l>100 and  m4l<800= " << totaldataentries100 << endl;
-
-  TGraphAsymmErrors *gr = new TGraphAsymmErrors(Nbins,x,y,exl,exh,eyl,eyh);
-  gr->SetMarkerColor(1);
-  gr->SetMarkerStyle(20);
-  gr->SetMarkerSize(0.95);
-  //
- 
   // Z+X from data
   if (useDYJets==false && useDYJetsFromData==true){
     if (histlabel.find("hM4l_7")<10 || histlabel.find("hPFMET_8")<10){
@@ -860,10 +885,30 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TList *listZZ_w = new TList;
   TList *listZZ = new TList;
   
-  TH1F *hfourlepbestmass_4l_afterSel_new_qcdDEM  = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdDEM", "hfourlepbestmass_4l_afterSel_new_qcdDEM", Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_qcdMu   = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdMu", "hfourlepbestmass_4l_afterSel_new_qcdMu", Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_qcdBC   = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdBC", "hfourlepbestmass_4l_afterSel_new_qcdBC", Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_qcd     = new TH1F("hfourlepbestmass_4l_afterSel_new_qcd", "hfourlepbestmass_4l_afterSel_new_qcd", Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_qcdDEM;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_qcdDEM    = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdDEM","hfourlepbestmass_4l_afterSel_new_qcdDEM",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_qcdDEM = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdDEM", "hfourlepbestmass_4l_afterSel_new_qcdDEM", Nbins, Xmin, Xmax);
+
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_qcdMu;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_qcdMu = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdMu", "hfourlepbestmass_4l_afterSel_new_qcdMu",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_qcdMu= new TH1F("hfourlepbestmass_4l_afterSel_new_qcdMu", "hfourlepbestmass_4l_afterSel_new_qcdMu", Nbins, Xmin, Xmax);
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_qcdBC;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_qcdBC = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdBC", "hfourlepbestmass_4l_afterSel_new_qcdBC",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_qcdBC = new TH1F("hfourlepbestmass_4l_afterSel_new_qcdBC", "hfourlepbestmass_4l_afterSel_new_qcdBC", Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_qcd;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_qcd = new TH1F("hfourlepbestmass_4l_afterSel_new_qcd", "hfourlepbestmass_4l_afterSel_new_qcd",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_qcd= new TH1F("hfourlepbestmass_4l_afterSel_new_qcd", "hfourlepbestmass_4l_afterSel_new_qcd", Nbins, Xmin, Xmax);
   
   TH1D *nEvent_4l_w_QCD = new TH1D("nEvent_4l_w_QCD", "nEventComplete QCD Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_QCD = new TH1D("nEvent_4l_QCD", "nEventComplete QCD", 21, 0., 21.);
@@ -874,7 +919,12 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
 
 
-  TH1F *hfourlepbestmass_4l_afterSel_new_singlet = new TH1F("hfourlepbestmass_4l_afterSel_new_singlet", "hfourlepbestmass_4l_afterSel_new_singlet", Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_singlet;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_singlet = new TH1F("hfourlepbestmass_4l_afterSel_new_singlet", "hfourlepbestmass_4l_afterSel_new_singlet",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_singlet = new TH1F("hfourlepbestmass_4l_afterSel_new_singlet", "hfourlepbestmass_4l_afterSel_new_singlet", Nbins, Xmin, Xmax);
+  
   TH1D *nEvent_4l_w_ST = new TH1D("nEvent_4l_w_ST", "nEventComplete ST Weighted", 21, 0., 21.);
   nEvent_4l_w_ST->Sumw2();
   TH1D *nEvent_4l_ST = new TH1D("nEvent_4l_ST", "nEventComplete ST", 21, 0., 21.);
@@ -882,30 +932,68 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TList *listST_w = new TList;
   TList *listST = new TList;
 
-  TH1F *hfourlepbestmass_4l_afterSel_new_DY      = new TH1F("hfourlepbestmass_4l_afterSel_new_DY", "hfourlepbestmass_4l_afterSel_new_DY",Nbins, Xmin, Xmax);    
-  TH1F *hfourlepbestmass_4l_afterSel_new_DYlight = new TH1F("hfourlepbestmass_4l_afterSel_new_DYlight", "hfourlepbestmass_4l_afterSel_new_DYlight",Nbins, Xmin, Xmax);
-        
-  TH1F *hfourlepbestmass_4l_afterSel_new_DYbb    = new TH1F("hfourlepbestmass_4l_afterSel_new_DYbb", "hfourlepbestmass_4l_afterSel_new_DYbb",Nbins, Xmin, Xmax);        
-  TH1F *hfourlepbestmass_4l_afterSel_new_DYcc    = new TH1F("hfourlepbestmass_4l_afterSel_new_DYcc", "hfourlepbestmass_4l_afterSel_new_DYcc",Nbins, Xmin, Xmax);        
+  TH1F *hfourlepbestmass_4l_afterSel_new_DY;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_DY = new TH1F("hfourlepbestmass_4l_afterSel_new_DY", "hfourlepbestmass_4l_afterSel_new_DY",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_DY = new TH1F("hfourlepbestmass_4l_afterSel_new_DY", "hfourlepbestmass_4l_afterSel_new_DY",Nbins, Xmin, Xmax);    
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_DYlight;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_DYlight = new TH1F("hfourlepbestmass_4l_afterSel_new_DYlight", "hfourlepbestmass_4l_afterSel_new_DYlight",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_DYlight = new TH1F("hfourlepbestmass_4l_afterSel_new_DYlight", "hfourlepbestmass_4l_afterSel_new_DYlight",Nbins, Xmin, Xmax);
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_DYbb;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_DYbb = new TH1F("hfourlepbestmass_4l_afterSel_new_DYbb", "hfourlepbestmass_4l_afterSel_new_DYbb",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_DYbb= new TH1F("hfourlepbestmass_4l_afterSel_new_DYbb", "hfourlepbestmass_4l_afterSel_new_DYbb",Nbins, Xmin, Xmax);        
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_DYcc;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_DYcc = new TH1F("hfourlepbestmass_4l_afterSel_new_DYcc", "hfourlepbestmass_4l_afterSel_new_DYcc",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_DYcc = new TH1F("hfourlepbestmass_4l_afterSel_new_DYcc", "hfourlepbestmass_4l_afterSel_new_DYcc",Nbins, Xmin, Xmax);        
+  
   TH1D *nEvent_4l_w_DY = new TH1D("nEvent_4l_w_DY", "nEventComplete DY Weighted", 21, 0., 21.);
   nEvent_4l_w_DY->Sumw2();
   TH1D *nEvent_4l_DY = new TH1D("nEvent_4l_DY", "nEventComplete DY", 21, 0., 21.);
   nEvent_4l_DY->Sumw2();
   TList *listDY_w = new TList;
   TList *listDY = new TList;
+  
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_WW;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_WW = new TH1F("hfourlepbestmass_4l_afterSel_new_WW", "hfourlepbestmass_4l_afterSel_new_WW",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_WW = new TH1F("hfourlepbestmass_4l_afterSel_new_WW", "hfourlepbestmass_4l_afterSel_new_WW",Nbins, Xmin, Xmax); 
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_WZ;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_WZ = new TH1F("hfourlepbestmass_4l_afterSel_new_WZ", "hfourlepbestmass_4l_afterSel_new_WZ",NMBINS, logMbins);
+  }  
+  else hfourlepbestmass_4l_afterSel_new_WZ= new TH1F("hfourlepbestmass_4l_afterSel_new_WZ", "hfourlepbestmass_4l_afterSel_new_WZ",Nbins, Xmin, Xmax);                        
 
-
-  TH1F *hfourlepbestmass_4l_afterSel_new_WW    = new TH1F("hfourlepbestmass_4l_afterSel_new_WW", "hfourlepbestmass_4l_afterSel_new_WW",Nbins, Xmin, Xmax); 
-  TH1F *hfourlepbestmass_4l_afterSel_new_WZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_WZ", "hfourlepbestmass_4l_afterSel_new_WZ",Nbins, Xmin, Xmax);                        
-  TH1F *hfourlepbestmass_4l_afterSel_new_Wj    = new TH1F("hfourlepbestmass_4l_afterSel_new_Wj", "hfourlepbestmass_4l_afterSel_new_Wj",Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_Wj;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_Wj = new TH1F("hfourlepbestmass_4l_afterSel_new_Wj", "hfourlepbestmass_4l_afterSel_new_Wj",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_Wj= new TH1F("hfourlepbestmass_4l_afterSel_new_Wj", "hfourlepbestmass_4l_afterSel_new_Wj",Nbins, Xmin, Xmax);
+  
   TH1D *nEvent_4l_w_WZ_WW_Wj = new TH1D("nEvent_4l_w_WZ_WW_Wj", "nEventComplete WZ_WW_Wj Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_WZ_WW_Wj = new TH1D("nEvent_4l_WZ_WW_Wj", "nEventComplete WZ_WW_Wj", 21, 0., 21.);
   nEvent_4l_w_WZ_WW_Wj->Sumw2();
   nEvent_4l_WZ_WW_Wj->Sumw2();
   TList *listWZ_WW_Wj_w = new TList;
   TList *listWZ_WW_Wj = new TList;
-
-  TH1F *hfourlepbestmass_4l_afterSel_new_TT    = new TH1F("hfourlepbestmass_4l_afterSel_new_TT", "hfourlepbestmass_4l_afterSel_new_TT",Nbins, Xmin, Xmax);
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_TT;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_TT = new TH1F("hfourlepbestmass_4l_afterSel_new_TT", "hfourlepbestmass_4l_afterSel_new_TT",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_TT= new TH1F("hfourlepbestmass_4l_afterSel_new_TT", "hfourlepbestmass_4l_afterSel_new_TT",Nbins, Xmin, Xmax);
   TH1D *nEvent_4l_w_TT = new TH1D("nEvent_4l_w_TT", "nEventComplete TT Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_TT = new TH1D("nEvent_4l_TT", "nEventComplete TT", 21, 0., 21.);
   nEvent_4l_w_TT->Sumw2();
@@ -913,7 +1001,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TList *listTT_w = new TList;
   TList *listTT = new TList;
 
-  TH1F *hfourlepbestmass_4l_afterSel_new_VVV   = new TH1F("hfourlepbestmass_4l_afterSel_new_VVV", "hfourlepbestmass_4l_afterSel_new_VVV",Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_VVV;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_VVV = new TH1F("hfourlepbestmass_4l_afterSel_new_VVV", "hfourlepbestmass_4l_afterSel_new_VVV",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_VVV= new TH1F("hfourlepbestmass_4l_afterSel_new_VVV", "hfourlepbestmass_4l_afterSel_new_VVV",Nbins, Xmin, Xmax);
   TH1D *nEvent_4l_w_VVV = new TH1D("nEvent_4l_w_VVV", "nEventComplete VVV Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_VVV = new TH1D("nEvent_4l_VVV", "nEventComplete VVV", 21, 0., 21.);
   nEvent_4l_w_VVV->Sumw2();
@@ -921,7 +1013,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TList *listVVV_w = new TList;
   TList *listVVV = new TList;
 
-  TH1F *hfourlepbestmass_4l_afterSel_new_TTV   = new TH1F("hfourlepbestmass_4l_afterSel_new_TTV", "hfourlepbestmass_4l_afterSel_new_TTV",Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_TTV;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_TTV = new TH1F("hfourlepbestmass_4l_afterSel_new_TTV", "hfourlepbestmass_4l_afterSel_new_TTV",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_TTV= new TH1F("hfourlepbestmass_4l_afterSel_new_TTV", "hfourlepbestmass_4l_afterSel_new_TTV",Nbins, Xmin, Xmax);
   TH1D *nEvent_4l_w_TTV = new TH1D("nEvent_4l_w_TTV", "nEventComplete TTV Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_TTV = new TH1D("nEvent_4l_TTV", "nEventComplete TTV", 21, 0., 21.);
   nEvent_4l_w_TTV->Sumw2();
@@ -930,14 +1026,48 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TList *listTTV = new TList;
 
   // Higgs as background
-  TH1F *hfourlepbestmass_4l_afterSel_new_ggH    = new TH1F("hfourlepbestmass_4l_afterSel_new_ggH", "hfourlepbestmass_4l_afterSel_new_ggH",Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_VH     = new TH1F("hfourlepbestmass_4l_afterSel_new_VH", "hfourlepbestmass_4l_afterSel_new_VH",Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_ZH     = new TH1F("hfourlepbestmass_4l_afterSel_new_ZH", "hfourlepbestmass_4l_afterSel_new_ZH",Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_WH     = new TH1F("hfourlepbestmass_4l_afterSel_new_WH", "hfourlepbestmass_4l_afterSel_new_WH",Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_VBFH   = new TH1F("hfourlepbestmass_4l_afterSel_new_VBFH", "hfourlepbestmass_4l_afterSel_new_VBFH",Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_ttH    = new TH1F("hfourlepbestmass_4l_afterSel_new_ttH", "hfourlepbestmass_4l_afterSel_new_ttH",Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_afterSel_new_totSM_H    = new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_H", "hfourlepbestmass_4l_afterSel_new_totSM_H",Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_ggH;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_ggH = new TH1F("hfourlepbestmass_4l_afterSel_new_ggH", "hfourlepbestmass_4l_afterSel_new_ggH",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_ggH= new TH1F("hfourlepbestmass_4l_afterSel_new_ggH", "hfourlepbestmass_4l_afterSel_new_ggH",Nbins, Xmin, Xmax);
 
+  TH1F *hfourlepbestmass_4l_afterSel_new_VH;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_VH = new TH1F("hfourlepbestmass_4l_afterSel_new_VH", "hfourlepbestmass_4l_afterSel_new_VH",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_VH= new TH1F("hfourlepbestmass_4l_afterSel_new_VH", "hfourlepbestmass_4l_afterSel_new_VH",Nbins, Xmin, Xmax);
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_ZH;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_ZH = new TH1F("hfourlepbestmass_4l_afterSel_new_ZH", "hfourlepbestmass_4l_afterSel_new_ZH",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_ZH = new TH1F("hfourlepbestmass_4l_afterSel_new_ZH", "hfourlepbestmass_4l_afterSel_new_ZH",Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_WH;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_WH = new TH1F("hfourlepbestmass_4l_afterSel_new_WH", "hfourlepbestmass_4l_afterSel_new_WH",NMBINS, logMbins);
+  }
+  hfourlepbestmass_4l_afterSel_new_WH= new TH1F("hfourlepbestmass_4l_afterSel_new_WH", "hfourlepbestmass_4l_afterSel_new_WH",Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_VBFH;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_VBFH = new TH1F("hfourlepbestmass_4l_afterSel_new_VBFH", "hfourlepbestmass_4l_afterSel_new_VBFH",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_VBFH= new TH1F("hfourlepbestmass_4l_afterSel_new_VBFH", "hfourlepbestmass_4l_afterSel_new_VBFH",Nbins, Xmin, Xmax);
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_ttH;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_ttH = new TH1F("hfourlepbestmass_4l_afterSel_new_ttH", "hfourlepbestmass_4l_afterSel_new_ttH",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_ttH= new TH1F("hfourlepbestmass_4l_afterSel_new_ttH", "hfourlepbestmass_4l_afterSel_new_ttH",Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_totSM_H;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_totSM_H = new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_H", "hfourlepbestmass_4l_afterSel_new_totSM_H",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_totSM_H= new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_H", "hfourlepbestmass_4l_afterSel_new_totSM_H",Nbins, Xmin, Xmax);
+  
   TH1D *nEvent_4l_w_totSM_H = new TH1D("nEvent_4l_w_totSM_H", "nEventComplete totSM_H Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_totSM_H = new TH1D("nEvent_4l_totSM_H", "nEventComplete totSM_H", 21, 0., 21.);
   nEvent_4l_w_totSM_H->Sumw2();
@@ -946,7 +1076,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TList *listtotSM_H = new TList;
 
   // Total bkg - no Higgs
-  TH1F *hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H    = new TH1F("hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H", "hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H",Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H = new TH1F("hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H", "hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H = new TH1F("hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H", "hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H",Nbins, Xmin, Xmax);
   TH1D *nEvent_4l_w_totbkg_noSM_H = new TH1D("nEvent_4l_w_totbkg_noSM_H", "nEventComplete totbkg_noSM_H Weighted", 21, 0., 21.);
   TH1D *nEvent_4l_totbkg_noSM_H = new TH1D("nEvent_4l_totbkg_noSM_H", "nEventComplete totbkg_noSM_H", 21, 0., 21.);
   nEvent_4l_w_totbkg_noSM_H->Sumw2();
@@ -995,7 +1129,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
       
    
       if ( histlabel.find("hLogX")<10) {
-	hfourlepbestmass_4l_afterSel_new_new = (TH1F*)f2->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);
+	hfourlepbestmass_4l_afterSel_new_new = (TH1*)f2->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);
       }
       else hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str()/*"hfourlepbestmass_4l_afterSel_new_new"*/);
 
@@ -1988,13 +2122,6 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
   // Signal
   TH1F *hfourlepbestmass_4l_afterSel_new_signal125 = new TH1F("hfourlepbestmass_4l_afterSel_new_signal125", "hfourlepbestmass_4l_afterSel_new_signal125", Nbins, Xmin, Xmax);
-  // TH1F *hfourlepbestmass_4l_afterSel_new_signal126 = new TH1F("hfourlepbestmass_4l_afterSel_new_signal126", "hfourlepbestmass_4l_afterSel_new_signal126", Nbins, Xmin, Xmax);
-  // TH1F *hfourlepbestmass_4l_afterSel_new_signal200 = new TH1F("hfourlepbestmass_4l_afterSel_new_signal200", "hfourlepbestmass_4l_afterSel_new_signal200", Nbins, Xmin, Xmax);
-  // TH1F *hfourlepbestmass_4l_afterSel_new_signal350 = new TH1F("hfourlepbestmass_4l_afterSel_new_signal350", "hfourlepbestmass_4l_afterSel_new_signal350", Nbins, Xmin, Xmax);
-  // TH1F *hfourlepbestmass_4l_afterSel_new_signal500 = new TH1F("hfourlepbestmass_4l_afterSel_new_signal500", "hfourlepbestmass_4l_afterSel_new_signal500", Nbins, Xmin, Xmax);
-  // TH1F *hfourlepbestmass_4l_afterSel_new_signal800 = new TH1F("hfourlepbestmass_4l_afterSel_new_signal800", "hfourlepbestmass_4l_afterSel_new_signal800", Nbins, Xmin, Xmax);
-  // TH1F *hfourlepbestmass_4l_afterSel_new_signalgg125 = new TH1F("hfourlepbestmass_4l_afterSel_new_signalgg125", "hfourlepbestmass_4l_afterSel_new_signalgg125", Nbins, Xmin, Xmax);
-  // TH1F *hfourlepbestmass_4l_afterSel_new_signalvbf125 = new TH1F("hfourlepbestmass_4l_afterSel_new_signalvbf125", "hfourlepbestmass_4l_afterSel_new_signalvbf125", Nbins, Xmin, Xmax);
   
   TH1F *hfourlepbestmass_4l_afterSel_new_monoH_DM1 = new TH1F("hfourlepbestmass_4l_afterSel_new_monoH_DM1", "hfourlepbestmass_4l_afterSel_new_monoH_DM1", Nbins, Xmin, Xmax);
 
@@ -2024,7 +2151,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
   
   TH1F *hfourlepbestmass_4l_afterSel_new_monoH_MZP1000 = new TH1F("hfourlepbestmass_4l_afterSel_new_monoH_MZP1000", "hfourlepbestmass_4l_afterSel_new_monoH_MZP1000", Nbins, Xmin, Xmax);
   
-  TH1F *hfourlepbestmass_4l_afterSel_new_monoH_MZP1200 = new TH1F("hfourlepbestmass_4l_afterSel_new_monoH_MZP1200", "hfourlepbestmass_4l_afterSel_new_monoH_MZP1200", Nbins, Xmin, Xmax);
+  TH1F *hfourlepbestmass_4l_afterSel_new_monoH_MZP1200;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_afterSel_new_monoH_MZP1200 = new TH1F("hfourlepbestmass_4l_afterSel_new_monoH_MZP1200", "hfourlepbestmass_4l_afterSel_new_monoH_MZP1200", NMBINS, logMbins); 
+  }
+  else hfourlepbestmass_4l_afterSel_new_monoH_MZP1200 = new TH1F("hfourlepbestmass_4l_afterSel_new_monoH_MZP1200", "hfourlepbestmass_4l_afterSel_new_monoH_MZP1200", Nbins, Xmin, Xmax);
   
   TH1F *hfourlepbestmass_4l_afterSel_new_monoH_MZP1400 = new TH1F("hfourlepbestmass_4l_afterSel_new_monoH_MZP1400", "hfourlepbestmass_4l_afterSel_new_monoH_MZP1400", Nbins, Xmin, Xmax);
   
@@ -2042,7 +2173,13 @@ void PlotStack4l::plotm4l(std::string histlabel){
   TH1F *hfourlepbestmass_4l_newZpBaryonic_MZp200_MChi1 = new TH1F("hfourlepbestmass_4l_newZpBaryonic_MZp-200_MChi-1","hfourlepbestmass_4l_newZpBaryonic_MZp-200_MChi-1", Nbins, Xmin, Xmax);
   TH1F *hfourlepbestmass_4l_newZpBaryonic_MZp20_MChi1 = new TH1F("hfourlepbestmass_4l_newZpBaryonic_MZp-20_MChi-1","hfourlepbestmass_4l_newZpBaryonic_MZp-20_MChi-1", Nbins, Xmin, Xmax);
   TH1F *hfourlepbestmass_4l_newZpBaryonic_MZp300_MChi1 = new TH1F("hfourlepbestmass_4l_newZpBaryonic_MZp-300_MChi-1","hfourlepbestmass_4l_newZpBaryonic_MZp-300_MChi-1", Nbins, Xmin, Xmax);
-  TH1F *hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1 = new TH1F("hfourlepbestmass_4l_newZpBaryonic_MZp-500_MChi-1","hfourlepbestmass_4l_newZpBaryonic_MZp-500_MChi-1", Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1;
+  if ( histlabel.find("hLogX")<10) {
+    hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1=new TH1F("hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1","hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1", NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1 = new TH1F("hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1","hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1", Nbins, Xmin, Xmax);
+
   TH1D *nEvent_4l_w_ZpBaryonic_MZp500_MChi1 = new TH1D("nEvent_4l_w_ZpBaryonic_MZp500_MChi1","nEvent_4l_w_ZpBaryonic_MZp500_MChi1",21,0.,21.);
   TH1D *nEvent_4l_ZpBaryonic_MZp500_MChi1 = new TH1D("nEvent_4l_ZpBaryonic_MZp500_MChi1","nEvent_4l_ZpBaryonic_MZp500_MChi1",21,0.,21.);
   nEvent_4l_w_ZpBaryonic_MZp500_MChi1->Sumw2();
@@ -2063,11 +2200,6 @@ void PlotStack4l::plotm4l(std::string histlabel){
         bincontgg125[arraysizesig[0]],bincontvbf125[arraysizesig[0]];
   for (int i=0;i<hfourlepbestmass_4l_afterSel_new_signal125->GetNbinsX();i++){
     bincont125[i]=0.;
-    // bincont126[i]=0.;
-    // bincont200[i]=0.;
-    // bincont350[i]=0.;
-    // bincont500[i]=0.;
-    // bincont800[i]=0.;
     // bincontgg125[i]=0.;
     // bincontvbf125[i]=0.;
   }
@@ -2090,12 +2222,14 @@ void PlotStack4l::plotm4l(std::string histlabel){
     TH1D *nEvent_4l_w_new = (TH1D*)f0->Get("nEvent_4l_w");
     TH1D *nEvent_4l_new = (TH1D*)f0->Get("nEvent_4l");   
 
-    hfourlepbestmass_4l_afterSel_new = (TH1F*)f0->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new"*/);    
-    TH1 *hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str()/*"hfourlepbestmass_4l_afterSel_new_new"*/);
-    //if (datasetnamesig.find("GluGluToHToZZTo4L_M-350")  !=-1) hfourlepbestmass_4l_afterSel_new_new->SetLineColor(kOrange-3);
-    //if (datasetnamesig.find("GluGluToHToZZTo4L_M-200")  !=-1) hfourlepbestmass_4l_afterSel_new_new->SetLineColor(kOrange+7);
-    //if (datasetnamesig.find("GluGluToHToZZTo4L_M-125")  !=-1) hfourlepbestmass_4l_afterSel_new_new->SetLineColor(kRed-4);
-    //if (datasetnamesig.find("GluGluToHToZZTo4L_M-126")  !=-1) hfourlepbestmass_4l_afterSel_new_new->SetLineColor(kBlue-4);
+    hfourlepbestmass_4l_afterSel_new = (TH1F*)f0->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new"*/);
+    TH1 *hfourlepbestmass_4l_afterSel_new_new=NULL;
+
+    if ( histlabel.find("hLogX")<10) {
+      hfourlepbestmass_4l_afterSel_new_new = (TH1*)f0->Get(histlabel.c_str() /*"hfourlepbestmass_4l_afterSel_new_new"*/);
+    }
+    else hfourlepbestmass_4l_afterSel_new_new=hfourlepbestmass_4l_afterSel_new->Rebin(nRebin, histlabel.c_str()/*"hfourlepbestmass_4l_afterSel_new_new"*/);
+
 
     //hfourlepbestmass_4l_afterSel_new_new->SetLineColor();
     //hfourlepbestmass_4l_afterSel_new_new->SetFillColor(0);
@@ -2147,8 +2281,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
       listZpBaryonic_MZp500_MChi1_w->Add(nEvent_4l_w_new);
       listZpBaryonic_MZp500_MChi1->Add(nEvent_4l_new);
     }
-    if(datasetnamesig.find("ZpBaryonic_MZp-50_MChi-1")<200) hfourlepbestmass_4l_newZpBaryonic_MZp50_MChi1->Add(hfourlepbestmass_4l_afterSel_new_new); 
-  
+    if(datasetnamesig.find("ZpBaryonic_MZp-50_MChi-1")<200) hfourlepbestmass_4l_newZpBaryonic_MZp50_MChi1->Add(hfourlepbestmass_4l_afterSel_new_new);   
     if(datasetnamesig.find("ZpBaryonic_MZp-50_MChi-10")<200) hfourlepbestmass_4l_newZpBaryonic_MZp50_MChi10->Add(hfourlepbestmass_4l_afterSel_new_new); 
 
 
@@ -2166,41 +2299,6 @@ void PlotStack4l::plotm4l(std::string histlabel){
 	bincont125[nbins-1]=bincont125[nbins-1]+float(hfourlepbestmass_4l_afterSel_new_new->GetBinContent(nbins));
 	
       }
-      // if (datasetnamesig.find("M-126")<100) { // Adding SMHiggs, VBF, TTH, WH, ZH
-      // 	if (nbins==1) {
-      // 	  cout << "Adding samples at 126 GeV" << dataset << endl;
-      // 	  if (hfourlepbestmass_4l_afterSel_new_new->GetEntries()>0.) errorH126=errorH126+pow(sqrt(hfourlepbestmass_4l_afterSel_new_new->GetEntries())*hfourlepbestmass_4l_afterSel_new_new->Integral(0,-1)/hfourlepbestmass_4l_afterSel_new_new->GetEntries(),2);
-      // 	}
-      // 	bincont126[nbins-1]=bincont126[nbins-1]+float(hfourlepbestmass_4l_afterSel_new_new->GetBinContent(nbins));
-      // }
-      // if (datasetnamesig.find("M-200")<100) { // Adding SMHiggs, VBF, TTH, WH, ZH
-      // 	if (nbins==1) {
-      // 	  cout << "Adding samples at 200 GeV" << dataset << endl;
-      // 	  if (hfourlepbestmass_4l_afterSel_new_new->GetEntries()>0.) errorH200=errorH200+pow(sqrt(hfourlepbestmass_4l_afterSel_new_new->GetEntries())*hfourlepbestmass_4l_afterSel_new_new->Integral(0,-1)/hfourlepbestmass_4l_afterSel_new_new->GetEntries(),2);
-      // 	}
-      // 	bincont200[nbins-1]=bincont200[nbins-1]+float(hfourlepbestmass_4l_afterSel_new_new->GetBinContent(nbins));
-      // }
-      // if (datasetnamesig.find("M-350")<100) { // Adding SMHiggs, VBF, TTH, WH, ZH
-      // 	if (nbins==1) {
-      // 	  cout << "Adding samples at 350 GeV" << dataset << endl;
-      // 	  if (hfourlepbestmass_4l_afterSel_new_new->GetEntries()>0.) errorH350=errorH350+pow(sqrt(hfourlepbestmass_4l_afterSel_new_new->GetEntries())*hfourlepbestmass_4l_afterSel_new_new->Integral(0,-1)/hfourlepbestmass_4l_afterSel_new_new->GetEntries(),2);
-      // 	}
-      // 	bincont350[nbins-1]=bincont350[nbins-1]+float(hfourlepbestmass_4l_afterSel_new_new->GetBinContent(nbins));
-      // }      
-      // if (datasetnamesig.find("M-500")<100) { // Adding SMHiggs, VBF, TTH, WH, ZH
-      // 	if (nbins==1) {
-      // 	  cout << "Adding samples at 500 GeV" << dataset << endl;
-      // 	  if (hfourlepbestmass_4l_afterSel_new_new->GetEntries()>0.) errorH500=errorH500+pow(sqrt(hfourlepbestmass_4l_afterSel_new_new->GetEntries())*hfourlepbestmass_4l_afterSel_new_new->Integral(0,-1)/hfourlepbestmass_4l_afterSel_new_new->GetEntries(),2);
-      // 	}
-      // 	bincont500[nbins-1]=bincont500[nbins-1]+float(hfourlepbestmass_4l_afterSel_new_new->GetBinContent(nbins));
-      // }
-      // if (datasetnamesig.find("M-800")<100) { // Adding SMHiggs, VBF, TTH, WH, ZH
-      // 	if (nbins==1) {
-      // 	  cout << "Adding samples at 800 GeV" << dataset << endl;
-      // 	  if (hfourlepbestmass_4l_afterSel_new_new->GetEntries()>0.) errorH800=errorH800+pow(sqrt(hfourlepbestmass_4l_afterSel_new_new->GetEntries())*hfourlepbestmass_4l_afterSel_new_new->Integral(0,-1)/hfourlepbestmass_4l_afterSel_new_new->GetEntries(),2);
-      // 	}
-      // 	bincont800[nbins-1]=bincont800[nbins-1]+float(hfourlepbestmass_4l_afterSel_new_new->GetBinContent(nbins));
-      // }
 
       // only ggF and VBF
       // if (datasetnamesig.find("SMHiggsToZZTo4L_M-125")<100) { // Adding VBF only
@@ -2223,26 +2321,6 @@ void PlotStack4l::plotm4l(std::string histlabel){
       // 	hfourlepbestmass_4l_afterSel_new_signal125->SetBinContent(nbins,double(bincont125[nbins-1]));
 	
       // }
-      // if (datasetnamesig.find(temp)< 100 && datasetnamesig.find("output_SMHiggsToZZTo4L_M-126") < 180 ) {
-      // 	//cout << double(bincont126[nbins-1]) << endl;
-      // 	hfourlepbestmass_4l_afterSel_new_signal126->SetBinContent(nbins,double(bincont126[nbins-1]));
-      // }   
-      // if (datasetnamesig.find(temp)< 100 && datasetnamesig.find("output_SMHiggsToZZTo4L_M-200") < 180 ) {
-      // 	//cout << double(bincont200[nbins-1]) << endl;
-      // 	hfourlepbestmass_4l_afterSel_new_signal200->SetBinContent(nbins,double(bincont200[nbins-1]));
-      // }
-      // if (datasetnamesig.find(temp)< 100 && datasetnamesig.find("output_GluGluToHToZZTo4L_M-350") < 180 ) {
-      // 	//cout << double(bincont350[nbins-1]) << endl;
-      // 	hfourlepbestmass_4l_afterSel_new_signal350->SetBinContent(nbins,double(bincont350[nbins-1]));
-      // }
-      // if (datasetnamesig.find(temp)< 100 && datasetnamesig.find("output_GluGluToHToZZTo4L_M-500") < 180 ) {
-      // 	//cout << double(bincont500[nbins-1]) << endl;
-      // 	hfourlepbestmass_4l_afterSel_new_signal500->SetBinContent(nbins,double(bincont500[nbins-1]));
-      // }
-      // if (datasetnamesig.find(temp)< 100 && datasetnamesig.find("output_GluGluToHToZZTo4L_M-800") < 180 ) {
-      // 	//cout << double(bincont800[nbins-1]) << endl;
-      // 	hfourlepbestmass_4l_afterSel_new_signal800->SetBinContent(nbins,double(bincont800[nbins-1]));
-      // }
 
       // ongly ggF and VBF
       // if (datasetnamesig.find(temp)< 100 && datasetnamesig.find("output_SMHiggsToZZTo4L_M125") < 180 ) {
@@ -2262,31 +2340,11 @@ void PlotStack4l::plotm4l(std::string histlabel){
   nEvent_4l_ZpBaryonic_MZp500_MChi1->Merge(listZpBaryonic_MZp500_MChi1);
 
   if (errorH125>0.) errorH125=sqrt(errorH125);
-  // if (errorH126>0.) errorH126=sqrt(errorH126);
-  // if (errorH200>0.) errorH200=sqrt(errorH200);
-  // if (errorH350>0.) errorH350=sqrt(errorH350);
-  // if (errorH500>0.) errorH500=sqrt(errorH500);
-  // if (errorH800>0.) errorH800=sqrt(errorH800);
-  
+
   // cout << "Higgs Signal expected at mH=125 is " << hfourlepbestmass_4l_afterSel_new_signal125->Integral(0,-1) << " +/- " << errorH125 << endl;
   // if (histlabel.find("hM4l_9")<10 ) 
   //   outputyields << "mH=125 " << hfourlepbestmass_4l_afterSel_new_signal125->Integral(0,-1) << " +/- " << errorH125 << endl;  
-  /*  cout << "Signal expected at mH=126 is " << hfourlepbestmass_4l_afterSel_new_signal126->Integral(0,-1) << " +/- " << errorH126 << endl;
-  if (histlabel.find("hM4l_8")<10 )
-    outputyields << "mH=126 " << hfourlepbestmass_4l_afterSel_new_signal126->Integral(0,-1) << " +/- " << errorH126 << endl;
-  cout << "Signal expected at mH=200 is " << hfourlepbestmass_4l_afterSel_new_signal200->Integral(0,-1) << " +/- " << errorH200 << endl;
-  if (histlabel.find("hM4l_8")<10 )
-    outputyields << "mH=200 " << hfourlepbestmass_4l_afterSel_new_signal200->Integral(0,-1) << " +/- " << errorH200 << endl;
-  cout << "Signal expected at mH=350 is " << hfourlepbestmass_4l_afterSel_new_signal350->Integral(0,-1) << " +/- " << errorH350 << endl;
-  if (histlabel.find("hM4l_8")<10 )
-    outputyields << "mH=350 " << hfourlepbestmass_4l_afterSel_new_signal350->Integral(0,-1) << " +/- " << errorH350 << endl;
-  cout << "Signal expected at mH=500 is " << hfourlepbestmass_4l_afterSel_new_signal500->Integral(0,-1) << " +/- " << errorH500 << endl;
-  if (histlabel.find("hM4l_8")<10 )
-    outputyields << "mH=500 " << hfourlepbestmass_4l_afterSel_new_signal500->Integral(0,-1) << " +/- " << errorH500 << endl;
-  cout << "Signal expected at mH=800 is " << hfourlepbestmass_4l_afterSel_new_signal800->Integral(0,-1) << " +/- " << errorH800 << endl;
-  if (histlabel.find("hM4l_8")<10 )
-    outputyields << "mH=800 " << hfourlepbestmass_4l_afterSel_new_signal800->Integral(0,-1) << " +/- " << errorH800 << endl;
-  */
+
   //cout << "Signal expected at mH=125 ggF only is " << hfourlepbestmass_4l_afterSel_new_signalgg125->Integral(0,-1) << endl;		     
   //cout << "Signal expected at mH=125 VBF only is " << hfourlepbestmass_4l_afterSel_new_signalvbf125->Integral(0,-1) << endl;
   		     
@@ -2345,22 +2403,12 @@ void PlotStack4l::plotm4l(std::string histlabel){
     outputyields << "m_ZP2500 " << hfourlepbestmass_4l_afterSel_new_monoH_MZP2500->Integral(0,-1) << " +/- " << errorH125 << endl;
   
   
-  // hfourlepbestmass_4l_afterSel_new_signal350->SetLineColor(kOrange-3);
-  // hfourlepbestmass_4l_afterSel_new_signal200->SetLineColor(kOrange+7);
+
   // hfourlepbestmass_4l_afterSel_new_signal125->SetLineColor(kRed-4);
-  // hfourlepbestmass_4l_afterSel_new_signal126->SetLineColor(kRed-4);
   // hfourlepbestmass_4l_afterSel_new_signalgg125->SetLineColor(kRed-4);		     
   // hfourlepbestmass_4l_afterSel_new_signalvbf125->SetLineColor(kOrange-4);
 
   hfourlepbestmass_4l_afterSel_new_signal125->SetMarkerSize(0.95);
-  // hfourlepbestmass_4l_afterSel_new_signal126->SetMarkerSize(0.95);
-  // hfourlepbestmass_4l_afterSel_new_signal200->SetMarkerSize(0.95);
-  // hfourlepbestmass_4l_afterSel_new_signal350->SetMarkerSize(0.95);
-
-  // hfourlepbestmass_4l_afterSel_new_signal350->SetMarkerColor(kOrange-3);
-  // hfourlepbestmass_4l_afterSel_new_signal200->SetMarkerColor(kOrange+7);
-  // hfourlepbestmass_4l_afterSel_new_signal125->SetMarkerColor(kRed-4);
-  // hfourlepbestmass_4l_afterSel_new_signal126->SetMarkerColor(kBlue-4);
   
   hfourlepbestmass_4l_afterSel_new_totSM_H->SetMarkerColor(kRed-4);
   hfourlepbestmass_4l_afterSel_new_totSM_H->SetLineColor(kRed-4);
@@ -2368,8 +2416,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
   
   //if (histlabel.find("hM4l_7")<10) {
   cout << "Total higgs 125 rate is= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
-    //  htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);
-    // htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H); 
+  //  htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);
+  // htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H); 
   legend->AddEntry(hfourlepbestmass_4l_afterSel_new_totSM_H,"H#rightarrowZZ#rightarrow 4l, m_{H}=125 GeV", "F");  
   //}
 
@@ -2489,10 +2537,13 @@ void PlotStack4l::plotm4l(std::string histlabel){
   //legend->AddEntry(hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1,"m_{Z'B}=500 GeV, m_{#chi}=1 GeV","L");
     
 
-  htotal->Draw("hist same");
-  //htotaldata->Draw("EPsame");
-  gr->Draw("EPsame");
   
+  htotal->Draw("hist same");
+  if ( histlabel.find("hLogX")<10) { 
+    htotaldata->Draw("E1Psame");   }
+  else gr->Draw("EPsame");
+  
+
   //hfourlepbestmass_4l_afterSel_new_signal350->Draw("same");
   //hfourlepbestmass_4l_afterSel_new_signal200->Draw("same");
   //hfourlepbestmass_4l_afterSel_new_signal125->Draw("same");   // signal overimposed
