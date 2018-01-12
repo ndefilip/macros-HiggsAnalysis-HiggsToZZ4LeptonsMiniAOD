@@ -268,8 +268,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    double N_10_w = 0;
 
    // Book Histos ***
-   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 22, 0., 22.);
-   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 22, 0., 22.);
+   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 21, 0., 21.);
+   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 21, 0., 21.);
 
    TH1F *Gen_H_MASS              = new TH1F("Gen_H_MASS", "Gen_H_MASS",8000,0.,2000.);  
    TH1F *Gen_H_MASS_ReWeighted   = new TH1F("Gen_H_MASS_ReWeighted", "Gen_H_MASS_ReWeighted",8000,0.,2000.);  
@@ -289,6 +289,11 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      logMbins[ibin] = exp(log(MMIN) + (log(MMAX)-log(MMIN))*ibin/NMBINS);
      cout << logMbins[ibin] << endl;
    }
+
+   const int NMOBINS = 5;
+   const double MOMIN = 0.0, MOMAX = 1000.0;
+   double loglinMbins[6]={0.,10.,25.,200., 500.,1000.};
+
 
    //step 3
    TH1F * hMZ_3 = new TH1F("hMZ_3", "Mass of Z after selection step 3", 200 , -0.5 , 199.5 );
@@ -343,6 +348,10 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
     
    // Build the histo with constant log bin width   
    TH1F *hLogXPFMET_3             = new TH1F("hLogXPFMET_3","hLogXPFMET_3",NMBINS, logMbins);   
+   hLogXPFMET_3->Sumw2();
+   TH1F *hLogLinXPFMET_3             = new TH1F("hLogLinXPFMET_3","hLogLinXPFMET_3",NMOBINS, loglinMbins);
+   hLogLinXPFMET_3->Sumw2();
+
 
    //step 5
    TH1F * hM4l_5 = new TH1F("hM4l_5", "Mass of four leptons after selection step 5", 1200, 4.5,1204.5 );
@@ -646,6 +655,10 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
     
    // Build the histo with constant log bin width   
    TH1F* hLogXPFMET_8             = new TH1F("hLogXPFMET_8","hLogXPFMET_8",NMBINS, logMbins);   
+   hLogXPFMET_8->Sumw2();
+   TH1F *hLogLinXPFMET_8             = new TH1F("hLogLinXPFMET_8","hLogLinXPFMET_8",NMOBINS, loglinMbins);
+   hLogLinXPFMET_8->Sumw2();
+
 
    // Step 9 with PFMET cut
    TH1F * hM4l_9 = new TH1F("hM4l_9", "Mass of four leptons after selection step 9", 1200, 4.5, 1204.5 );
@@ -2096,6 +2109,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
       }
       hPFMET_3->Fill(RECO_PFMET,newweight);
       hLogXPFMET_3->Fill(RECO_PFMET,newweight); 
+      hLogLinXPFMET_3->Fill(RECO_PFMET,newweight);
 
       cout << "Starting weight + pileup + LineShape + efficiency= " << newweight << endl;
       if(debug) cout << "Efficiency Weight for the Z1: " << eff_weight_3 << " Final weight for Z1= " << newweight << endl;
@@ -3299,6 +3313,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      
      hPFMET_8->Fill(RECO_PFMET,newweight);
      hLogXPFMET_8->Fill(RECO_PFMET,newweight); 
+     hLogLinXPFMET_8->Fill(RECO_PFMET,newweight);
 
      // //VBF
      cout << "Starting VBF analysis " << endl;
@@ -3403,7 +3418,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      int index_bjets[2]={-999,-999};
      
      for (int i=0;i<50;i++){
-	 if (cSV_BTagJet_DISCR[i] > 0.460){ // 76x
+       //if (cSV_BTagJet_DISCR[i] > 0.460){ // Loose
+       if (cSV_BTagJet_DISCR[i] > 0.8484){ // Medium     
 	 if(cSV_BTagJet_PT[i]>30. && fabs(cSV_BTagJet_ETA[i])<4.7 ) cout << "Found a bjet (pT>30 and |eta|<2.4) with pT= " << cSV_BTagJet_PT[i] << endl;	 
 	 n_bjets++;
 	 if (n_bjets==1) index_bjets[0]=i; 
@@ -3454,8 +3470,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      for(int i=0;i<RECO_PFJET_N;i++){
        if (jetfail[i]!=0) continue;
        for (int j=0;j<50;j++){
-	 if (cSV_BTagJet_PT[j]==RECO_PFJET_PT[i] && cSV_BTagJet_DISCR[j]>0.460 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
-	   //if (cSV_BTagJet_DISCR[j]>0.460 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
+	 if (cSV_BTagJet_PT[j]==RECO_PFJET_PT[i] && cSV_BTagJet_DISCR[j]>0.8484 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
+	   //if (cSV_BTagJet_DISCR[j]>0.8484 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
 	   n_match_bjets++;
 	   //if (n_match_bjets==1) jet1=i;
 	   //if (n_match_bjets==2) jet2=i;
