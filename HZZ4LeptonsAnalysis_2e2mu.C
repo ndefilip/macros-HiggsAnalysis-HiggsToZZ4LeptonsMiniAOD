@@ -268,8 +268,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    double N_10_w = 0;
 
    // Book Histos ***
-   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 21, 0., 21.);
-   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 21, 0., 21.);
+   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 22, 0., 22.);
+   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 22, 0., 22.);
 
    TH1F *Gen_H_MASS              = new TH1F("Gen_H_MASS", "Gen_H_MASS",8000,0.,2000.);  
    TH1F *Gen_H_MASS_ReWeighted   = new TH1F("Gen_H_MASS_ReWeighted", "Gen_H_MASS_ReWeighted",8000,0.,2000.);  
@@ -292,8 +292,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
    const int NMOBINS = 5;
    const double MOMIN = 0.0, MOMAX = 1000.0;
-   double loglinMbins[6]={0.,10.,25.,200., 500.,1000.};
-
+   double loglinMbins[6]={0.,25.,50.,200., 500.,1000.};
 
    //step 3
    TH1F * hMZ_3 = new TH1F("hMZ_3", "Mass of Z after selection step 3", 200 , -0.5 , 199.5 );
