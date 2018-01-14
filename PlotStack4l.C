@@ -76,7 +76,8 @@ PlotStack4l::PlotStack4l(){
     
   //inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_m4l_MC.txt";
   //inputfile="filelist_4e_2016_Spring16_AN_Bari_miniaod_met_step3.txt";
-  inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod.txt";
+  //inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod.txt";
+  inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_met_step8.txt";
   //inputfile="test4mu_13TeV.txt";
 
   setSamplesNames4l(); 
@@ -487,14 +488,14 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe2= new TH2F("hframe2","hframe2",6000, 0., 3., 1000, 0.5, 2.);// iso
   }
 
-  if (histlabel.find("hPFMET_3")<10 || (histlabel.find("hLogXPFMET_3")<10 || histlabel.find("hLogLinX")<10) ){
+  if (histlabel.find("hPFMET_3")<10 || (histlabel.find("hLogXPFMET_3")<10 || histlabel.find("hLogLinXPFMET_3")<10) ){
     cout << "Plotting PFMET at step 3" << endl;
     hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 100000000.);// PFMET
     hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 1.5);// PFMET
   }
   
-  if ( (histlabel.find("hPFMET_3")<10 ||( histlabel.find("hLogXPFMET_3")<10 || histlabel.find("hLogLinX")<10) ) && whichchannel.find("4l")<20){
-    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000000001, 1000000000.);// PFMET
+  if ( (histlabel.find("hPFMET_3")<10 ||( histlabel.find("hLogXPFMET_3")<10 || histlabel.find("hLogLinXPFMET_3")<10) ) && whichchannel.find("4l")<20){
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 100000000.);// PFMET
     hframe2= new TH2F("hframe2","hframe2",1000, 0., 1000., 1000, 0.5, 1.5);// PFMET                                                                                 
   }
 
@@ -537,6 +538,17 @@ void PlotStack4l::plotm4l(std::string histlabel){
     //hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.0000004, 50000.);// PFMET
     hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 100000.);// PFMET
     hframe2= new TH2F("hframe2","hframe2",1000, 0.,1000., 1000, 0.5, 2.);// PFMET
+  }
+  
+  if (histlabel.find("hPFMET_8")<10 || (histlabel.find("hLogXPFMET_8")<10 || histlabel.find("hLogLinXPFMET_8")<10) ){
+    cout << "Plotting PFMET at step 8" << endl;
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 1000000.);// PFMET
+    hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 1.5);// PFMET
+  }
+  
+  if ( (histlabel.find("hPFMET_8")<10 ||( histlabel.find("hLogXPFMET_8")<10 || histlabel.find("hLogLinXPFMET_8")<10) ) && whichchannel.find("4l")<20){
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 1000000.);// PFMET
+    hframe2= new TH2F("hframe2","hframe2",1000, 0., 1000., 1000, 0.5, 1.5);// PFMET                                                                                 
   }
 
   if (histlabel.find("hPFMET_9")<10){
