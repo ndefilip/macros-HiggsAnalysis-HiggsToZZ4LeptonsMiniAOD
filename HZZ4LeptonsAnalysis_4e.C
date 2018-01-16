@@ -678,9 +678,13 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    // Step 10 with signal region cuts
    TH1F * hPFMET_10 = new TH1F("hPFMET_10", "PF MET after selection step 10", 1000 , 0., 1000.);
    hPFMET_10->SetXTitle("PF MET (GeV)");  
-   
+   TH1F *hLogLinXPFMET_10             = new TH1F("hLogLinXPFMET_10","hLogLinXPFMET_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_10->Sumw2();
+
    TH1F * hM4l_T_10 = new TH1F("hM4l_T_10", "Transverse Mass of four leptons + MET after step 10", 1000, 0., 1000. );
    hM4l_T_10->SetXTitle("m_{T} + PF MET (GeV)");
+   TH1F *hLogLinXM4l_T_10          = new TH1F("hLogLinXM4l_T_10","hLogLinXM4l_T_10",NMOBINS, loglinMbins);
+   hLogLinXM4l_T_10->Sumw2();
    
    TH1F * hDPHI_10 = new TH1F("DPHI_10", "polar angle between 4l and E_{T,miss} after step 10", 1000, 0., 5. );
    hDPHI_10->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
@@ -3580,7 +3584,9 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        ++N_10;
        N_10_w=N_10_w+newweight;     
        hPFMET_10->Fill(RECO_PFMET,newweight);
-       hM4l_T_10->Fill(m4l_T,newweight);  
+       hLogLinXPFMET_10->Fill(RECO_PFMET,newweight);
+       hM4l_T_10->Fill(m4l_T,newweight);
+       hLogLinXM4l_T_10->Fill(m4l_T,newweight);
        hDPHI_10->Fill(fabs(DPHI),newweight);
      }
 
