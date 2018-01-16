@@ -643,7 +643,9 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    
    TH1F * hM4l_T_8 = new TH1F("hM4l_T_8", "Transverse Mass of four leptons after full selection + MET", 1200, 4.5, 1204.5 );
    hM4l_T_8->SetXTitle("m_{T} + PF MET (GeV)");
-   
+   TH1F *hLogLinXM4l_T_8          = new TH1F("hLogLinXM4l_T_8","hLogLinXM4l_T_8",NMOBINS, loglinMbins);
+   hLogLinXM4l_T_8->Sumw2();
+
    TH1F * hDPHI_8 = new TH1F("DPHI_8", "polar angle between 4l and E_{T,miss}", 1000, 0., 5. );
    hDPHI_8->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
    
@@ -3840,9 +3842,13 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
      float m4l_T=sqrt(2*hP4.Pt()*RECO_PFMET*(1-cos(DPHI)));
      hM4l_T_8->Fill(m4l_T,newweight); 
+     hLogLinXM4l_T_8->Fill(m4l_T,newweight);
      f_mT=m4l_T;
      hDPHI_8->Fill(fabs(DPHI),newweight);
      f_dphi=DPHI;
+
+     hNgood_8->Fill(f_Ngood,newweight);
+     hNbjets_8->Fill(f_Nbjets,newweight);
 
      cout << "Mass of Higgs passed to MELA= " << massofhiggs << endl;
 
