@@ -160,8 +160,9 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hSip_8"; // worst sip lepton: sip value after full selection
   //std::string histolabel = "hMELA_8"; // MELA discriminant after full selection 
   //std::string histolabel = "hPFMET_8"; // PFMET
- std::string histolabel = "hLogLinXPFMET_8"; //PF MET log
+  //std::string histolabel = "hLogLinXPFMET_8"; //PF MET log
   //std::string histolabel = "hM4l_T_8"; // Transverse mass
+  std::string histolabel = "hLogLinXM4l_T_8"; //PF MET log
   //std::string histolabel = "DPHI_8"; // DeltaPhi - 4l + MET
 
   //std::string histolabel = "hDjj_8"; // delta eta between jets for VBF analysis
@@ -519,14 +520,14 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe2= new TH2F("hframe2","hframe2",6000, 40., 160., 1000, 0.5, 2.);// mZ2 
   }
   
-  if (histlabel.find("hM4l_T_8")<10 ){
-    hframe= new TH2F("hframe","hframe",80,10.,1200.,500,0.00000004,100000000.);// transverse mass , M4l+MET
-    hframe2= new TH2F("hframe2","hframe2",6000, 10., 1200., 1000, 0.5, 2.);// 
+  if (histlabel.find("hM4l_T_8")<10 || histlabel.find("hLogLinXM4l_T_8")<10 ){
+    hframe= new TH2F("hframe","hframe",80,10.,1000.,500,0.00000004,100000000.);// transverse mass , M4l+MET
+    hframe2= new TH2F("hframe2","hframe2",6000, 10., 1200., 1000, 0.5, 1.5);// 
   }
 
   if (histlabel.find("DPHI_8")<10 ){
-    hframe= new TH2F("hframe","hframe",80,0,3.14,500,0.0000004,10E18);// deltaphi 4l,MET
-    hframe2= new TH2F("hframe2","hframe2",80,0,3.14, 1000, 0.5, 2.);// 
+    hframe= new TH2F("hframe","hframe",80,0,3.14,500,0.00001,10E8);// deltaphi 4l,MET
+    hframe2= new TH2F("hframe2","hframe2",80,0,3.14, 1000, 0.5, 1.5);// 
   }
 
   if (histlabel.find("hMELA_8")<10){
@@ -574,7 +575,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
   }
 
   if (histlabel.find("hNgood")<10){
-    hframe= new TH2F("hframe","hframe",600,3.5,9.,600,0.000004,10E7);// number of good leptons
+    hframe= new TH2F("hframe","hframe",600,3.5,10.5,600,0.000004,10E5);// number of good leptons
     hframe2= new TH2F("hframe2","hframe2",600, 3.5, 9., 1000, 0.5, 2.);// number of good leptons
     hframe->SetXTitle("# good lept.");
   }
@@ -612,15 +613,15 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe->SetXTitle(histotitle);
   }
   
-  if (histlabel.find("hM4l_T_8")<10 ){
+  if (histlabel.find("hM4l_T_8")<10 || histlabel.find("hLogLinXM4l_T_8")<10 ){
     sprintf(histotitle,"m_{T} (%s+MET) [GeV]",whichchannel.c_str());
     hframe->SetXTitle(histotitle);
   }
 
   if (histlabel.find("DPHI_8")<10 ){
-    sprintf(histotitle,"#Delta#phi (%s,MET) [GeV]",whichchannel.c_str());
+    sprintf(histotitle,"#Delta#phi (%s,MET) [rad]",whichchannel.c_str());
     hframe->SetXTitle(histotitle);
-    hframe->SetYTitle("Events/0.05 rad");
+    hframe->SetYTitle("Events / 0.2 rad");
   }
   
 

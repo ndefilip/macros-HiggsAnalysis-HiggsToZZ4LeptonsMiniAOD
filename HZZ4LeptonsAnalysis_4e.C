@@ -643,7 +643,9 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    
    TH1F * hM4l_T_8 = new TH1F("hM4l_T_8", "Transverse Mass of four leptons after full selection + MET", 1200, 4.5, 1204.5 );
    hM4l_T_8->SetXTitle("m_{T} + PF MET (GeV)");
-   
+   TH1F *hLogLinXM4l_T_8          = new TH1F("hLogLinXM4l_T_8","hLogLinXM4l_T_8",NMOBINS, loglinMbins);
+   hLogLinXM4l_T_8->Sumw2();
+
    TH1F * hDPHI_8 = new TH1F("DPHI_8", "polar angle between 4l and E_{T,miss}", 1000, 0., 5. );
    hDPHI_8->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
    
@@ -676,9 +678,13 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    // Step 10 with signal region cuts
    TH1F * hPFMET_10 = new TH1F("hPFMET_10", "PF MET after selection step 10", 1000 , 0., 1000.);
    hPFMET_10->SetXTitle("PF MET (GeV)");  
-   
+   TH1F *hLogLinXPFMET_10             = new TH1F("hLogLinXPFMET_10","hLogLinXPFMET_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_10->Sumw2();
+
    TH1F * hM4l_T_10 = new TH1F("hM4l_T_10", "Transverse Mass of four leptons + MET after step 10", 1000, 0., 1000. );
    hM4l_T_10->SetXTitle("m_{T} + PF MET (GeV)");
+   TH1F *hLogLinXM4l_T_10          = new TH1F("hLogLinXM4l_T_10","hLogLinXM4l_T_10",NMOBINS, loglinMbins);
+   hLogLinXM4l_T_10->Sumw2();
    
    TH1F * hDPHI_10 = new TH1F("DPHI_10", "polar angle between 4l and E_{T,miss} after step 10", 1000, 0., 5. );
    hDPHI_10->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
@@ -3431,9 +3437,13 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
      float m4l_T=sqrt(2*hP4.Pt()*RECO_PFMET*(1-cos(DPHI)));
      hM4l_T_8->Fill(m4l_T,newweight);       
+     hLogLinXM4l_T_8->Fill(m4l_T,newweight);
      f_mT=m4l_T;
      hDPHI_8->Fill(fabs(DPHI),newweight);
      f_dphi=DPHI;
+
+     hNgood_8->Fill(f_Ngood,newweight);
+     hNbjets_8->Fill(f_Nbjets,newweight);
 
      cout << "Mass of Higgs passed to MELA= " << massofhiggs << endl;
 
@@ -3574,7 +3584,9 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        ++N_10;
        N_10_w=N_10_w+newweight;     
        hPFMET_10->Fill(RECO_PFMET,newweight);
-       hM4l_T_10->Fill(m4l_T,newweight);  
+       hLogLinXPFMET_10->Fill(RECO_PFMET,newweight);
+       hM4l_T_10->Fill(m4l_T,newweight);
+       hLogLinXM4l_T_10->Fill(m4l_T,newweight);
        hDPHI_10->Fill(fabs(DPHI),newweight);
      }
 

@@ -31,7 +31,7 @@
  TH1D *f2e2mu_totaldata = (TH1D*)f2e2mu->Get("nEvent_4l_w_data");
 
 
- cout << "\\begin{table}" << endl;
+ cout << "\\begin{table}[htbH]" << endl;
  cout << "\\begin{center}" << endl;
  cout << "\\resizebox{\\textwidth}{!}{% " << endl;
  cout << "\\begin{tabular}{l|c|c|c|c}" << endl;
