@@ -120,7 +120,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    //_filePU= TFile::Open("pileup_MC_80x_271036-276811_69200.root");
    //TH1D *puweight = (TH1D*)_filePU->Get("puweight");
    _filePU= TFile::Open("puWeightsMoriond17_v2.root");     
-   TH1D *puweight = (TH1D*)_filePU->Get("weights"); 
+   TH1F *puweight = (TH1F*)_filePU->Get("weights"); 
 
    /////////////Lepton Efficiency Scale Factrons/////////////
    // Load histograms
