@@ -820,7 +820,23 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    
    TH1F * hDPHI_10 = new TH1F("DPHI_10", "polar angle between 4l and E_{T,miss} after step 10", 1000, 0., 5. );
    hDPHI_10->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
-   
+
+   TH1F * hPtLep1_10 = new TH1F("hPtLep1_10", "Pt of Lep1 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep1_10->SetXTitle("pt_Lep1  (GeV)");  
+
+   TH1F * hPtLep2_10 = new TH1F("hPtLep2_10", "Pt of Lep2 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep2_10->SetXTitle("pt_Lep2  (GeV)");   
+
+   TH1F * hPtLep3_10 = new TH1F("hPtLep3_10", "Pt of Lep3 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep3_10->SetXTitle("pt_Lep3  (GeV)");  
+
+   TH1F * hPtLep4_10 = new TH1F("hPtLep4_10", "Pt of Lep4 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep4_10->SetXTitle("pt_Lep4  (GeV)");   
+
+   TH1D * hNgood_10 = new TH1D("hNgood", "Number of good leptons", 10, -0.5, 9.5);
+   hNgood_10->SetXTitle("# good leptons");
+   TH1D * hNbjets_10 = new TH1D("hNbjets", "Number of b jets", 10, -0.5, 9.5);
+   hNbjets_10->SetXTitle("# b-jets");
 
    //global histos (during step 2..)
    
@@ -3616,7 +3632,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      else if (category<0 ) category =0;
 
      // MonoHiggs category
-     if (abs(mass4l-125.)<=10. && Ne_good==4 && n_bjets<=1 ) category=6;
+     if (abs(mass4l-125.)<=10. && N_good==4 && n_bjets<=1 ) category=6;
 
      cout << "Categorization completed - event category is= " << category << endl;     
 
@@ -3956,6 +3972,32 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        hM4l_T_10->Fill(m4l_T,newweight);
        hLogLinXM4l_T_10->Fill(m4l_T,newweight);
        hDPHI_10->Fill(fabs(DPHI),newweight);
+       hNgood_10->Fill(f_Ngood,newweight);
+       hNbjets_10->Fill(f_Nbjets,newweight);
+       for(int i = 0; i < 4; ++i){
+	 
+	 if( i == 0){
+
+	   hPtLep1_10->Fill( RECOMU_PT[ ipt[i] ],newweight ) ;
+	   
+	 }
+	 if( i == 1){
+
+	   hPtLep2_10->Fill( RECOMU_PT[ ipt[i] ],newweight ) ;
+	  
+	 }
+	 if( i == 2){
+
+	   hPtLep3_10->Fill( RECOMU_PT[ ipt[i] ],newweight ) ;
+	  
+	 }
+	 if( i == 3){
+
+	   hPtLep4_10->Fill( RECOMU_PT[ ipt[i] ],newweight ) ;
+	   
+	 }
+	 
+       }//end fill leptons
      }
      
      //if( debug )
