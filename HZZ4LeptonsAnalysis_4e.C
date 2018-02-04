@@ -77,12 +77,13 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    isSignal=(datasetName.Contains("2HDM") || datasetName.Contains("Baryonic"));
    cout << "isSignal= " << isSignal << endl;
 
-   TString ggH="GluGluToHToZZTo4L";
+   TString ggH="GluGluHToZZTo4L";
    Bool_t isggH=false;
    TString ggHnew="SMHiggsToZZTo4L";
    isggH=(datasetName.Contains(ggH) || datasetName.Contains(ggHnew));
    cout << "isggH " << isggH << endl;
    
+
    TString powheg15="powheg15";
    Bool_t ispowheg15=false;
    ispowheg15=datasetName.Contains(powheg15);
@@ -527,26 +528,6 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    hM4l_8->SetXTitle("4 lepton mass  (GeV)");
    TH1F * hM4l_8_100_800 = new TH1F("hM4l_8_100_800", "Mass of four leptons after selection step 8", 1200, 4.5,1204.5 );
    hM4l_8_100_800->SetXTitle("4 lepton mass  (GeV)");
-
-
-   // correct for lineshape
-   TH1F * hM4l_8weight = new TH1F("hM4l_8weight", "Mass of four leptons after selection step 8", 1200, 4.5,1204.5 );
-   hM4l_8weight->SetXTitle("4 lepton mass  (GeV)");
-   TH1F * hM4l_8_100_800weight = new TH1F("hM4l_8_100_800weight", "Mass of four leptons after selection step 8", 1200, 4.5,1204.5 );
-   hM4l_8_100_800weight->SetXTitle("4 lepton mass  (GeV)");
-
-   // correct for lineshape
-   TH1F * hM4l_8weightP = new TH1F("hM4l_8weightP", "Mass of four leptons after selection step 8", 1200, 4.5,1204.5 );
-   hM4l_8weightP->SetXTitle("4 lepton mass  (GeV)");
-   TH1F * hM4l_8_100_800weightP = new TH1F("hM4l_8_100_800weightP", "Mass of four leptons after selection step 8", 1200, 4.5,1204.5 );
-   hM4l_8_100_800weightP->SetXTitle("4 lepton mass  (GeV)");
-
-   // correct for lineshape
-   TH1F * hM4l_8weightM = new TH1F("hM4l_8weightM", "Mass of four leptons after selection step 8", 1200, 4.5,1204.5 );
-   hM4l_8weightM->SetXTitle("4 lepton mass  (GeV)");
-   TH1F * hM4l_8_100_800weightM = new TH1F("hM4l_8_100_800weightM", "Mass of four leptons after selection step 8", 1200, 4.5,1204.5 );
-   hM4l_8_100_800weightM->SetXTitle("4 lepton mass  (GeV)");
-
    
    TH1F * hMZ1_8 = new TH1F("hMZ1_8", "Mass of Z1 after selection step 8", 200 , -0.5 , 199.5 );
    hMZ1_8->SetXTitle("mass_Z1  (GeV)");
@@ -675,6 +656,12 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1F * hDPHI_9 = new TH1F("DPHI_9", "polar angle between 4l and E_{T,miss}", 1000, 0., 5. );
    hDPHI_9->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
 
+   TH1D * hNgood_9 = new TH1D("hNgood_9", "Number of good leptons", 10, -0.5, 9.5);
+   hNgood_9->SetXTitle("# good leptons");
+   TH1D * hNbjets_9 = new TH1D("hNbjets_9", "Number of b jets", 10, -0.5, 9.5);
+   hNbjets_9->SetXTitle("# b-jets");
+
+
    // Step 10 with signal region cuts
    TH1F * hPFMET_10 = new TH1F("hPFMET_10", "PF MET after selection step 10", 1000 , 0., 1000.);
    hPFMET_10->SetXTitle("PF MET (GeV)");  
@@ -689,7 +676,23 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1F * hDPHI_10 = new TH1F("DPHI_10", "polar angle between 4l and E_{T,miss} after step 10", 1000, 0., 5. );
    hDPHI_10->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
 
+   TH1F * hPtLep1_10 = new TH1F("hPtLep1_10", "Pt of Lep1 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep1_10->SetXTitle("pt_Lep1  (GeV)");  
 
+   TH1F * hPtLep2_10 = new TH1F("hPtLep2_10", "Pt of Lep2 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep2_10->SetXTitle("pt_Lep2  (GeV)");   
+
+   TH1F * hPtLep3_10 = new TH1F("hPtLep3_10", "Pt of Lep3 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep3_10->SetXTitle("pt_Lep3  (GeV)");  
+
+   TH1F * hPtLep4_10 = new TH1F("hPtLep4_10", "Pt of Lep4 after selection step 10", 200 , -0.5 , 199.5 );
+   hPtLep4_10->SetXTitle("pt_Lep4  (GeV)");  
+
+   TH1D * hNgood_10 = new TH1D("hNgood_10", "Number of good leptons", 10, -0.5, 9.5);
+   hNgood_10->SetXTitle("# good leptons");
+
+   TH1D * hNbjets_10 = new TH1D("hNbjets_10", "Number of b jets", 10, -0.5, 9.5);
+   hNbjets_10->SetXTitle("# b-jets"); 
 
    //global histos (during step 2..)
    
@@ -1023,7 +1026,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
       
       
       //
-      if (isSignal){
+      if (isSignal || isggH){
 	if( MC_PDGID[3] == 11 && MC_PDGID[4] == -11  
 	    && MC_PDGID[5] == 11 && MC_PDGID[6] == -11 ){
 	  is4e=true;
@@ -2738,6 +2741,30 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
       }
       cout << "Kinematics of leptons corrected for FSR photons (if existing)" << endl;
 
+      // sort index by pt (kinematics is now corrected for FSR)
+      int iptcorr[4] ;
+      double tmp_ptcorr[4];
+      cout << "PTs= " << RECOELE_PT[indexlep1Z1] << " " << RECOELE_PT[indexlep2Z1] << " " <<  RECOELE_PT[indexlep1Z2] << " " << RECOELE_PT[indexlep2Z2]<< endl;
+      int indexleptonfinalcorr[4]={indexlep1Z1,indexlep2Z1,indexlep1Z2,indexlep2Z2};
+      cout << "PTs= " << RECOELE_PT[indexleptonfinalcorr[0]] << " " << RECOELE_PT[indexleptonfinalcorr[1]] << " " <<  RECOELE_PT[indexleptonfinalcorr[2]] << " " << RECOELE_PT[indexleptonfinalcorr[3]]<< endl;
+
+      for(int i = 0; i < 4; ++i) tmp_ptcorr[i] =  RECOELE_PT[indexleptonfinalcorr[i]];
+      for(int i = 0; i < 4; ++i){
+        double tmp_max_ptcorr = 0;
+      	int jj = i;
+        for(int j = 0; j < 4; ++j){
+      		if( tmp_ptcorr[j] > tmp_max_ptcorr ){
+      			tmp_max_ptcorr = tmp_ptcorr[j];
+      			jj  = j;
+      		}
+      	}
+      	iptcorr[i] = indexleptonfinalcorr[jj];
+      	tmp_ptcorr[jj] = 0;
+      }
+      if(debug)
+      	  for(int i = 0; i < 4; ++i)
+      	  	cout << "\n iptcorr[" << i << "] = " << iptcorr[i] << "\t pt = " << RECOELE_PT[ iptcorr[i] ] << endl; 
+      //end sorting with FSR included
       
       
       // // **** Step 6:
@@ -3142,6 +3169,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        if (jetfail[i]!=0) continue;
        for (int j=0;j<50;j++){
 	 if (cSV_BTagJet_PT[j]==RECO_PFJET_PT[i] && cSV_BTagJet_DISCR[j]>0.8484 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
+	   //if (cSV_BTagJet_PT[j]==RECO_PFJET_PT[i] && cSV_BTagJet_DISCR[j]>0.460 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
 	   //if (cSV_BTagJet_DISCR[j]>0.8484 && cSV_BTagJet_PT[j]>30. && fabs(cSV_BTagJet_ETA[j])<4.7) {
 	   n_match_bjets++;
 	   //if (n_match_bjets==1) jet1=i;
@@ -3269,34 +3297,34 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      f_event = Event;
      f_lumi = LumiSection;
 
-     f_lept1_pt = RECOELE_PT[indexleptonfinal[0]] ;
-     f_lept1_eta = RECOELE_ETA[indexleptonfinal[0]] ;
-     f_lept1_phi = RECOELE_PHI[indexleptonfinal[0]];
-     f_lept1_charge = RECOELE_CHARGE[indexleptonfinal[0]];
-     f_lept1_pfx = RECOELE_PFX_rho_new[indexleptonfinal[0]];
-     f_lept1_sip = RECOELE_SIP[indexleptonfinal[0]];
-     f_lept1_mvaid = RECOELE_mvaNonTrigV0[indexleptonfinal[0]];
-     f_lept2_pt = RECOELE_PT[indexleptonfinal[1]] ;
-     f_lept2_eta = RECOELE_ETA[indexleptonfinal[1]] ;
-     f_lept2_phi = RECOELE_PHI[indexleptonfinal[1]];
-     f_lept2_charge = RECOELE_CHARGE[indexleptonfinal[1]];
-     f_lept2_pfx = RECOELE_PFX_rho_new[indexleptonfinal[1]];
-     f_lept2_sip = RECOELE_SIP[indexleptonfinal[1]];
-     f_lept2_mvaid = RECOELE_mvaNonTrigV0[indexleptonfinal[1]];
-     f_lept3_pt = RECOELE_PT[indexleptonfinal[2]] ;
-     f_lept3_eta = RECOELE_ETA[indexleptonfinal[2]] ;
-     f_lept3_phi = RECOELE_PHI[indexleptonfinal[2]];
-     f_lept3_charge = RECOELE_CHARGE[indexleptonfinal[2]];
-     f_lept3_pfx = RECOELE_PFX_rho_new[indexleptonfinal[2]];
-     f_lept3_sip = RECOELE_SIP[indexleptonfinal[2]];
-     f_lept3_mvaid = RECOELE_mvaNonTrigV0[indexleptonfinal[2]];
-     f_lept4_pt = RECOELE_PT[indexleptonfinal[3]] ;
-     f_lept4_eta = RECOELE_ETA[indexleptonfinal[3]] ;
-     f_lept4_phi = RECOELE_PHI[indexleptonfinal[3]];
-     f_lept4_charge = RECOELE_CHARGE[indexleptonfinal[3]];
-     f_lept4_pfx = RECOELE_PFX_rho_new[indexleptonfinal[3]];
-     f_lept4_sip = RECOELE_SIP[indexleptonfinal[3]];
-     f_lept4_mvaid = RECOELE_mvaNonTrigV0[indexleptonfinal[3]];
+     f_lept1_pt = RECOELE_PT[iptcorr[0]] ;
+     f_lept1_eta = RECOELE_ETA[iptcorr[0]] ;
+     f_lept1_phi = RECOELE_PHI[iptcorr[0]];
+     f_lept1_charge = RECOELE_CHARGE[iptcorr[0]];
+     f_lept1_pfx = RECOELE_PFX_rho_new[iptcorr[0]];
+     f_lept1_sip = RECOELE_SIP[iptcorr[0]];
+     f_lept1_mvaid = RECOELE_mvaNonTrigV0[iptcorr[0]];
+     f_lept2_pt = RECOELE_PT[iptcorr[1]] ;
+     f_lept2_eta = RECOELE_ETA[iptcorr[1]] ;
+     f_lept2_phi = RECOELE_PHI[iptcorr[1]];
+     f_lept2_charge = RECOELE_CHARGE[iptcorr[1]];
+     f_lept2_pfx = RECOELE_PFX_rho_new[iptcorr[1]];
+     f_lept2_sip = RECOELE_SIP[iptcorr[1]];
+     f_lept2_mvaid = RECOELE_mvaNonTrigV0[iptcorr[1]];
+     f_lept3_pt = RECOELE_PT[iptcorr[2]] ;
+     f_lept3_eta = RECOELE_ETA[iptcorr[2]] ;
+     f_lept3_phi = RECOELE_PHI[iptcorr[2]];
+     f_lept3_charge = RECOELE_CHARGE[iptcorr[2]];
+     f_lept3_pfx = RECOELE_PFX_rho_new[iptcorr[2]];
+     f_lept3_sip = RECOELE_SIP[iptcorr[2]];
+     f_lept3_mvaid = RECOELE_mvaNonTrigV0[iptcorr[2]];
+     f_lept4_pt = RECOELE_PT[iptcorr[3]] ;
+     f_lept4_eta = RECOELE_ETA[iptcorr[3]] ;
+     f_lept4_phi = RECOELE_PHI[iptcorr[3]];
+     f_lept4_charge = RECOELE_CHARGE[iptcorr[3]];
+     f_lept4_pfx = RECOELE_PFX_rho_new[iptcorr[3]];
+     f_lept4_sip = RECOELE_SIP[iptcorr[3]];
+     f_lept4_mvaid = RECOELE_mvaNonTrigV0[iptcorr[3]];
      //     f_iso_max = Iso_max;
      //f_sip_max = Sip_max;
      f_Z1mass = massZ1;
@@ -3569,13 +3597,17 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      
      // end of KD
      
-     //if( RECO_PFMET <100.) continue;
-     ++N_9_PFMET;
-     N_9_PFMET_w=N_9_PFMET_w+newweight;     
-     hPFMET_9->Fill(RECO_PFMET,newweight);
-     hM4l_9->Fill( mass4l,newweight );
-     hM4l_T_9->Fill(m4l_T,newweight);  
-     hDPHI_9->Fill(fabs(DPHI),newweight);
+     // Step 9: signal enriched variables
+     if ( abs(mass4l-125.)<=10. && RECO_PFMET>=50.){ 
+       ++N_9_PFMET;
+       N_9_PFMET_w=N_9_PFMET_w+newweight;     
+       hPFMET_9->Fill(RECO_PFMET,newweight);
+       hM4l_9->Fill( mass4l,newweight );
+       hM4l_T_9->Fill(m4l_T,newweight);  
+       hDPHI_9->Fill(fabs(DPHI),newweight);
+       hNgood_9->Fill(f_Ngood,newweight);
+       hNbjets_9->Fill(f_Nbjets,newweight);
+     }
 
      // **** Step 10:
      // |mass4l-125| < 10 + Ngood=4 + Nbjets<=1 .
@@ -3588,6 +3620,33 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        hM4l_T_10->Fill(m4l_T,newweight);
        hLogLinXM4l_T_10->Fill(m4l_T,newweight);
        hDPHI_10->Fill(fabs(DPHI),newweight);
+       hNgood_10->Fill(f_Ngood,newweight);
+       hNbjets_10->Fill(f_Nbjets,newweight);
+       for(int i = 0; i < 4; ++i){
+	 
+	 if( i == 0){
+
+	   hPtLep1_10->Fill( RECOELE_PT[ ipt[i] ],newweight ) ;
+	   
+	 }
+	 if( i == 1){
+
+	   hPtLep2_10->Fill( RECOELE_PT[ ipt[i] ],newweight ) ;
+	  
+	 }
+	 if( i == 2){
+
+	   hPtLep3_10->Fill( RECOELE_PT[ ipt[i] ],newweight ) ;
+	   
+	 }
+	 if( i == 3){
+
+	   hPtLep4_10->Fill( RECOELE_PT[ ipt[i] ],newweight ) ;
+	   
+	 }
+       
+     }//end fill leptons
+     
      }
 
      //if( debug )

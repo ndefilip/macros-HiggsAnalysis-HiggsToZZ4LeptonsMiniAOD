@@ -76,7 +76,7 @@ PlotStack4l::PlotStack4l(){
     
   //inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_m4l_MC.txt";
   //inputfile="filelist_4e_2016_Spring16_AN_Bari_miniaod_met_step3.txt";
-  //inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod.txt";
+  //inputfile="filelist_4mu_2016_Spring16_AN_Bari_miniaod.txt";
   inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_met_step8.txt";
   //inputfile="test4mu_13TeV.txt";
 
@@ -142,7 +142,7 @@ PlotStack4l::PlotStack4l(){
 
 
   // After full selection
-  //std::string histolabel = "hM4l_7"; // 4l mass after full selection but m4l > 70
+  // std::string histolabel = "hM4l_7"; // 4l mass after full selection but m4l > 70
 
   //std::string histolabel = "hM4l_8"; // 4l mass after full selection
   //std::string histolabel = "hM4l_9"; // 4l mass after full selection
@@ -162,15 +162,19 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hPFMET_8"; // PFMET
   //std::string histolabel = "hLogLinXPFMET_8"; //PF MET log
   //std::string histolabel = "hM4l_T_8"; // Transverse mass
-  std::string histolabel = "hLogLinXM4l_T_8"; //PF MET log
+  //std::string histolabel = "hLogLinXM4l_T_8"; //PF MET log
   //std::string histolabel = "DPHI_8"; // DeltaPhi - 4l + MET
 
   //std::string histolabel = "hDjj_8"; // delta eta between jets for VBF analysis
   //std::string histolabel = "hMjj_8"; // dimass between jets for VBF analysis
 
-  //std::string histolabel = "hPFMET_10";
   //std::string histolabel = "hNbjets"; // Number of b-jets
   //std::string histolabel = "hNgood"; // Number of good leptons  
+
+  std::string histolabel = "hNbjets_9"; // Number of b-jets
+  //std::string histolabel = "hNgood_9"; // Number of good leptons  
+  //std::string histolabel = "hPFMET_10";
+  //std::string histolabel = "hLogLinXPFMET_10"; //PF MET log  
 
   useLogY = true;
   useLogX = false;
@@ -359,18 +363,18 @@ void PlotStack4l::plotm4l(std::string histlabel){
   }
 
   if (histlabel.find("hPtLep_0")<10){
-    hframe= new TH2F("hframe","hframe",80,5.,200.,500,0.01,10000000.);// pT                                                                 
-    hframe2= new TH2F("hframe2","hframe2",80,5.,200.,500, 0.5, 2.);// pT                                                                           
+    hframe= new TH2F("hframe","hframe",80,5.,200.,500,0.01,10000000.);// pT  
+    hframe2= new TH2F("hframe2","hframe2",80,5.,200.,500, 0.5, 2.);// pT     
   }
 
   if (histlabel.find("hIsoLep_0")<10){
-    hframe= new TH2F("hframe","hframe",80,0.,10.,500,0.01,10000000.);// Isolation                                                                  
-    hframe2= new TH2F("hframe2","hframe2",80,0.,10.,500, 0.5, 2.);// Isolation                                                                     
+    hframe= new TH2F("hframe","hframe",80,0.,10.,500,0.01,10000000.);// Isolation   
+    hframe2= new TH2F("hframe2","hframe2",80,0.,10.,500, 0.5, 2.);// Isolation     
   }
   
   if (histlabel.find("hTKIsoLep_0")<10){
     hframe= new TH2F("hframe","hframe",80,0.,10.,500,0.01,10000000.);// Tracker Isolation
-    hframe2= new TH2F("hframe2","hframe2",80,0.,10.,500, 0.5, 2.);// Tk Isolation                                                                  
+    hframe2= new TH2F("hframe2","hframe2",80,0.,10.,500, 0.5, 2.);// Tk Isolation          
   }
 
   if (histlabel.find("hPFMET_1")<10){
@@ -569,16 +573,28 @@ void PlotStack4l::plotm4l(std::string histlabel){
   }
 
   if (histlabel.find("hNbjets")<10){
-    hframe= new TH2F("hframe","hframe",600,-0.5,9.,600,0.000004,10E3);// number of b-jets
-    hframe2= new TH2F("hframe2","hframe2",600, -0.5, 9., 1000, 0.5, 2.);// number of b-jets
+    hframe= new TH2F("hframe","hframe",600,-0.5,9.,600,0.0004,10E7);// number of b-jets
+    hframe2= new TH2F("hframe2","hframe2",600, -0.5, 9., 1000, 0.5, 1.5);// number of b-jets
     hframe->SetXTitle("# bjets");
   }
 
   if (histlabel.find("hNgood")<10){
     hframe= new TH2F("hframe","hframe",600,3.5,10.5,600,0.000004,10E5);// number of good leptons
-    hframe2= new TH2F("hframe2","hframe2",600, 3.5, 9., 1000, 0.5, 2.);// number of good leptons
+    hframe2= new TH2F("hframe2","hframe2",600, 3.5, 9., 1000, 0.5, 1.5);// number of good leptons
     hframe->SetXTitle("# good lept.");
   }
+
+  if (histlabel.find("hPFMET_10")<10 || (histlabel.find("hLogXPFMET_10")<10 || histlabel.find("hLogLinXPFMET_10")<10) ){
+    cout << "Plotting PFMET at step 10" << endl;
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 1000000.);// PFMET                                                                                               
+    hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 1.5);// PFMET                                                                                                     
+  }
+
+  if ( (histlabel.find("hPFMET_10")<10 ||( histlabel.find("hLogXPFMET_10")<10 || histlabel.find("hLogLinXPFMET_10")<10) ) && whichchannel.find("4l")<20){
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 1000000.);// PFMET                                                                                               
+    hframe2= new TH2F("hframe2","hframe2",1000, 0., 1000., 1000, 0.5, 1.5);// PFMET                                                                                                      
+  }
+
 
   //TH2F *hframe= new TH2F("hframe","hframe",6000, 0., 200., 1000, 0.004, 700000.);// ptZ
 
@@ -2558,8 +2574,10 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   htotal->Draw("hist same");
   if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) { 
     htotaldata->Draw("E1Psame");   }
-  else gr->Draw("EPsame");
-  
+  else {
+    cout << "Plotting Data " << endl;
+    gr->Draw("EPsame");
+  }
 
   //hfourlepbestmass_4l_afterSel_new_signal350->Draw("same");
   //hfourlepbestmass_4l_afterSel_new_signal200->Draw("same");
@@ -2638,7 +2656,9 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
       histlabel.find("hMjj_8")<10 ||
       histlabel.find("hDjj_8")<10 ||
       histlabel.find("hNbjets")<10 ||
-      histlabel.find("hNgood")<10
+      histlabel.find("hNgood")<10 ||
+      histlabel.find("hNbjets_9")<10 ||
+      histlabel.find("hNgood_9")<10
       ){
     //htotal->Add(hfourlepbestmass_4l_afterSel_new_signal126);  // signal stacked on top of background
     //legend->AddEntry(hfourlepbestmass_4l_afterSel_new_signal126,"m_{H}=126 GeV","L");
