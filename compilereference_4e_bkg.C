@@ -103,6 +103,12 @@ int main (int argc, char ** argv){
 	  if (site.find("FNAL")<5) dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged";
         }
 
+       if (bkgFile.Contains("HToWW")  ){
+          TString datasetName=bkgFile.ReplaceAll("_","_");
+          bkgFile=datasetName;
+          dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";
+        }
+
 	//if (bkgFile.Contains("ZZTo4L_13TeV_powheg_pythia8")){
 	//  cout << "Processing ZZ" << endl;
 	//  TString datasetName=bkgFile.ReplaceAll("_","_");

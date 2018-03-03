@@ -269,6 +269,9 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 22, 0., 22.);
    TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 22, 0., 22.);
 
+   TH1D *nEvent_red = new TH1D("nEvent_red", "nEventCompleteReduced", 7, 0., 7.);
+   TH1D *nEvent_ZZ = new TH1D("nEvent_ZZ", "nEventCompleteFromZZ", 5, 0., 5.);
+
    TH1F *Gen_H_MASS              = new TH1F("Gen_H_MASS", "Gen_H_MASS",8000,0.,2000.);  
    TH1F *Gen_H_MASS_ReWeighted   = new TH1F("Gen_H_MASS_ReWeighted", "Gen_H_MASS_ReWeighted",8000,0.,2000.);  
    TH1F *Gen_H_MASS_ReWeightedP  = new TH1F("Gen_H_MASS_ReWeightedP", "Gen_H_MASS_ReWeightedP",8000,0.,2000.);  
@@ -3891,7 +3894,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    nEvent_4l->SetBinContent(21,N_9_PFMET);
    nEvent_4l->SetBinContent(22,N_10);
 
-     nEvent_4l_w->SetBinContent(1,N_0_w);        nEvent_4l_w->SetBinError(1,sqrt(N_0)*N_0_w/N_0);
+   nEvent_4l_w->SetBinContent(1,N_0_w);        nEvent_4l_w->SetBinError(1,sqrt(N_0)*N_0_w/N_0);
    nEvent_4l_w->SetBinContent(2,N_01_w);       nEvent_4l_w->SetBinError(2,sqrt(N_01)*N_01_w/N_01);
    nEvent_4l_w->SetBinContent(3,N_02_w);       nEvent_4l_w->SetBinError(3,sqrt(N_02)*N_02_w/N_02);
    nEvent_4l_w->SetBinContent(4,N_1_w);        nEvent_4l_w->SetBinError(4,sqrt(N_1)*N_1_w/N_1);
@@ -3914,6 +3917,33 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    nEvent_4l_w->SetBinContent(21,N_9_PFMET_w); nEvent_4l_w->SetBinError(21,sqrt(N_9_PFMET)*N_9_PFMET_w/N_9_PFMET);
    nEvent_4l_w->SetBinContent(22,N_10_w);      nEvent_4l_w->SetBinError(22,sqrt(N_10)*N_10_w/N_10);
    
+   nEvent_red->GetXaxis()->SetBinLabel(1,"MCTruth: 4e in Geom. Acc");
+   nEvent_red->GetXaxis()->SetBinLabel(2,"One Z with lept. cuts");
+   nEvent_red->GetXaxis()->SetBinLabel(3,"Two Z with 12 < m_{Z} < 120");
+   nEvent_red->GetXaxis()->SetBinLabel(4,"One ZZ (no lept. overlap, #Delta R > 0.02)");
+   nEvent_red->GetXaxis()->SetBinLabel(5,"One ZZ with lept. pT > 20/10");
+   nEvent_red->GetXaxis()->SetBinLabel(6,"Z_{1}(m_{Z1}>40) and Z_{2}");
+   nEvent_red->GetXaxis()->SetBinLabel(7,"m4l > 100");
+
+   nEvent_red->SetBinContent(1,N_02_w);
+   nEvent_red->SetBinContent(2,N_3a_w);
+   nEvent_red->SetBinContent(3,N_3b_w);
+   nEvent_red->SetBinContent(4,N_4b_w);
+   nEvent_red->SetBinContent(5,N_4c_w);
+   nEvent_red->SetBinContent(6,N_4d_w);
+   nEvent_red->SetBinContent(7,N_8_w);
+
+   nEvent_ZZ->GetXaxis()->SetBinLabel(1,"At two Z with 12 < m_{Z} < 120");
+   nEvent_ZZ->GetXaxis()->SetBinLabel(2,"One ZZ (no lept. overlap, #Delta R > 0.02)");
+   nEvent_ZZ->GetXaxis()->SetBinLabel(3,"One ZZ with lept. pT > 20/10");
+   nEvent_ZZ->GetXaxis()->SetBinLabel(4,"Z_{1}(m_{Z1}>40) and Z_{2}");
+   nEvent_ZZ->GetXaxis()->SetBinLabel(5,"m4l > 100");
+
+   nEvent_ZZ->SetBinContent(1,N_3b_w);
+   nEvent_ZZ->SetBinContent(2,N_4b_w);
+   nEvent_ZZ->SetBinContent(3,N_4c_w);
+   nEvent_ZZ->SetBinContent(4,N_4d_w);
+   nEvent_ZZ->SetBinContent(5,N_8_w);
 
    // write on output root file:
    _filePU->Close();
