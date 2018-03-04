@@ -142,7 +142,8 @@ PlotStack4l::PlotStack4l(){
 
 
   // After full selection
-  // std::string histolabel = "hM4l_7"; // 4l mass after full selection but m4l > 70
+  //std::string histolabel = "hMZ1_7";    // Z1 mass   
+  //std::string histolabel = "hM4l_7"; // 4l mass after full selection but m4l > 70
 
   //std::string histolabel = "hM4l_8"; // 4l mass after full selection
   //std::string histolabel = "hM4l_9"; // 4l mass after full selection
@@ -171,10 +172,10 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hNbjets"; // Number of b-jets
   //std::string histolabel = "hNgood"; // Number of good leptons  
 
-  std::string histolabel = "hNbjets_9"; // Number of b-jets
+  //std::string histolabel = "hNbjets_9"; // Number of b-jets
   //std::string histolabel = "hNgood_9"; // Number of good leptons  
   //std::string histolabel = "hPFMET_10";
-  //std::string histolabel = "hLogLinXPFMET_10"; //PF MET log  
+  std::string histolabel = "hLogLinXPFMET_10"; //PF MET log  
 
   useLogY = true;
   useLogX = false;
@@ -285,7 +286,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
   leg0->SetFillColor(kWhite);
   leg0->SetBorderSize(0);
  
-  TLegend* legend = new TLegend( 0.55, 0.7, 0.9, 0.92);
+  TLegend* legend = new TLegend( 0.55, 0.67, 0.9, 0.92);
   //TLegend* legend = new TLegend( 0.55, 0.45, 0.9, 0.72);                                                                                                                                                 
   legend->SetFillColor(kWhite);
   legend->SetTextSize(0.020);
@@ -513,9 +514,19 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe= new TH2F("hframe","hframe",80,40.,200.,500,0.0000000001,1000000.);// mZ2 
     hframe2= new TH2F("hframe2","hframe2",6000, 40., 200., 1000, 0.5, 2.);// mZ2 
   }
+
+  if (histlabel.find("hMZ1_7")<10 && whichchannel.find("4l")<20){
+    hframe= new TH2F("hframe","hframe",80,0.,130.,500,0.0001,10.);// mZ1 
+    hframe2= new TH2F("hframe2","hframe2",6000, 40., 160., 1000, 0.5, 2.);// mZ1 
+  }
+
+  if (histlabel.find("hMZ2_7")<10 && whichchannel.find("4l")<20){
+    hframe= new TH2F("hframe","hframe",80,0.,130.,500,0.0000000001,10.);// mZ2 
+    hframe2= new TH2F("hframe2","hframe2",6000, 40., 200., 1000, 0.5, 2.);// mZ2 
+  }
   
   if (histlabel.find("hMZ1_8")<10 && whichchannel.find("4#mu")<20){
-    hframe= new TH2F("hframe","hframe",80,40.,200.,500,0.0001,100000.);// mZ1 
+    hframe= new TH2F("hframe","hframe",80,40.,130.,500,0.0001,100000.);// mZ1 
     hframe2= new TH2F("hframe2","hframe2",6000, 40., 160., 1000, 0.5, 2.);// mZ1 
   }
   
@@ -600,7 +611,7 @@ void PlotStack4l::plotm4l(std::string histlabel){
 
   if (nRebin==1) {
     if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
-      hframe->SetYTitle("Events / GeV");
+      hframe->SetYTitle("Events / bin");
     }
     else hframe->SetYTitle("Events/1 GeV");
   }
@@ -1071,7 +1082,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   TList *listTTV_w = new TList;
   TList *listTTV = new TList;
 
-  // Higgs as background
+  // Higgs ZZ as background
   TH1F *hfourlepbestmass_4l_afterSel_new_ggH;
   if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_ggH = new TH1F("hfourlepbestmass_4l_afterSel_new_ggH", "hfourlepbestmass_4l_afterSel_new_ggH",NMBINS, logMbins);
@@ -1108,11 +1119,55 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   }
   else hfourlepbestmass_4l_afterSel_new_ttH= new TH1F("hfourlepbestmass_4l_afterSel_new_ttH", "hfourlepbestmass_4l_afterSel_new_ttH",Nbins, Xmin, Xmax);
 
-  TH1F *hfourlepbestmass_4l_afterSel_new_totSM_H;
+  // Higgs WW as background
+  TH1F *hfourlepbestmass_4l_afterSel_new_ggHWW;
+  if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
+    hfourlepbestmass_4l_afterSel_new_ggHWW = new TH1F("hfourlepbestmass_4l_afterSel_new_ggHWW", "hfourlepbestmass_4l_afterSel_new_ggHWW",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_ggHWW= new TH1F("hfourlepbestmass_4l_afterSel_new_ggHWW", "hfourlepbestmass_4l_afterSel_new_ggHWW",Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_VHWW;
+  if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
+    hfourlepbestmass_4l_afterSel_new_VHWW = new TH1F("hfourlepbestmass_4l_afterSel_new_VHWW", "hfourlepbestmass_4l_afterSel_new_VHWW",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_VHWW= new TH1F("hfourlepbestmass_4l_afterSel_new_VHWW", "hfourlepbestmass_4l_afterSel_new_VHWW",Nbins, Xmin, Xmax);
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_ZHWW;
+  if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
+    hfourlepbestmass_4l_afterSel_new_ZHWW = new TH1F("hfourlepbestmass_4l_afterSel_new_ZHWW", "hfourlepbestmass_4l_afterSel_new_ZHWW",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_ZHWW = new TH1F("hfourlepbestmass_4l_afterSel_new_ZHWW", "hfourlepbestmass_4l_afterSel_new_ZHWW",Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_WHWW;
+  if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
+    hfourlepbestmass_4l_afterSel_new_WHWW = new TH1F("hfourlepbestmass_4l_afterSel_new_WHWW", "hfourlepbestmass_4l_afterSel_new_WHWW",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_WHWW= new TH1F("hfourlepbestmass_4l_afterSel_new_WHWW", "hfourlepbestmass_4l_afterSel_new_WHWW",Nbins, Xmin, Xmax);
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_VBFHWW;
+  if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
+    hfourlepbestmass_4l_afterSel_new_VBFHWW = new TH1F("hfourlepbestmass_4l_afterSel_new_VBFHWW", "hfourlepbestmass_4l_afterSel_new_VBFHWW",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_VBFHWW= new TH1F("hfourlepbestmass_4l_afterSel_new_VBFHWW", "hfourlepbestmass_4l_afterSel_new_VBFHWW",Nbins, Xmin, Xmax);
+  
+  TH1F *hfourlepbestmass_4l_afterSel_new_bbHWW;
+  if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
+    hfourlepbestmass_4l_afterSel_new_bbHWW = new TH1F("hfourlepbestmass_4l_afterSel_new_bbHWW", "hfourlepbestmass_4l_afterSel_new_bbHWW",NMBINS, logMbins);
+  }
+  else hfourlepbestmass_4l_afterSel_new_bbHWW= new TH1F("hfourlepbestmass_4l_afterSel_new_bbHWW", "hfourlepbestmass_4l_afterSel_new_bbHWW",Nbins, Xmin, Xmax);
+
+
+  TH1F *hfourlepbestmass_4l_afterSel_new_totSM_H,*hfourlepbestmass_4l_afterSel_new_totSM_HZZ,*hfourlepbestmass_4l_afterSel_new_totSM_HWW;
   if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_totSM_H = new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_H", "hfourlepbestmass_4l_afterSel_new_totSM_H",NMBINS, logMbins);
+    hfourlepbestmass_4l_afterSel_new_totSM_HZZ = new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_HZZ", "hfourlepbestmass_4l_afterSel_new_totSM_HZZ",NMBINS, logMbins);
+    hfourlepbestmass_4l_afterSel_new_totSM_HWW = new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_HWW", "hfourlepbestmass_4l_afterSel_new_totSM_HWW",NMBINS, logMbins);    
   }
-  else hfourlepbestmass_4l_afterSel_new_totSM_H= new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_H", "hfourlepbestmass_4l_afterSel_new_totSM_H",Nbins, Xmin, Xmax);
+  else {
+    hfourlepbestmass_4l_afterSel_new_totSM_H= new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_H", "hfourlepbestmass_4l_afterSel_new_totSM_H",Nbins, Xmin, Xmax);
+    hfourlepbestmass_4l_afterSel_new_totSM_HZZ= new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_HZZ", "hfourlepbestmass_4l_afterSel_new_totSM_HZZ",Nbins, Xmin, Xmax);
+    hfourlepbestmass_4l_afterSel_new_totSM_HWW= new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_HWW", "hfourlepbestmass_4l_afterSel_new_totSM_HWW",Nbins, Xmin, Xmax);
+  }
   
   TH1D *nEvent_4l_w_totSM_H = new TH1D("nEvent_4l_w_totSM_H", "nEventComplete totSM_H Weighted", 22, 0., 22.);
   TH1D *nEvent_4l_totSM_H = new TH1D("nEvent_4l_totSM_H", "nEventComplete totSM_H", 22, 0., 22.);
@@ -1120,6 +1175,22 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   nEvent_4l_totSM_H->Sumw2();
   TList *listtotSM_H_w = new TList;
   TList *listtotSM_H = new TList;
+
+
+  TH1D *nEvent_4l_w_totSM_HZZ = new TH1D("nEvent_4l_w_totSM_HZZ", "nEventComplete totSM_HZZ Weighted", 22, 0., 22.);
+  TH1D *nEvent_4l_totSM_HZZ = new TH1D("nEvent_4l_totSM_HZZ", "nEventComplete totSM_HZZ", 22, 0., 22.);
+  nEvent_4l_w_totSM_HZZ->Sumw2();
+  nEvent_4l_totSM_HZZ->Sumw2();
+  TList *listtotSM_HZZ_w = new TList;
+  TList *listtotSM_HZZ = new TList;
+
+
+  TH1D *nEvent_4l_w_totSM_HWW = new TH1D("nEvent_4l_w_totSM_HWW", "nEventComplete totSM_HWW Weighted", 22, 0., 22.);
+  TH1D *nEvent_4l_totSM_HWW = new TH1D("nEvent_4l_totSM_HWW", "nEventComplete totSM_HWW", 22, 0., 22.);
+  nEvent_4l_w_totSM_HWW->Sumw2();
+  nEvent_4l_totSM_HWW->Sumw2();
+  TList *listtotSM_HWW_w = new TList;
+  TList *listtotSM_HWW = new TList;
 
   // Total bkg - no Higgs
   TH1F *hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H;
@@ -1166,6 +1237,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        datasetnamebkg.find("TTT")< 200 ||
        datasetnamebkg.find("WJetsToLNu") < 200 || 
        datasetnamebkg.find("M125") < 200 || 
+       datasetnamebkg.find("M-125") < 200 || 
        datasetnamebkg.find("ZZZ") < 200 ||
        datasetnamebkg.find("WWZ") < 200 || 
        datasetnamebkg.find("WZZ") < 200 ||
@@ -1202,6 +1274,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	hfourlepbestmass_4l_afterSel_new_ggH->Add(hfourlepbestmass_4l_afterSel_new_new); 
 	hfourlepbestmass_4l_afterSel_new_ggH->SetMarkerColor(kOrange-3); 
 	hfourlepbestmass_4l_afterSel_new_ggH->SetFillColor(kOrange-3);
+	hfourlepbestmass_4l_afterSel_new_totSM_HZZ->Add(hfourlepbestmass_4l_afterSel_new_new);
 	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
 	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
 
@@ -1214,13 +1287,38 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
 	listtotSM_H->Add(nEvent_4l_new);
 	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HZZ->Add(nEvent_4l_new);
+	listtotSM_HZZ_w->Add(nEvent_4l_w_new);
 
       }
-      if(datasetnamebkg.find("ttH") < 200){
+      if(datasetnamebkg.find("GluGluHToWWTo2L2Nu") < 200){
+	cout << "ggHWW" << endl;
+	hfourlepbestmass_4l_afterSel_new_ggHWW->Add(hfourlepbestmass_4l_afterSel_new_new); 
+	hfourlepbestmass_4l_afterSel_new_ggHWW->SetMarkerColor(kOrange-3); 
+	hfourlepbestmass_4l_afterSel_new_ggHWW->SetFillColor(kOrange-3);
+	hfourlepbestmass_4l_afterSel_new_totSM_HWW->Add(hfourlepbestmass_4l_afterSel_new_new);
+	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
+	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
+
+	char temp[328];
+	sprintf(temp,"%s",histosdir.c_str());
+	//if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_ggH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
+
+	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
+	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
+	listtotSM_H->Add(nEvent_4l_new);
+	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HWW->Add(nEvent_4l_new);
+	listtotSM_HWW_w->Add(nEvent_4l_w_new);
+      }
+
+      if(datasetnamebkg.find("ttH_HToZZ") < 200){
 	cout << "ttH" << endl;
 	hfourlepbestmass_4l_afterSel_new_ttH->Add(hfourlepbestmass_4l_afterSel_new_new); 
 	hfourlepbestmass_4l_afterSel_new_ttH->SetMarkerColor(kOrange); 
 	hfourlepbestmass_4l_afterSel_new_ttH->SetFillColor(kOrange);
+	hfourlepbestmass_4l_afterSel_new_totSM_HZZ->Add(hfourlepbestmass_4l_afterSel_new_new);
 	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
 	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
 
@@ -1233,13 +1331,38 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
 	listtotSM_H->Add(nEvent_4l_new);
 	listtotSM_H_w->Add(nEvent_4l_w_new);
-
+	listtotSM_HZZ->Add(nEvent_4l_new);
+	listtotSM_HZZ_w->Add(nEvent_4l_w_new);
       }
-      if(datasetnamebkg.find("VBF") < 200){
+
+      if(datasetnamebkg.find("bbHToWWTo2L2Nu") < 200){
+	cout << "bbH" << endl;
+	hfourlepbestmass_4l_afterSel_new_bbHWW->Add(hfourlepbestmass_4l_afterSel_new_new); 
+	hfourlepbestmass_4l_afterSel_new_bbHWW->SetMarkerColor(kOrange); 
+	hfourlepbestmass_4l_afterSel_new_bbHWW->SetFillColor(kOrange);
+	hfourlepbestmass_4l_afterSel_new_totSM_HWW->Add(hfourlepbestmass_4l_afterSel_new_new);
+	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
+	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
+
+	char temp[328];
+	sprintf(temp,"%s",histosdir.c_str());
+	//if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_ttH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
+
+	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
+	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
+	listtotSM_H->Add(nEvent_4l_new);
+	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HWW->Add(nEvent_4l_new);
+	listtotSM_HWW_w->Add(nEvent_4l_w_new);
+      }
+
+      if(datasetnamebkg.find("VBF_HToZZTo4L") < 200){
 	cout << "VBF" << endl;
 	hfourlepbestmass_4l_afterSel_new_VBFH->Add(hfourlepbestmass_4l_afterSel_new_new); 
 	hfourlepbestmass_4l_afterSel_new_VBFH->SetMarkerColor(kOrange-2); 
 	hfourlepbestmass_4l_afterSel_new_VBFH->SetFillColor(kOrange-2);
+	hfourlepbestmass_4l_afterSel_new_totSM_HZZ->Add(hfourlepbestmass_4l_afterSel_new_new);
 	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);		
 	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
 
@@ -1252,9 +1375,33 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
 	listtotSM_H->Add(nEvent_4l_new);
 	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HZZ->Add(nEvent_4l_new);
+	listtotSM_HZZ_w->Add(nEvent_4l_w_new);	
       }
 
-      if(datasetnamebkg.find("WplusH") < 200 || datasetnamebkg.find("WminusH") < 200){
+      if(datasetnamebkg.find("VBFHToWWTo2L2Nu") < 200){
+	cout << "VBF HWW" << endl;
+	hfourlepbestmass_4l_afterSel_new_VBFHWW->Add(hfourlepbestmass_4l_afterSel_new_new); 
+	hfourlepbestmass_4l_afterSel_new_VBFHWW->SetMarkerColor(kOrange-2); 
+	hfourlepbestmass_4l_afterSel_new_VBFHWW->SetFillColor(kOrange-2);
+	hfourlepbestmass_4l_afterSel_new_totSM_HWW->Add(hfourlepbestmass_4l_afterSel_new_new);	
+	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);		
+	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
+
+	char temp[328];
+	sprintf(temp,"%s",histosdir.c_str());
+	//if(datasetnamebkg.find(temp) < 200 && histlabel.find("hM4l_7")>10 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_VBFH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
+	
+	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
+	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
+	listtotSM_H->Add(nEvent_4l_new);
+	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HWW->Add(nEvent_4l_new);
+	listtotSM_HWW_w->Add(nEvent_4l_w_new);
+      }
+
+      if(datasetnamebkg.find("WplusH_HToZZTo4L") < 200 || datasetnamebkg.find("WminusH_HToZZTo4L") < 200){
         cout << "WH" << endl;
         hfourlepbestmass_4l_afterSel_new_WH->Add(hfourlepbestmass_4l_afterSel_new_new); 
         hfourlepbestmass_4l_afterSel_new_WH->SetMarkerColor(kOrange+2); 
@@ -1266,7 +1413,9 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	hfourlepbestmass_4l_afterSel_new_VH->SetFillColor(kOrange-1);
 	hfourlepbestmass_4l_afterSel_new_VH->SetLineColor(kOrange-1); 
 
+	hfourlepbestmass_4l_afterSel_new_totSM_HZZ->Add(hfourlepbestmass_4l_afterSel_new_new);	
 	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
+	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
 
         char temp[328];
         sprintf(temp,"%s",histosdir.c_str());
@@ -1277,9 +1426,40 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
 	listtotSM_H->Add(nEvent_4l_new);
 	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HZZ->Add(nEvent_4l_new);
+	listtotSM_HZZ_w->Add(nEvent_4l_w_new);
       }
 
-      if(datasetnamebkg.find("ZH") < 200){
+      if(datasetnamebkg.find("HWplusJ_HToWWTo2L2Nu") < 200 || datasetnamebkg.find("HWminusJ_HToWWTo2L2Nu") < 200){
+        cout << "WH HWW" << endl;
+        hfourlepbestmass_4l_afterSel_new_WHWW->Add(hfourlepbestmass_4l_afterSel_new_new); 
+        hfourlepbestmass_4l_afterSel_new_WHWW->SetMarkerColor(kOrange+2); 
+        hfourlepbestmass_4l_afterSel_new_WHWW->SetFillColor(kOrange+2);
+	hfourlepbestmass_4l_afterSel_new_WHWW->SetLineColor(kOrange+2); 
+
+	hfourlepbestmass_4l_afterSel_new_VHWW->Add(hfourlepbestmass_4l_afterSel_new_new); 
+	hfourlepbestmass_4l_afterSel_new_VHWW->SetMarkerColor(kOrange-1); 
+	hfourlepbestmass_4l_afterSel_new_VHWW->SetFillColor(kOrange-1);
+	hfourlepbestmass_4l_afterSel_new_VHWW->SetLineColor(kOrange-1); 
+
+	hfourlepbestmass_4l_afterSel_new_totSM_HWW->Add(hfourlepbestmass_4l_afterSel_new_new);
+	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
+	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
+
+        char temp[328];
+        sprintf(temp,"%s",histosdir.c_str());
+        //if(datasetnamebkg.find("WminusH") < 200 && histlabel.find("hM4l_7")>10 && datasetnamebkg.find(temp) < 200 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_WH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_WH,"WH, m_{H}=125 GeV", "F");  
+        //hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
+
+	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
+	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
+	listtotSM_H->Add(nEvent_4l_new);
+	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HWW->Add(nEvent_4l_new);
+	listtotSM_HWW_w->Add(nEvent_4l_w_new);	
+      }
+
+      if(datasetnamebkg.find("ZH_HToZZ_4L") < 200){
 	cout << "ZH" << endl;
 	hfourlepbestmass_4l_afterSel_new_ZH->Add(hfourlepbestmass_4l_afterSel_new_new); 
 	hfourlepbestmass_4l_afterSel_new_ZH->SetMarkerColor(kOrange-1); 
@@ -1291,6 +1471,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	hfourlepbestmass_4l_afterSel_new_VH->SetFillColor(kOrange-1);
 	hfourlepbestmass_4l_afterSel_new_VH->SetLineColor(kOrange-1); 
 	
+	hfourlepbestmass_4l_afterSel_new_totSM_HZZ->Add(hfourlepbestmass_4l_afterSel_new_new);
 	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
 	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
 
@@ -1303,6 +1484,37 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
 	listtotSM_H->Add(nEvent_4l_new);
 	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HZZ->Add(nEvent_4l_new);
+	listtotSM_HZZ_w->Add(nEvent_4l_w_new);
+      }
+
+      if(datasetnamebkg.find("HZJ_HToWWTo2L2Nu") < 200){
+	cout << "ZH HWW" << endl;
+	hfourlepbestmass_4l_afterSel_new_ZHWW->Add(hfourlepbestmass_4l_afterSel_new_new); 
+	hfourlepbestmass_4l_afterSel_new_ZHWW->SetMarkerColor(kOrange-1); 
+	hfourlepbestmass_4l_afterSel_new_ZHWW->SetFillColor(kOrange-1);
+	hfourlepbestmass_4l_afterSel_new_ZHWW->SetLineColor(kOrange-1); 
+
+	hfourlepbestmass_4l_afterSel_new_VHWW->Add(hfourlepbestmass_4l_afterSel_new_new); 
+	hfourlepbestmass_4l_afterSel_new_VHWW->SetMarkerColor(kOrange-1); 
+	hfourlepbestmass_4l_afterSel_new_VHWW->SetFillColor(kOrange-1);
+	hfourlepbestmass_4l_afterSel_new_VHWW->SetLineColor(kOrange-1); 
+	
+	hfourlepbestmass_4l_afterSel_new_totSM_HWW->Add(hfourlepbestmass_4l_afterSel_new_new);
+	hfourlepbestmass_4l_afterSel_new_totSM_H->Add(hfourlepbestmass_4l_afterSel_new_new);
+	cout << "Integral= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
+
+	char temp[328];
+	sprintf(temp,"%s",histosdir.c_str());
+	//if(datasetnamebkg.find("ZH_H") < 200 && histlabel.find("hM4l_7")>10 && datasetnamebkg.find(temp) < 200 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_VH->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F");  
+	//hfourlepbestmass_4l_afterSel_new_new->Draw("sameP");    
+
+	//nEvent_4l_w_totSM_H->Add(nEvent_4l_w_new);
+	//nEvent_4l_totSM_H->Add(nEvent_4l_new);
+	listtotSM_H->Add(nEvent_4l_new);
+	listtotSM_H_w->Add(nEvent_4l_w_new);
+	listtotSM_HWW->Add(nEvent_4l_new);
+	listtotSM_HWW_w->Add(nEvent_4l_w_new);
       }
       
 
@@ -1428,7 +1640,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 
       if (useDYJetsFromData==false){
 	// WW
-	if(datasetnamebkg.find("WWTo") < 200){
+	if(datasetnamebkg.find("_WWTo") < 200){
 	  hfourlepbestmass_4l_afterSel_new_WW->Add(hfourlepbestmass_4l_afterSel_new_new); 
 	  hfourlepbestmass_4l_afterSel_new_WW->SetMarkerColor(kCyan+3); 
 	  hfourlepbestmass_4l_afterSel_new_WW->SetFillColor(kCyan+3);
@@ -1448,7 +1660,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	}     
 	
 	// WZ     
-	if(datasetnamebkg.find("WZTo") < 200){  
+	if(datasetnamebkg.find("_WZTo") < 200){  
 	  hfourlepbestmass_4l_afterSel_new_WZ->Add(hfourlepbestmass_4l_afterSel_new_new);
 	  hfourlepbestmass_4l_afterSel_new_WZ->SetMarkerColor(kCyan-2);  
 	  hfourlepbestmass_4l_afterSel_new_WZ->SetFillColor(kCyan-2);  
@@ -1853,7 +2065,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 	//sprintf(temp,"%s/output_QCD_Pt_10to15",histosdir.c_str());
         sprintf(temp,"%s/output_QCD_Pt_1000to1400",histosdir.c_str());
 	
-	cout << "alpha" << temp << datasetnamebkg.find(temp) << endl;
+	//cout << "alpha" << temp << datasetnamebkg.find(temp) << endl;
 	//sprintf(temp,"%s",histosdir.c_str());
 	//if(datasetnamebkg.find(temp) < 200 && (datasetnamebkg.find(whichenergy) < 200 || datasetnamebkg.find(whichsample) < 200) && hfourlepbestmass_4l_afterSel_new_Wj->GetEntries()>0. ) legend->AddEntry(hfourlepbestmass_4l_afterSel_new_new,Vlabelbkg.at(datasetId).c_str(), "F"); 
 
@@ -1947,57 +2159,73 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 					       )
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
-	   cout << "Adding ggH" << endl;
+	   cout << "Adding ggHZZ and gggHWW" << endl;
 	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_ggH); 
 	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ggH); 	   
-	   htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);                                                                                                             
-           htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);   
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);  
+           //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H);		 
+	   htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_HWW);  
+           htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_HWW);	
+	   htotal->Add(hfourlepbestmass_4l_afterSel_new_totSM_HZZ);  
+           htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_HZZ);
 	   nEvent_4l_totSM_H->Merge(listtotSM_H);
-	   nEvent_4l_w_totSM_H->Merge(listtotSM_H_w);	    
+	   nEvent_4l_w_totSM_H->Merge(listtotSM_H_w);
+	   nEvent_4l_totSM_HZZ->Merge(listtotSM_HZZ);
+	   nEvent_4l_w_totSM_HZZ->Merge(listtotSM_HZZ_w);
+	   nEvent_4l_totSM_HWW->Merge(listtotSM_HWW);
+	   nEvent_4l_w_totSM_HWW->Merge(listtotSM_HWW_w);
 	   //}
        }
        if(datasetnamebkg.find(temppp) < 400 && (
-          datasetnamebkg.find("output_WminusH") < 400 || 
-          (datasetnamebkg.find("output_WminusH") < 400 && datasetnamebkg.find(whichenergy.c_str())<400)
+          datasetnamebkg.find("output_WminusH_HToZZTo4L") < 400 || 
+          (datasetnamebkg.find("output_WminusH_HToZZTo4L") < 400 && datasetnamebkg.find(whichenergy.c_str())<400)
                                                )
           )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding WH" << endl;
 	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_WH); 
 	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_WH); 
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_WHWW); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_WHWW); 
 	   //}
        }
        if(datasetnamebkg.find(temppp) < 400 && (
-	  datasetnamebkg.find("output_ZH") < 400 || 
-	  (datasetnamebkg.find("output_ZH") < 400 && datasetnamebkg.find(whichenergy.c_str())<400)
+	  datasetnamebkg.find("output_ZH_HToZZ_4L") < 400 || 
+	  (datasetnamebkg.find("output_ZH_HToZZ_4L") < 400 && datasetnamebkg.find(whichenergy.c_str())<400)
 					       )
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding ZH" << endl;
 	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_ZH); 
-	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ZH); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ZH);
+	    //htotal->Add(hfourlepbestmass_4l_afterSel_new_ZHWW); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ZHWW);
 	   //}
        }
        if(datasetnamebkg.find(temppp) < 200 && (
-	  datasetnamebkg.find("output_ttH") < 200 || 
-	  (datasetnamebkg.find("output_ttH") < 200 && datasetnamebkg.find(whichenergy.c_str())<400)
-					       )
+	  datasetnamebkg.find("output_ttH_HToZZ_4L") < 200 || 
+	  (datasetnamebkg.find("output_ttH_HToZZ_4L") < 200 && datasetnamebkg.find(whichenergy.c_str())<400)
+						)
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
-	   cout << "Adding ttH" << endl;
+	   cout << "Adding ttH and bbH" << endl;
 	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_ttH); 
 	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_ttH); 
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_bbHWW); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_bbHWW); 
 	   //}
        }
        if(datasetnamebkg.find(temppp) < 200 && (
-	  datasetnamebkg.find("output_VBF") < 200 || 
-	  (datasetnamebkg.find("output_VBF") < 200 && datasetnamebkg.find(whichenergy.c_str())<400)
+	  datasetnamebkg.find("output_VBF_HToZZ4L") < 200 || 
+	  (datasetnamebkg.find("output_VBF_HToZZ4L") < 200 && datasetnamebkg.find(whichenergy.c_str())<400)
 					       )
 	  )  { 
 	 //if (histlabel.find("hM4l_7")>10) {
 	   cout << "Adding VBF" << endl;
 	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_VBFH); 
 	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_VBFH); 
+	   //htotal->Add(hfourlepbestmass_4l_afterSel_new_VBFHWW); 
+	   //htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_VBFHWW); 
 	   //}
        }
 
@@ -2152,7 +2380,6 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 
   // Building the ratio
   htotalHistoRatio->Sumw2();
-  
   htotalHistoRatio->Divide(htotaldata,htotalHisto,1.,1.);
 
 /*
@@ -2321,7 +2548,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     for (int nbins=1;nbins<=hfourlepbestmass_4l_afterSel_new_new->GetNbinsX(); nbins++){
       // cout << "BinCenter=" << hfourlepbestmass_4l_afterSel_new_new->GetBinCenter(nbins) << " BinContent=" << hfourlepbestmass_4l_afterSel_new_new->GetBinContent(nbins) << " BinError Content=" << hfourlepbestmass_4l_afterSel_new_new->GetBinError(nbins) << endl;
       
-      if (datasetnamesig.find("M-125")<100) { // Adding SMHiggs, VBF, TTH, WH, ZH
+      if (datasetnamesig.find("M125")<100 || datasetnamesig.find("M-125")<100) { // Adding SMHiggs, VBF, TTH, WH, ZH
 	if (nbins==1) {
 	  cout << "Adding samples at 125 GeV" << dataset << endl;
 	  //cout << sqrt(errorH125) << " " << sqrt(hfourlepbestmass_4l_afterSel_new_new->GetEntries())*hfourlepbestmass_4l_afterSel_new_new->Integral(0,-1)/hfourlepbestmass_4l_afterSel_new_new->GetEntries() << endl;
@@ -2445,14 +2672,31 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   hfourlepbestmass_4l_afterSel_new_totSM_H->SetMarkerColor(kRed-4);
   hfourlepbestmass_4l_afterSel_new_totSM_H->SetLineColor(kRed-4);
   hfourlepbestmass_4l_afterSel_new_totSM_H->SetFillColor(kRed-4);
+
+  hfourlepbestmass_4l_afterSel_new_totSM_HZZ->SetMarkerColor(kRed-4);
+  hfourlepbestmass_4l_afterSel_new_totSM_HZZ->SetLineColor(kRed-4);
+  hfourlepbestmass_4l_afterSel_new_totSM_HZZ->SetFillColor(kRed-4);
+
+  hfourlepbestmass_4l_afterSel_new_totSM_HWW->SetMarkerColor(kRed-1);
+  hfourlepbestmass_4l_afterSel_new_totSM_HWW->SetLineColor(kRed-1);
+  hfourlepbestmass_4l_afterSel_new_totSM_HWW->SetFillColor(kRed-1);
   
+  
+
   //if (histlabel.find("hM4l_7")<10) {
   //  htotal->Add(hfourlepbestmass_4l_afterSel
-  cout << "Total higgs 125 rate is= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
+  cout << "Total higgs (ZZ) 125 rate is= " << hfourlepbestmass_4l_afterSel_new_totSM_HZZ->Integral() << endl;
+  cout << "Total higgs (WW) 125 rate is= " << hfourlepbestmass_4l_afterSel_new_totSM_HWW->Integral() << endl; 
+  cout << "Total higgs (ZZ+WW) 125 rate is= " << hfourlepbestmass_4l_afterSel_new_totSM_H->Integral() << endl;
   // htotalHisto->Add(hfourlepbestmass_4l_afterSel_new_totSM_H); 
   //hfourlepbestmass_4l_afterSel_new_totSM_H->Draw("hist same");
-  legend->AddEntry(hfourlepbestmass_4l_afterSel_new_totSM_H,"H#rightarrowZZ#rightarrow 4l, m_{H}=125 GeV", "F");  
+
+  legend->AddEntry(hfourlepbestmass_4l_afterSel_new_totSM_HZZ,"H#rightarrowZZ#rightarrow 4l, m_{H}=125 GeV", "F");  
+  legend->AddEntry(hfourlepbestmass_4l_afterSel_new_totSM_HWW,"H#rightarrowWW#rightarrow 2l 2#nu, m_{H}=125 GeV", "F");  
+
   //}
+
+  
 
 
   hfourlepbestmass_4l_afterSel_new_monoH_DM1->SetMarkerSize(0.95);
@@ -2867,8 +3111,12 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   nEvent_4l_w_VVV->Write();
   nEvent_4l_w_QCD->Write();
   hfourlepbestmass_4l_afterSel_new_totSM_H->Write();
+  hfourlepbestmass_4l_afterSel_new_totSM_HZZ->Write();
+  hfourlepbestmass_4l_afterSel_new_totSM_HWW->Write();
   hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H->Write();
   nEvent_4l_w_totSM_H->Write();
+  nEvent_4l_w_totSM_HZZ->Write();
+  nEvent_4l_w_totSM_HWW->Write();
   nEvent_4l_w_totalbkgMC->Write();
   nEvent_4l_w_totbkg_noSM_H->Write();
   hfourlepbestmass_4l_afterSel_new_monoH_MZP600->Write();
@@ -2905,17 +3153,17 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     "\\begin{table*}[htbH] \n"    <<
     "\\begin{center} \n" <<    
     "\\resizebox{\\textwidth}{!}{% \n" <<  
-    "\\begin{tabular}{ l | c | c | c | c | c | c | c | c | c | c | c |} \n" <<
+    "\\begin{tabular}{ l | c | c | c | c | c | c | c | c | c | c | c | c |} \n" <<
     "\\hline    \\hline" 
        << endl;
 
   if (whichchannel.find("4mu")<10) whichchannel="4\\mu";
   if (whichchannel.find("2e2mu")<10) whichchannel="2e2\\mu";
 
-  cout << "Channel: $" << whichchannel.c_str() <<"$ & $Z\\gamma^{*},ZZ$ & $Z+js$ & $WZ,WW,W+js$ & $t \\bar{t}$ & $t \\bar{t}V$ & $VVV$ & $QCD$ & $SM \\, H$ & $Tot. \\, Bkg$  & Z' baryonic & Obs. \\\\" << endl; 
+  cout << "Channel: $" << whichchannel.c_str() <<"$ & $Z\\gamma^{*},ZZ$ & $Z+js$ & $WZ,WW,W+js$ & $t \\bar{t}$ & $t \\bar{t}V$ & $VVV$ & $QCD$ & $SM \\, H \\rightarrow ZZ$ & $SM \\, H \\rightarrow WW$ & $Tot. \\, Bkg$  & Z' baryonic & Obs. \\\\" << endl; 
   cout << "\\hline" << endl;
   
-  sprintf (outformat,"HLT & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e  \\\\",
+  sprintf (outformat,"HLT & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e  \\\\",
        nEvent_4l_w_ZZ->GetBinContent(5), nEvent_4l_w_ZZ->GetBinError(5),
        nEvent_4l_w_DY->GetBinContent(5), nEvent_4l_w_DY->GetBinError(5),
        nEvent_4l_w_WZ_WW_Wj->GetBinContent(5),  nEvent_4l_w_WZ_WW_Wj->GetBinError(5), 
@@ -2923,13 +3171,14 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        nEvent_4l_w_TTV->GetBinContent(5), nEvent_4l_w_TTV->GetBinError(5), 
        nEvent_4l_w_VVV->GetBinContent(5), nEvent_4l_w_VVV->GetBinError(5),
        nEvent_4l_w_QCD->GetBinContent(5), nEvent_4l_w_QCD->GetBinError(5),
-       nEvent_4l_w_totSM_H->GetBinContent(5), nEvent_4l_w_totSM_H->GetBinError(5),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(5), nEvent_4l_w_totSM_HZZ->GetBinError(5),
+       nEvent_4l_w_totSM_HWW->GetBinContent(5), nEvent_4l_w_totSM_HWW->GetBinError(5),
        nEvent_4l_w_totalbkgMC->GetBinContent(5), nEvent_4l_w_totalbkgMC->GetBinError(5),
        nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(5), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(5),
        nEvent_4l_w_data->GetBinContent(5));
   cout << outformat <<endl;
   
-  sprintf (outformat,"$l^{+} l^{-}$, $12<m_{l^{+}l^{-}}<120$ & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e  \\\\",
+  sprintf (outformat,"$l^{+} l^{-}$, $12<m_{l^{+}l^{-}}<120$ & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e &%.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e $ \\pm $ %.2e & %.2e  \\\\",
        nEvent_4l_w_ZZ->GetBinContent(8), nEvent_4l_w_ZZ->GetBinError(8),
        nEvent_4l_w_DY->GetBinContent(8), nEvent_4l_w_DY->GetBinError(8),
        nEvent_4l_w_WZ_WW_Wj->GetBinContent(8),  nEvent_4l_w_WZ_WW_Wj->GetBinError(8), 
@@ -2937,7 +3186,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        nEvent_4l_w_TTV->GetBinContent(8), nEvent_4l_w_TTV->GetBinError(8), 
        nEvent_4l_w_VVV->GetBinContent(8), nEvent_4l_w_VVV->GetBinError(8),
        nEvent_4l_w_QCD->GetBinContent(8), nEvent_4l_w_QCD->GetBinError(8),
-       nEvent_4l_w_totSM_H->GetBinContent(8), nEvent_4l_w_totSM_H->GetBinError(8),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(8), nEvent_4l_w_totSM_HZZ->GetBinError(8),
+       nEvent_4l_w_totSM_HWW->GetBinContent(8), nEvent_4l_w_totSM_HWW->GetBinError(8),
        nEvent_4l_w_totalbkgMC->GetBinContent(8), nEvent_4l_w_totalbkgMC->GetBinError(8),
        nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(8), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(8),
        nEvent_4l_w_data->GetBinContent(8));
@@ -2947,7 +3197,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   //%.2e & %.2e & %.2e & %.2e & %.2e & %.2e & %.2e & %.2e & %.2e & %.2e  \\\\",nEvent_4l_w_ZZ->GetBinContent(8),nEvent_4l_w_DY->GetBinContent(8),nEvent_4l_w_WZ_WW_Wj->GetBinContent(8),nEvent_4l_w_TT->GetBinContent(8),nEvent_4l_w_TTV->GetBinContent(8),nEvent_4l_w_VVV->GetBinContent(8),nEvent_4l_w_totSM_H->GetBinContent(8),nEvent_4l_w_totalbkgMC->GetBinContent(8),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(8),nEvent_4l_w_data->GetBinContent(8));
   //  cout << outformat <<endl;
   
-  sprintf (outformat,"$Z_{1},Z_{2}$  & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
+  sprintf (outformat,"$Z_{1},Z_{2}$  & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2e $ \\pm $ %.2e & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
        nEvent_4l_w_ZZ->GetBinContent(9), nEvent_4l_w_ZZ->GetBinError(9),
        nEvent_4l_w_DY->GetBinContent(9), nEvent_4l_w_DY->GetBinError(9),
        nEvent_4l_w_WZ_WW_Wj->GetBinContent(9),  nEvent_4l_w_WZ_WW_Wj->GetBinError(9), 
@@ -2955,7 +3205,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        nEvent_4l_w_TTV->GetBinContent(9), nEvent_4l_w_TTV->GetBinError(9), 
        nEvent_4l_w_VVV->GetBinContent(9), nEvent_4l_w_VVV->GetBinError(9),
        nEvent_4l_w_QCD->GetBinContent(9), nEvent_4l_w_QCD->GetBinError(9),
-       nEvent_4l_w_totSM_H->GetBinContent(9), nEvent_4l_w_totSM_H->GetBinError(9),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(9), nEvent_4l_w_totSM_HZZ->GetBinError(9),
+       nEvent_4l_w_totSM_HWW->GetBinContent(9), nEvent_4l_w_totSM_HWW->GetBinError(9),
        nEvent_4l_w_totalbkgMC->GetBinContent(9), nEvent_4l_w_totalbkgMC->GetBinError(9),
        nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(9), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(9),
        int(nEvent_4l_w_data->GetBinContent(9)));
@@ -2964,7 +3215,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 //& %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f  \\\\",nEvent_4l_w_ZZ->GetBinContent(9),nEvent_4l_w_DY->GetBinContent(9),nEvent_4l_w_WZ_WW_Wj->GetBinContent(9),nEvent_4l_w_TT->GetBinContent(9),nEvent_4l_w_TTV->GetBinContent(9),nEvent_4l_w_VVV->GetBinContent(9),nEvent_4l_w_totSM_H->GetBinContent(9),nEvent_4l_w_totalbkgMC->GetBinContent(9),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(9),nEvent_4l_w_data->GetBinContent(9));
   // cout << outformat <<endl;
   
-  sprintf (outformat,"$p_{T}>20/10$, $m_{l^{+}l^{-}}>4$, $m_{Z_{1}}>40$  & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
+  sprintf (outformat,"$p_{T}>20/10$, $m_{l^{+}l^{-}}>4$, $m_{Z_{1}}>40$  & %.2e $ \\pm $ %.2e & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
        nEvent_4l_w_ZZ->GetBinContent(12), nEvent_4l_w_ZZ->GetBinError(12),
        nEvent_4l_w_DY->GetBinContent(12), nEvent_4l_w_DY->GetBinError(12),
        nEvent_4l_w_WZ_WW_Wj->GetBinContent(12),  nEvent_4l_w_WZ_WW_Wj->GetBinError(12), 
@@ -2972,7 +3223,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        nEvent_4l_w_TTV->GetBinContent(12), nEvent_4l_w_TTV->GetBinError(12), 
        nEvent_4l_w_VVV->GetBinContent(12), nEvent_4l_w_VVV->GetBinError(12),
        nEvent_4l_w_QCD->GetBinContent(12), nEvent_4l_w_QCD->GetBinError(12),
-       nEvent_4l_w_totSM_H->GetBinContent(12), nEvent_4l_w_totSM_H->GetBinError(12),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(12), nEvent_4l_w_totSM_HZZ->GetBinError(12),
+       nEvent_4l_w_totSM_HWW->GetBinContent(12), nEvent_4l_w_totSM_HWW->GetBinError(12),
        nEvent_4l_w_totalbkgMC->GetBinContent(12), nEvent_4l_w_totalbkgMC->GetBinError(12),
        nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(12), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(12),
        int(nEvent_4l_w_data->GetBinContent(12)));
@@ -2981,7 +3233,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 //& %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f  \\\\",nEvent_4l_w_ZZ->GetBinContent(12),nEvent_4l_w_DY->GetBinContent(12),nEvent_4l_w_WZ_WW_Wj->GetBinContent(12),nEvent_4l_w_TT->GetBinContent(12),nEvent_4l_w_TTV->GetBinContent(12),nEvent_4l_w_VVV->GetBinContent(12),nEvent_4l_w_totSM_H->GetBinContent(12),nEvent_4l_w_totalbkgMC->GetBinContent(12),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(12),nEvent_4l_w_data->GetBinContent(12));
   //cout << outformat <<endl;
   
-  sprintf (outformat,"$m_{4l}>70$  & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
+  sprintf (outformat,"$m_{4l}>70$  & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2e $ \\pm $ %.2e & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
        nEvent_4l_w_ZZ->GetBinContent(15), nEvent_4l_w_ZZ->GetBinError(15),
        nEvent_4l_w_DY->GetBinContent(15), nEvent_4l_w_DY->GetBinError(15),
        nEvent_4l_w_WZ_WW_Wj->GetBinContent(15),  nEvent_4l_w_WZ_WW_Wj->GetBinError(15), 
@@ -2989,7 +3241,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        nEvent_4l_w_TTV->GetBinContent(15), nEvent_4l_w_TTV->GetBinError(15), 
        nEvent_4l_w_VVV->GetBinContent(15), nEvent_4l_w_VVV->GetBinError(15),
        nEvent_4l_w_QCD->GetBinContent(15), nEvent_4l_w_QCD->GetBinError(15),
-       nEvent_4l_w_totSM_H->GetBinContent(15), nEvent_4l_w_totSM_H->GetBinError(15),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(15), nEvent_4l_w_totSM_HZZ->GetBinError(15),
+       nEvent_4l_w_totSM_HWW->GetBinContent(15), nEvent_4l_w_totSM_HWW->GetBinError(15),
        nEvent_4l_w_totalbkgMC->GetBinContent(15), nEvent_4l_w_totalbkgMC->GetBinError(15),
        nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(15), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(15),
        int(nEvent_4l_w_data->GetBinContent(15)));
@@ -2997,7 +3250,7 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 //& %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f  \\\\",nEvent_4l_w_ZZ->GetBinContent(15),nEvent_4l_w_DY->GetBinContent(15),nEvent_4l_w_WZ_WW_Wj->GetBinContent(15),nEvent_4l_w_TT->GetBinContent(15),nEvent_4l_w_TTV->GetBinContent(15),nEvent_4l_w_VVV->GetBinContent(15),nEvent_4l_w_totSM_H->GetBinContent(15),nEvent_4l_w_totalbkgMC->GetBinContent(15),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(15),nEvent_4l_w_data->GetBinContent(15));
   //cout << outformat <<endl;
   
-  sprintf (outformat,"$|m_{4l}-125| \\leq 10$, $N_{l}=4$, $n_{b} \\leq 1$ & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
+  sprintf (outformat,"$|m_{4l}-125| \\leq 10$, $N_{l}=4$, $n_{b} \\leq 1$ & %.2e $ \\pm $ %.2e & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
        nEvent_4l_w_ZZ->GetBinContent(22), nEvent_4l_w_ZZ->GetBinError(22),
        nEvent_4l_w_DY->GetBinContent(22), nEvent_4l_w_DY->GetBinError(22),
        nEvent_4l_w_WZ_WW_Wj->GetBinContent(22),  nEvent_4l_w_WZ_WW_Wj->GetBinError(22), 
@@ -3005,7 +3258,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        nEvent_4l_w_TTV->GetBinContent(22), nEvent_4l_w_TTV->GetBinError(22), 
        nEvent_4l_w_VVV->GetBinContent(22), nEvent_4l_w_VVV->GetBinError(22),
        nEvent_4l_w_QCD->GetBinContent(22), nEvent_4l_w_QCD->GetBinError(22),
-       nEvent_4l_w_totSM_H->GetBinContent(22), nEvent_4l_w_totSM_H->GetBinError(22),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(22), nEvent_4l_w_totSM_HZZ->GetBinError(22),
+       nEvent_4l_w_totSM_HWW->GetBinContent(22), nEvent_4l_w_totSM_HWW->GetBinError(22),	   
        nEvent_4l_w_totalbkgMC->GetBinContent(22), nEvent_4l_w_totalbkgMC->GetBinError(22),
        nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(22), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(22),
        int(nEvent_4l_w_data->GetBinContent(22)));
@@ -3293,21 +3547,45 @@ void PlotStack4l::setSamplesNames4l()
 	    inputfilename.find("ZH_ll_h2l2v")<100 ||
 	    inputfilename.find("WplusH_HToZZTo4L")<100  |
             inputfilename.find("WminusH_HToZZTo4L")<100  || 
-	    inputfilename.find("WH_ZH_HToZZ_4LFilter")<100 ){  // provided that signal samples contain 'GluGluHToZZTo4L'
+	    inputfilename.find("WH_ZH_HToZZ_4LFilter")<100 || 
+	    inputfilename.find("bbHToWWTo2L2Nu_M-125_4FS_yb2_13TeV_amcatnlo")<100 || 
+	    inputfilename.find("bbHToWWTo2L2Nu_M-125_4FS_ybyt_13TeV_amcatnlo")<100 || 
+	    inputfilename.find("GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8")<100 || 
+	    inputfilename.find("HZJ_HToWWTo2L2Nu_ZTo2L_M125_13TeV_powheg_pythia8")<100 || 
+	    inputfilename.find("HWminusJ_HToWWTo2L2Nu_WToLNu_M125_13TeV_powheg_pythia8")<100 || 
+	    inputfilename.find("HWplusJ_HToWWTo2L2Nu_WToLNu_M125_13TeV_powheg_pythia8")<100 || 
+	    inputfilename.find("VBFHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8")<100 ){  // provided that signal samples contain 'GluGluHToZZTo4L'
       //Vdatasetnamebkg.push_back(inputfilename);
       
 
       if( (inputfilename.find("M125")<200 && (inputfilename.find("GluGluHToZZTo4L_M125_13TeV_powheg")<200)) ){
 	Vdatasetnamebkg.push_back(inputfilename);
-	Vlabelbkg.push_back("ggH, m_{H}=125 GeV");
+	Vlabelbkg.push_back("ggH, H #rightarrow ZZ, m_{H}=125 GeV");
 	Vxsectionbkg.push_back(1.); //pb
 	Vcolorbkg.push_back(kOrange-3);
 	//cout << "ggH" << endl;
       }
 
-      if( (inputfilename.find("M125")<200 && (inputfilename.find("VBF")<200)) ){
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8")<200)) ){
 	Vdatasetnamebkg.push_back(inputfilename);
-	Vlabelbkg.push_back("VBF H, m_{H}=125 GeV");
+	Vlabelbkg.push_back("ggH, H #rightarrow WW, m_{H}=125 GeV");
+	Vxsectionbkg.push_back(1.); //pb
+	Vcolorbkg.push_back(kOrange-3);
+	//cout << "ggH" << endl;
+      }
+
+
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("VBF_HToZZTo4L")<200)) ){
+	Vdatasetnamebkg.push_back(inputfilename);
+	Vlabelbkg.push_back("VBF H, H #rightarrow ZZ, m_{H}=125 GeV");
+	Vxsectionbkg.push_back(1.); //pb
+	Vcolorbkg.push_back(kOrange-2);
+	//cout << "VBF H" << endl;
+      }
+
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("VBFHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8")<200)) ){
+	Vdatasetnamebkg.push_back(inputfilename);
+	Vlabelbkg.push_back("VBF H, H #rightarrow WW, m_{H}=125 GeV");
 	Vxsectionbkg.push_back(1.); //pb
 	Vcolorbkg.push_back(kOrange-2);
 	//cout << "VBF H" << endl;
@@ -3315,7 +3593,7 @@ void PlotStack4l::setSamplesNames4l()
       
       if( (inputfilename.find("M125")<200 && (inputfilename.find("ZH_HToZZ_4L")<200)) ){
 	Vdatasetnamebkg.push_back(inputfilename);
-	Vlabelbkg.push_back("ZH, m_{H}=125 GeV");
+	Vlabelbkg.push_back("ZH, H #rightarrow ZZ, m_{H}=125 GeV");
 	Vxsectionbkg.push_back(1.); //pb
 	Vcolorbkg.push_back(kOrange-1);
 	//cout << "VH" << endl;
@@ -3323,48 +3601,80 @@ void PlotStack4l::setSamplesNames4l()
       
       if( (inputfilename.find("ZH_ll_h2l2v")<200)){
 	  Vdatasetnamebkg.push_back(inputfilename);
-	  Vlabelbkg.push_back("ZH,ll,2l2#nu, m_{H}=125 GeV");
-	  Vxsectionbkg.push_back(1.); //pb                                                                                                                                                          
+	  Vlabelbkg.push_back("ZH,ll,ZZ #rightarrow 2l2#nu, m_{H}=125 GeV");
+	  Vxsectionbkg.push_back(1.); //pb                                                                             
 	  Vcolorbkg.push_back(kOrange-1);
 	  //cout << "ZH" << endl;               
       }
 
-
-      if( (inputfilename.find("M125")<200 && (inputfilename.find("WplusH")<200)) ){
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("HZJ_HToWWTo2L2Nu_ZTo2L_M125_13TeV_powheg_pythia8")<200)) ){
 	Vdatasetnamebkg.push_back(inputfilename);
-        Vlabelbkg.push_back("WplusH, m_{H}=125 GeV");
-        Vxsectionbkg.push_back(1.); //pb
-        Vcolorbkg.push_back(kOrange+2);
-        //cout << "VH" << endl;
-      }
-      if( (inputfilename.find("M125")<200 && (inputfilename.find("WminusH")<200)) ){
-        Vdatasetnamebkg.push_back(inputfilename);
-        Vlabelbkg.push_back("WminusH, m_{H}=125 GeV");
-        Vxsectionbkg.push_back(1.); //pb
-        Vcolorbkg.push_back(kOrange+3);
-        //cout << "VH" << endl;
-      }
-      
-      if( (inputfilename.find("M125")<200 && (inputfilename.find("WH")<200)) ){
-	Vdatasetnamebkg.push_back(inputfilename);
-	Vlabelbkg.push_back("WH, m_{H}=125 GeV");
+	Vlabelbkg.push_back("ZH, H#rightarrow WW, m_{H}=125 GeV");
 	Vxsectionbkg.push_back(1.); //pb
 	Vcolorbkg.push_back(kOrange-1);
 	//cout << "VH" << endl;
       }
       
-      if( (inputfilename.find("M125")<200 && (inputfilename.find("ttH")<200)) ){
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("WplusH_HToZZTo4L")<200)) ){
 	Vdatasetnamebkg.push_back(inputfilename);
-	Vlabelbkg.push_back("ttH, m_{H}=125 GeV");
+        Vlabelbkg.push_back("WplusH, H #rightarrow ZZ, m_{H}=125 GeV");
+        Vxsectionbkg.push_back(1.); //pb
+        Vcolorbkg.push_back(kOrange+2);
+        //cout << "VH" << endl;
+      }
+
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("HWplusJ_HToWWTo2L2Nu_WToLNu_M125_13TeV_powheg_pythia8")<200)) ){
+	Vdatasetnamebkg.push_back(inputfilename);
+        Vlabelbkg.push_back("WplusH, H #rightarrow WW, m_{H}=125 GeV");
+        Vxsectionbkg.push_back(1.); //pb
+        Vcolorbkg.push_back(kOrange+2);
+        //cout << "VH" << endl;
+      }
+
+
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("WminusH_HToZZTo4L")<200)) ){
+        Vdatasetnamebkg.push_back(inputfilename);
+        Vlabelbkg.push_back("WminusH, H #rightarrow ZZ, m_{H}=125 GeV");
+        Vxsectionbkg.push_back(1.); //pb
+        Vcolorbkg.push_back(kOrange+3);
+        //cout << "VH" << endl;
+      }
+
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("HWminusJ_HToWWTo2L2Nu_WToLNu_M125_13TeV_powheg_pythia8")<200)) ){
+	Vdatasetnamebkg.push_back(inputfilename);
+        Vlabelbkg.push_back("WminusH, H #rightarrow WW, m_{H}=125 GeV");
+        Vxsectionbkg.push_back(1.); //pb
+        Vcolorbkg.push_back(kOrange+2);
+        //cout << "VH" << endl;
+      }
+      
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("WH_HToZZTo4L")<200)) ){
+	Vdatasetnamebkg.push_back(inputfilename);
+	Vlabelbkg.push_back("WH, H #rightarrow ZZ, m_{H}=125 GeV");
+	Vxsectionbkg.push_back(1.); //pb
+	Vcolorbkg.push_back(kOrange-1);
+	//cout << "VH" << endl;
+      }
+      
+      if( (inputfilename.find("M125")<200 && (inputfilename.find("ttH_HToZZ_4L")<200)) ){
+	Vdatasetnamebkg.push_back(inputfilename);
+	Vlabelbkg.push_back("ttH, H #rightarrow ZZ, m_{H}=125 GeV");
 	Vxsectionbkg.push_back(1.); //pb
 	Vcolorbkg.push_back(kOrange);
 	//cout << "ttH" << endl;
       }
-      
-      
+
+      if( (inputfilename.find("M-125")<200 && (inputfilename.find("bbHToWWTo2L2Nu")<200)) ){
+	Vdatasetnamebkg.push_back(inputfilename);
+	Vlabelbkg.push_back("bbH, H #rightarrow WW, m_{H}=125 GeV");
+	Vxsectionbkg.push_back(1.); //pb
+	Vcolorbkg.push_back(kOrange);
+	//cout << "bbH" << endl;
+      }
+            
       if( (inputfilename.find("M-126")<200 && !(inputfilename.find("GluGluToHToZZTo4L")<200)) ){
 	Vdatasetnamebkg.push_back(inputfilename);
-	Vlabelbkg.push_back("ggH, m_{H}=126 GeV");
+	Vlabelbkg.push_back("ggH, H #rightarrow ZZ, m_{H}=126 GeV");
 	Vxsectionbkg.push_back(1.); //pb
 	Vcolorbkg.push_back(kOrange-3);
       }            
