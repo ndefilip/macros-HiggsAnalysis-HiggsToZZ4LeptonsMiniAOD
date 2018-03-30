@@ -211,6 +211,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
     
    int N_8 = 0;
    int N_8_a = 0;
+   int N_8_b = 0;
    int N_9 = 0;
 
    int N_9_1FSR = 0;
@@ -225,6 +226,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    int N_VBF = 0;
    
    int N_10 = 0;
+   int N_11 = 0;
 
    // counter weighted
    double N_0_w = 0;	  // MC truth & acceptance
@@ -251,6 +253,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
    double N_8_w = 0;
    double N_8_a_w = 0;
+   double N_8_b_w = 0;
    double N_9_w = 0;
 
    double N_9_1FSR_w = 0;
@@ -266,10 +269,11 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    double N_VBF_w = 0;
 
    double N_10_w = 0;
+   double N_11_w = 0;
 
    // Book Histos ***
-   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 22, 0., 22.);
-   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 22, 0., 22.);
+   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weightd", 23, 0., 23.);
+   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 23, 0., 23.);
 
    TH1D *nEvent_red = new TH1D("nEvent_red", "nEventCompleteReduced", 7, 0., 7.);
    TH1D *nEvent_ZZ = new TH1D("nEvent_ZZ", "nEventCompleteFromZZ", 5, 0., 5.);
@@ -644,6 +648,28 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1F *hLogLinXPFMET_8             = new TH1F("hLogLinXPFMET_8","hLogLinXPFMET_8",NMOBINS, loglinMbins);
    hLogLinXPFMET_8->Sumw2();
 
+   // Step 8a with m4l window cut
+   TH1F * hPFMET_8a = new TH1F("hPFMET_8a", "PF MET after selection step 8a", 1000 , 0., 1000.);
+   hPFMET_8a->SetXTitle("PF MET (GeV)");   
+   TH1F *hLogLinXPFMET_8a          = new TH1F("hLogLinXPFMET_8a","hLogLinXPFMET_8a",NMOBINS, loglinMbins);
+   hLogLinXPFMET_8a->Sumw2();   
+   
+   TH1F * hM4l_T_8a = new TH1F("hM4l_T_8a", "Transverse Mass of four leptons after full selection + MET", 1200, 4.5, 1204.5 );
+   hM4l_T_8a->SetXTitle("m_{T} + PF MET (GeV)");
+   
+   TH1F * hDPHI_8a = new TH1F("DPHI_8a", "polar angle between 4l and E_{T,miss}", 1000, 0., 5. );
+   hDPHI_8a->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
+
+   TH1D * hNgood_8a = new TH1D("hNgood_8a", "Number of good leptons", 10, -0.5, 9.5);
+   hNgood_8a->SetXTitle("# good leptons");
+   TH1D * hNbjets_8a = new TH1D("hNbjets_8a", "Number of b jets", 10, -0.5, 9.5);
+   hNbjets_8a->SetXTitle("# b-jets");
+
+   // Step 8b with mZ window cut
+   TH1F * hPFMET_8b = new TH1F("hPFMET_8b", "PF MET after selection step 8b", 1000 , 0., 1000.);
+   hPFMET_8b->SetXTitle("PF MET (GeV)");   
+   TH1F *hLogLinXPFMET_8b = new TH1F("hLogLinXPFMET_8b","hLogLinXPFMET_8b",NMOBINS, loglinMbins);
+   hLogLinXPFMET_8b->Sumw2();   
 
    // Step 9 with PFMET cut
    TH1F * hM4l_9 = new TH1F("hM4l_9", "Mass of four leptons after selection step 9", 1200, 4.5, 1204.5 );
@@ -696,6 +722,12 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1D * hNbjets_10 = new TH1D("hNbjets_10", "Number of b jets", 10, -0.5, 9.5);
    hNbjets_10->SetXTitle("# b-jets");
    
+   // reverted mass peak cut
+   TH1F * hPFMET_12 = new TH1F("hPFMET_12", "PF MET after selection step 12", 1000 , 0., 1000.);
+   hPFMET_12->SetXTitle("PF MET (GeV)");  
+   TH1F *hLogLinXPFMET_12 = new TH1F("hLogLinXPFMET_12","hLogLinXPFMET_12",NMOBINS, loglinMbins);
+   hLogLinXPFMET_12->Sumw2();	   
+
    //global histos (during step 2..)
    
    TH1F * hN_loose_mu = new TH1F("hN_loose_mu", "N_loose_mu", 30 , 0. , 30. );
@@ -4064,6 +4096,26 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      
      // end of KD
 
+     // Step 8a m4l window cut
+     if ( abs(mass4l-125.)<=10.){ 
+       ++N_8_a;
+       N_8_a_w=N_8_a_w+newweight;     
+       hPFMET_8a->Fill(RECO_PFMET,newweight);
+       hLogLinXPFMET_8a->Fill(RECO_PFMET,newweight);
+       hM4l_T_8a->Fill(m4l_T,newweight);  
+       hDPHI_8a->Fill(fabs(DPHI),newweight);
+       hNgood_8a->Fill(f_Ngood,newweight);
+       hNbjets_8a->Fill(f_Nbjets,newweight);
+     }
+
+     // Step 8b m4l window cut
+     if ( abs(mass4l-Zmass)<=10.){ 
+       ++N_8_b;
+       N_8_b_w=N_8_b_w+newweight;     
+       hPFMET_8b->Fill(RECO_PFMET,newweight);
+       hLogLinXPFMET_8b->Fill(RECO_PFMET,newweight);
+     }
+
      // Step 9: signal enriched variables
      if ( abs(mass4l-125.)<=10. && RECO_PFMET>=50.){ 
        ++N_9_PFMET;
@@ -4093,6 +4145,17 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        hPtLep2_10->Fill( f_lept2_pt,newweight ) ;
        hPtLep3_10->Fill( f_lept3_pt,newweight ) ;
        hPtLep4_10->Fill( f_lept4_pt,newweight ) ;
+     }
+     
+     if (abs(mass4l-125.)<=10. && N_good==2 && Ne_good==2 && n_bjets<=1 && RECO_PFMET>=50.) {
+       ++N_11;
+       N_11_w=N_11_w+newweight;  
+     }  
+
+     // reverte the mass peak
+     if (abs(mass4l-125.)>10. && N_good==2 && Ne_good==2 && n_bjets<=1){
+       hPFMET_12->Fill(RECO_PFMET,newweight);
+       hLogLinXPFMET_12->Fill(RECO_PFMET,newweight);
      }
 
      //if( debug )
@@ -4289,6 +4352,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    nEvent_4l->GetXaxis()->SetBinLabel(20,"two Z+#gamma");
    nEvent_4l->GetXaxis()->SetBinLabel(21,"MET>100");
    nEvent_4l->GetXaxis()->SetBinLabel(22,"$|m_{4l}-125.|<=10$, $N_{good \\, l}=4$, $n_{b-jets}<=1$");
+   nEvent_4l->GetXaxis()->SetBinLabel(23,"$|m_{4l}-125.|<=10$, $N_{good \\, l}=4$, $n_{b-jets}<=1$, $MET>50$");
 
    nEvent_4l_w->GetXaxis()->SetBinLabel(1,"Init."); 
    nEvent_4l_w->GetXaxis()->SetBinLabel(2,"MCTruth: 4mu");  
@@ -4312,7 +4376,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    nEvent_4l_w->GetXaxis()->SetBinLabel(20,"two Z+#gamma");
    nEvent_4l_w->GetXaxis()->SetBinLabel(21,"MET>100");
    nEvent_4l_w->GetXaxis()->SetBinLabel(22,"$|m_{4l}-125.|<=10$, $N_{good \\, l}=4$, $n_{b-jets}<=1$");
-
+   nEvent_4l_w->GetXaxis()->SetBinLabel(23,"$|m_{4l}-125.|<=10$, $N_{good \\, l}=4$, $n_{b-jets}<=1$, $MET>50$");
 
    nEvent_4l->SetBinContent(1,N_0);
    nEvent_4l->SetBinContent(2,N_01);
@@ -4336,6 +4400,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    nEvent_4l->SetBinContent(20,N_9_2FSR);
    nEvent_4l->SetBinContent(21,N_9_PFMET);
    nEvent_4l->SetBinContent(22,N_10);
+   nEvent_4l->SetBinContent(23,N_11);
 
    nEvent_4l_w->SetBinContent(1,N_0_w);        nEvent_4l_w->SetBinError(1,sqrt(N_0)*N_0_w/N_0);
    nEvent_4l_w->SetBinContent(2,N_01_w);       nEvent_4l_w->SetBinError(2,sqrt(N_01)*N_01_w/N_01);
@@ -4359,7 +4424,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    nEvent_4l_w->SetBinContent(20,N_9_2FSR_w);  nEvent_4l_w->SetBinError(20,sqrt(N_9_2FSR)*N_9_2FSR_w/N_9_2FSR);
    nEvent_4l_w->SetBinContent(21,N_9_PFMET_w); nEvent_4l_w->SetBinError(21,sqrt(N_9_PFMET)*N_9_PFMET_w/N_9_PFMET);
    nEvent_4l_w->SetBinContent(22,N_10_w);      nEvent_4l_w->SetBinError(22,sqrt(N_10)*N_10_w/N_10);
-      
+   nEvent_4l_w->SetBinContent(23,N_11_w);      nEvent_4l_w->SetBinError(22,sqrt(N_11)*N_11_w/N_11);
+
    nEvent_red->GetXaxis()->SetBinLabel(1,"MCTruth: 2e2mu in Geom. Acc");
    nEvent_red->GetXaxis()->SetBinLabel(2,"One Z with lept. cuts");
    nEvent_red->GetXaxis()->SetBinLabel(3,"Two Z with 12 < m_{Z} < 120");
