@@ -76,7 +76,7 @@ PlotStack4l::PlotStack4l(){
     
   //inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_m4l_MC.txt";
   //inputfile="filelist_4e_2016_Spring16_AN_Bari_miniaod_met_step3.txt";
-  //inputfile="filelist_4mu_2016_Spring16_AN_Bari_miniaod.txt";
+  //inputfile="filelist_2e2mu_2016_Spring16_AN_Bari_miniaod.txt";
   inputfile="filelist_4l_2016_Spring16_AN_Bari_miniaod_met_step8.txt";
   //inputfile="test4mu_13TeV.txt";
 
@@ -94,7 +94,7 @@ PlotStack4l::PlotStack4l(){
   // std::string histolabel = "hPFMET_0"; // PFMET
   
   // Step 1  loose iso
-  //std::string histolabel = "hPFMET_1"; // PFMET                                                                                   
+  //std::string histolabel = "hPFMET_1"; // PFMET                                                                               
 
   //std::string histolabel = "hPtLep_0"; // pt not cuts (only pt>5)
   //std::string histolabel = "hIsoLep_0"; // PF isol _ delta B
@@ -128,8 +128,8 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hDjj_3"; // delta eta between jets for VBF analysis
   //std::string histolabel = "hVD_3"; // Fisher discriminant for VBF analysis
 
-  // std::string histolabel = "hPFMET_3"; // PFMET
-  // std::string histolabel = "hLogLinXPFMET_3"; //PF MET log
+  //std::string histolabel = "hPFMET_3"; // PFMET
+  //std::string histolabel = "hLogLinXPFMET_3"; //PF MET log
   // ****** After cuts on ,Z1, mZ2 and pT >20/10: step 5 ******
 
   //std::string histolabel = "hMZ1_5";    // Z1 mass   
@@ -164,7 +164,7 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hLogLinXPFMET_8"; //PF MET log
   //std::string histolabel = "hM4l_T_8"; // Transverse mass
   //std::string histolabel = "hLogLinXM4l_T_8"; //PF MET log
-  //std::string histolabel = "DPHI_8"; // DeltaPhi - 4l + MET
+  //std::string histolabel = "DPHI_8"; // DeltaPhi - 4l + MET  
 
   //std::string histolabel = "hDjj_8"; // delta eta between jets for VBF analysis
   //std::string histolabel = "hMjj_8"; // dimass between jets for VBF analysis
@@ -172,10 +172,18 @@ PlotStack4l::PlotStack4l(){
   //std::string histolabel = "hNbjets"; // Number of b-jets
   //std::string histolabel = "hNgood"; // Number of good leptons  
 
+  //std::string histolabel = "hLogLinXPFMET_8a"; //PF MET log
+  std::string histolabel = "hLogLinXPFMET_8b"; //PF MET log                                                                                                                              
+  //std::string histolabel = "hNbjets_8a"; // Number of b-jets
+  //std::string histolabel = "hNgood_8a"; // Number of good leptons  
+
   //std::string histolabel = "hNbjets_9"; // Number of b-jets
   //std::string histolabel = "hNgood_9"; // Number of good leptons  
   //std::string histolabel = "hPFMET_10";
-  std::string histolabel = "hLogLinXPFMET_10"; //PF MET log  
+  //std::string histolabel = "hLogLinXPFMET_10"; //PF MET log 
+
+  //std::string histolabel = "hPFMET_12";
+  //std::string histolabel = "hLogLinXPFMET_12"; //PF MET log
 
   useLogY = true;
   useLogX = false;
@@ -287,7 +295,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
   leg0->SetBorderSize(0);
  
   TLegend* legend = new TLegend( 0.55, 0.67, 0.9, 0.92);
-  //TLegend* legend = new TLegend( 0.55, 0.45, 0.9, 0.72);                                                                                                                                                 
+  //TLegend* legend = new TLegend( 0.55, 0.45, 0.9, 0.72);                                                                      
+
   legend->SetFillColor(kWhite);
   legend->SetTextSize(0.020);
 
@@ -378,8 +387,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe2= new TH2F("hframe2","hframe2",80,0.,10.,500, 0.5, 2.);// Tk Isolation          
   }
 
-  if (histlabel.find("hPFMET_1")<10){
-    hframe= new TH2F("hframe","hframe",5000, 0., 5000., 1000, 0.00001, 10000000000000.);// PFMET
+  if (histlabel.find("hPFMET_1")<10 || histlabel.find("hLogLinXPFMET_1")<10 ){
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.00001, 100000.);// PFMET
     hframe2= new TH2F("hframe2","hframe2",1000, 0., 1000., 1000, 0.5, 2.);// PFMET
   }
 
@@ -540,8 +549,8 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe2= new TH2F("hframe2","hframe2",6000, 10., 1200., 1000, 0.5, 1.5);// 
   }
 
-  if (histlabel.find("DPHI_8")<10 ){
-    hframe= new TH2F("hframe","hframe",80,0,3.14,500,0.00001,10E8);// deltaphi 4l,MET
+  if (histlabel.find("DPHI_8")<10 ){ // Rebin=40
+    hframe= new TH2F("hframe","hframe",80,0,3.14,500,0.00001,1E11);// deltaphi 4l,MET
     hframe2= new TH2F("hframe2","hframe2",80,0,3.14, 1000, 0.5, 1.5);// 
   }
 
@@ -584,7 +593,13 @@ void PlotStack4l::plotm4l(std::string histlabel){
   }
 
   if (histlabel.find("hNbjets")<10){
-    hframe= new TH2F("hframe","hframe",600,-0.5,9.,600,0.0004,10E7);// number of b-jets
+    hframe= new TH2F("hframe","hframe",600,-0.5,9.,600,0.000004,1E4);// number of b-jets
+    hframe2= new TH2F("hframe2","hframe2",600, -0.5, 9., 1000, 0.5, 1.5);// number of b-jets
+    hframe->SetXTitle("# bjets");
+  }
+
+  if (histlabel.find("hNbjets_9")<10){
+    hframe= new TH2F("hframe","hframe",600,-0.5,9.,600,0.000004,1E3);// number of b-jets
     hframe2= new TH2F("hframe2","hframe2",600, -0.5, 9., 1000, 0.5, 1.5);// number of b-jets
     hframe->SetXTitle("# bjets");
   }
@@ -595,10 +610,16 @@ void PlotStack4l::plotm4l(std::string histlabel){
     hframe->SetXTitle("# good lept.");
   }
 
+  if (histlabel.find("hNgood_9")<10){
+    hframe= new TH2F("hframe","hframe",600,3.5,10.5,600,0.000004,1E4);// number of good leptons
+    hframe2= new TH2F("hframe2","hframe2",600, 3.5, 9., 1000, 0.5, 1.5);// number of good leptons
+    hframe->SetXTitle("# good lept.");
+  }
+
   if (histlabel.find("hPFMET_10")<10 || (histlabel.find("hLogXPFMET_10")<10 || histlabel.find("hLogLinXPFMET_10")<10) ){
     cout << "Plotting PFMET at step 10" << endl;
-    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 1000000.);// PFMET                                                                                               
-    hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 1.5);// PFMET                                                                                                     
+    hframe= new TH2F("hframe","hframe",1000, 0., 1000., 1000, 0.000001, 1000000.);// PFMET                                      
+    hframe2= new TH2F("hframe2","hframe2",1000, 10., 1000., 1000, 0.5, 1.5);// PFMET                                            
   }
 
   if ( (histlabel.find("hPFMET_10")<10 ||( histlabel.find("hLogXPFMET_10")<10 || histlabel.find("hLogLinXPFMET_10")<10) ) && whichchannel.find("4l")<20){
@@ -711,16 +732,16 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     htotalHistoRatio = new TH1F("htotalHistoRatio", "htotalHistoRatio", Nbins, Xmin, Xmax);
   }
 
-  TH1D *nEvent_4l_w_totalbkgMC = new TH1D("nEvent_4l_w_totalbkgMC", "nEventComplete MC Weighted", 22, 0., 22.);
+  TH1D *nEvent_4l_w_totalbkgMC = new TH1D("nEvent_4l_w_totalbkgMC", "nEventComplete MC Weighted", 23, 0., 23.);
   nEvent_4l_w_totalbkgMC ->Sumw2();
-  TH1D *nEvent_4l_totalbkgMC = new TH1D("nEvent_4l_totalbkgMC", "nEventComplete MC", 22, 0., 22.);
+  TH1D *nEvent_4l_totalbkgMC = new TH1D("nEvent_4l_totalbkgMC", "nEventComplete MC", 23, 0., 23.);
   nEvent_4l_totalbkgMC->Sumw2();
   TList *listtotalbkgMC_w = new TList;
   TList *listtotalbkgMC = new TList;
 
 
   // data
-  TH1D *nEvent_4l_w_data = new TH1D("nEvent_4l_w_data", "nEventComplete data Weighted", 22, 0., 22.);
+  TH1D *nEvent_4l_w_data = new TH1D("nEvent_4l_w_data", "nEventComplete data Weighted", 23, 0., 23.);
   nEvent_4l_w_data->Sumw2();
   TList *listdata = new TList;
 
@@ -908,8 +929,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_qqZZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_qqZZ","hfourlepbestmass_4l_afterSel_new_qqZZ",NMBINS, logMbins);
   }
   else  hfourlepbestmass_4l_afterSel_new_qqZZ = new TH1F("hfourlepbestmass_4l_afterSel_new_qqZZ", "hfourlepbestmass_4l_afterSel_new_qqZZ", Nbins, Xmin, Xmax);
-  TH1D *nEvent_4l_w_qqZZ = new TH1D("nEvent_4l_w_qqZZ", "nEventComplete qqZZ Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_qqZZ = new TH1D("nEvent_4l_qqZZ", "nEventComplete qqZZ", 22, 0., 22.);
+  TH1D *nEvent_4l_w_qqZZ = new TH1D("nEvent_4l_w_qqZZ", "nEventComplete qqZZ Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_qqZZ = new TH1D("nEvent_4l_qqZZ", "nEventComplete qqZZ", 23, 0., 23.);
   nEvent_4l_w_qqZZ->Sumw2();
   nEvent_4l_qqZZ->Sumw2();
   TList *listqqZZ_w = new TList;
@@ -920,8 +941,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_ggZZ    = new TH1F("hfourlepbestmass_4l_afterSel_new_ggZZ","hfourlepbestmass_4l_afterSel_new_ggZZ",NMBINS, logMbins);
   }
   else hfourlepbestmass_4l_afterSel_new_ggZZ = new TH1F("hfourlepbestmass_4l_afterSel_new_ggZZ", "hfourlepbestmass_4l_afterSel_new_ggZZ", Nbins, Xmin, Xmax);
-  TH1D *nEvent_4l_w_ggZZ = new TH1D("nEvent_4l_w_ggZZ", "nEventComplete ggZZ Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_ggZZ = new TH1D("nEvent_4l_ggZZ", "nEventComplete ggZZ", 22, 0., 22.);
+  TH1D *nEvent_4l_w_ggZZ = new TH1D("nEvent_4l_w_ggZZ", "nEventComplete ggZZ Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_ggZZ = new TH1D("nEvent_4l_ggZZ", "nEventComplete ggZZ", 23, 0., 23.);
   nEvent_4l_w_ggZZ->Sumw2();
   nEvent_4l_ggZZ->Sumw2();
   TList *listggZZ_w = new TList;
@@ -935,8 +956,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   }
   else hfourlepbestmass_4l_afterSel_new_ZZ = new TH1F("hfourlepbestmass_4l_afterSel_new_ZZ", "hfourlepbestmass_4l_afterSel_new_ZZ", Nbins, Xmin, Xmax);
 
-  TH1D *nEvent_4l_w_ZZ = new TH1D("nEvent_4l_w_ZZ", "nEventComplete ZZ Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_ZZ = new TH1D("nEvent_4l_ZZ", "nEventComplete ZZ", 22, 0., 22.);
+  TH1D *nEvent_4l_w_ZZ = new TH1D("nEvent_4l_w_ZZ", "nEventComplete ZZ Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_ZZ = new TH1D("nEvent_4l_ZZ", "nEventComplete ZZ", 23, 0., 23.);
   nEvent_4l_w_ZZ->Sumw2();
   nEvent_4l_ZZ->Sumw2();
   TList *listZZ_w = new TList;
@@ -967,8 +988,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   }
   else hfourlepbestmass_4l_afterSel_new_qcd= new TH1F("hfourlepbestmass_4l_afterSel_new_qcd", "hfourlepbestmass_4l_afterSel_new_qcd", Nbins, Xmin, Xmax);
   
-  TH1D *nEvent_4l_w_QCD = new TH1D("nEvent_4l_w_QCD", "nEventComplete QCD Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_QCD = new TH1D("nEvent_4l_QCD", "nEventComplete QCD", 22, 0., 22.);
+  TH1D *nEvent_4l_w_QCD = new TH1D("nEvent_4l_w_QCD", "nEventComplete QCD Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_QCD = new TH1D("nEvent_4l_QCD", "nEventComplete QCD", 23, 0., 23.);
   nEvent_4l_w_QCD->Sumw2();
   nEvent_4l_QCD->Sumw2();
   TList *listQCD_w = new TList;
@@ -982,9 +1003,9 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   }
   else hfourlepbestmass_4l_afterSel_new_singlet = new TH1F("hfourlepbestmass_4l_afterSel_new_singlet", "hfourlepbestmass_4l_afterSel_new_singlet", Nbins, Xmin, Xmax);
   
-  TH1D *nEvent_4l_w_ST = new TH1D("nEvent_4l_w_ST", "nEventComplete ST Weighted", 22, 0., 22.);
+  TH1D *nEvent_4l_w_ST = new TH1D("nEvent_4l_w_ST", "nEventComplete ST Weighted", 23, 0., 23.);
   nEvent_4l_w_ST->Sumw2();
-  TH1D *nEvent_4l_ST = new TH1D("nEvent_4l_ST", "nEventComplete ST", 22, 0., 22.);
+  TH1D *nEvent_4l_ST = new TH1D("nEvent_4l_ST", "nEventComplete ST", 23, 0., 23.);
   nEvent_4l_ST->Sumw2();
   TList *listST_w = new TList;
   TList *listST = new TList;
@@ -1013,9 +1034,9 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   }
   else hfourlepbestmass_4l_afterSel_new_DYcc = new TH1F("hfourlepbestmass_4l_afterSel_new_DYcc", "hfourlepbestmass_4l_afterSel_new_DYcc",Nbins, Xmin, Xmax);        
   
-  TH1D *nEvent_4l_w_DY = new TH1D("nEvent_4l_w_DY", "nEventComplete DY Weighted", 22, 0., 22.);
+  TH1D *nEvent_4l_w_DY = new TH1D("nEvent_4l_w_DY", "nEventComplete DY Weighted", 23, 0., 23.);
   nEvent_4l_w_DY->Sumw2();
-  TH1D *nEvent_4l_DY = new TH1D("nEvent_4l_DY", "nEventComplete DY", 22, 0., 22.);
+  TH1D *nEvent_4l_DY = new TH1D("nEvent_4l_DY", "nEventComplete DY", 23, 0., 23.);
   nEvent_4l_DY->Sumw2();
   TList *listDY_w = new TList;
   TList *listDY = new TList;
@@ -1039,8 +1060,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   }
   else hfourlepbestmass_4l_afterSel_new_Wj= new TH1F("hfourlepbestmass_4l_afterSel_new_Wj", "hfourlepbestmass_4l_afterSel_new_Wj",Nbins, Xmin, Xmax);
   
-  TH1D *nEvent_4l_w_WZ_WW_Wj = new TH1D("nEvent_4l_w_WZ_WW_Wj", "nEventComplete WZ_WW_Wj Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_WZ_WW_Wj = new TH1D("nEvent_4l_WZ_WW_Wj", "nEventComplete WZ_WW_Wj", 22, 0., 22.);
+  TH1D *nEvent_4l_w_WZ_WW_Wj = new TH1D("nEvent_4l_w_WZ_WW_Wj", "nEventComplete WZ_WW_Wj Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_WZ_WW_Wj = new TH1D("nEvent_4l_WZ_WW_Wj", "nEventComplete WZ_WW_Wj", 23, 0., 23.);
   nEvent_4l_w_WZ_WW_Wj->Sumw2();
   nEvent_4l_WZ_WW_Wj->Sumw2();
   TList *listWZ_WW_Wj_w = new TList;
@@ -1051,8 +1072,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_TT = new TH1F("hfourlepbestmass_4l_afterSel_new_TT", "hfourlepbestmass_4l_afterSel_new_TT",NMBINS, logMbins);
   }
   else hfourlepbestmass_4l_afterSel_new_TT= new TH1F("hfourlepbestmass_4l_afterSel_new_TT", "hfourlepbestmass_4l_afterSel_new_TT",Nbins, Xmin, Xmax);
-  TH1D *nEvent_4l_w_TT = new TH1D("nEvent_4l_w_TT", "nEventComplete TT Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_TT = new TH1D("nEvent_4l_TT", "nEventComplete TT", 22, 0., 22.);
+  TH1D *nEvent_4l_w_TT = new TH1D("nEvent_4l_w_TT", "nEventComplete TT Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_TT = new TH1D("nEvent_4l_TT", "nEventComplete TT", 23, 0., 23.);
   nEvent_4l_w_TT->Sumw2();
   nEvent_4l_TT->Sumw2();
   TList *listTT_w = new TList;
@@ -1063,8 +1084,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_VVV = new TH1F("hfourlepbestmass_4l_afterSel_new_VVV", "hfourlepbestmass_4l_afterSel_new_VVV",NMBINS, logMbins);
   }
   else hfourlepbestmass_4l_afterSel_new_VVV= new TH1F("hfourlepbestmass_4l_afterSel_new_VVV", "hfourlepbestmass_4l_afterSel_new_VVV",Nbins, Xmin, Xmax);
-  TH1D *nEvent_4l_w_VVV = new TH1D("nEvent_4l_w_VVV", "nEventComplete VVV Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_VVV = new TH1D("nEvent_4l_VVV", "nEventComplete VVV", 22, 0., 22.);
+  TH1D *nEvent_4l_w_VVV = new TH1D("nEvent_4l_w_VVV", "nEventComplete VVV Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_VVV = new TH1D("nEvent_4l_VVV", "nEventComplete VVV", 23, 0., 23.);
   nEvent_4l_w_VVV->Sumw2();
   nEvent_4l_VVV->Sumw2();
   TList *listVVV_w = new TList;
@@ -1075,8 +1096,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_TTV = new TH1F("hfourlepbestmass_4l_afterSel_new_TTV", "hfourlepbestmass_4l_afterSel_new_TTV",NMBINS, logMbins);
   }
   else hfourlepbestmass_4l_afterSel_new_TTV= new TH1F("hfourlepbestmass_4l_afterSel_new_TTV", "hfourlepbestmass_4l_afterSel_new_TTV",Nbins, Xmin, Xmax);
-  TH1D *nEvent_4l_w_TTV = new TH1D("nEvent_4l_w_TTV", "nEventComplete TTV Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_TTV = new TH1D("nEvent_4l_TTV", "nEventComplete TTV", 22, 0., 22.);
+  TH1D *nEvent_4l_w_TTV = new TH1D("nEvent_4l_w_TTV", "nEventComplete TTV Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_TTV = new TH1D("nEvent_4l_TTV", "nEventComplete TTV", 23, 0., 23.);
   nEvent_4l_w_TTV->Sumw2();
   nEvent_4l_TTV->Sumw2();
   TList *listTTV_w = new TList;
@@ -1169,24 +1190,24 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_totSM_HWW= new TH1F("hfourlepbestmass_4l_afterSel_new_totSM_HWW", "hfourlepbestmass_4l_afterSel_new_totSM_HWW",Nbins, Xmin, Xmax);
   }
   
-  TH1D *nEvent_4l_w_totSM_H = new TH1D("nEvent_4l_w_totSM_H", "nEventComplete totSM_H Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_totSM_H = new TH1D("nEvent_4l_totSM_H", "nEventComplete totSM_H", 22, 0., 22.);
+  TH1D *nEvent_4l_w_totSM_H = new TH1D("nEvent_4l_w_totSM_H", "nEventComplete totSM_H Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_totSM_H = new TH1D("nEvent_4l_totSM_H", "nEventComplete totSM_H", 23, 0., 23.);
   nEvent_4l_w_totSM_H->Sumw2();
   nEvent_4l_totSM_H->Sumw2();
   TList *listtotSM_H_w = new TList;
   TList *listtotSM_H = new TList;
 
 
-  TH1D *nEvent_4l_w_totSM_HZZ = new TH1D("nEvent_4l_w_totSM_HZZ", "nEventComplete totSM_HZZ Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_totSM_HZZ = new TH1D("nEvent_4l_totSM_HZZ", "nEventComplete totSM_HZZ", 22, 0., 22.);
+  TH1D *nEvent_4l_w_totSM_HZZ = new TH1D("nEvent_4l_w_totSM_HZZ", "nEventComplete totSM_HZZ Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_totSM_HZZ = new TH1D("nEvent_4l_totSM_HZZ", "nEventComplete totSM_HZZ", 23, 0., 23.);
   nEvent_4l_w_totSM_HZZ->Sumw2();
   nEvent_4l_totSM_HZZ->Sumw2();
   TList *listtotSM_HZZ_w = new TList;
   TList *listtotSM_HZZ = new TList;
 
 
-  TH1D *nEvent_4l_w_totSM_HWW = new TH1D("nEvent_4l_w_totSM_HWW", "nEventComplete totSM_HWW Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_totSM_HWW = new TH1D("nEvent_4l_totSM_HWW", "nEventComplete totSM_HWW", 22, 0., 22.);
+  TH1D *nEvent_4l_w_totSM_HWW = new TH1D("nEvent_4l_w_totSM_HWW", "nEventComplete totSM_HWW Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_totSM_HWW = new TH1D("nEvent_4l_totSM_HWW", "nEventComplete totSM_HWW", 23, 0., 23.);
   nEvent_4l_w_totSM_HWW->Sumw2();
   nEvent_4l_totSM_HWW->Sumw2();
   TList *listtotSM_HWW_w = new TList;
@@ -1198,8 +1219,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
     hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H = new TH1F("hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H", "hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H",NMBINS, logMbins);
   }
   else hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H = new TH1F("hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H", "hfourlepbestmass_4l_afterSel_new_totbkg_noSM_H",Nbins, Xmin, Xmax);
-  TH1D *nEvent_4l_w_totbkg_noSM_H = new TH1D("nEvent_4l_w_totbkg_noSM_H", "nEventComplete totbkg_noSM_H Weighted", 22, 0., 22.);
-  TH1D *nEvent_4l_totbkg_noSM_H = new TH1D("nEvent_4l_totbkg_noSM_H", "nEventComplete totbkg_noSM_H", 22, 0., 22.);
+  TH1D *nEvent_4l_w_totbkg_noSM_H = new TH1D("nEvent_4l_w_totbkg_noSM_H", "nEventComplete totbkg_noSM_H Weighted", 23, 0., 23.);
+  TH1D *nEvent_4l_totbkg_noSM_H = new TH1D("nEvent_4l_totbkg_noSM_H", "nEventComplete totbkg_noSM_H", 23, 0., 23.);
   nEvent_4l_w_totbkg_noSM_H->Sumw2();
   nEvent_4l_totbkg_noSM_H->Sumw2();
   TList *listtotbkg_noSM_H_w = new TList;
@@ -2441,8 +2462,8 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
   }
   else hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1 = new TH1F("hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1","hfourlepbestmass_4l_newZpBaryonic_MZp500_MChi1", Nbins, Xmin, Xmax);
 
-  TH1D *nEvent_4l_w_ZpBaryonic_MZp500_MChi1 = new TH1D("nEvent_4l_w_ZpBaryonic_MZp500_MChi1","nEvent_4l_w_ZpBaryonic_MZp500_MChi1",22,0.,22.);
-  TH1D *nEvent_4l_ZpBaryonic_MZp500_MChi1 = new TH1D("nEvent_4l_ZpBaryonic_MZp500_MChi1","nEvent_4l_ZpBaryonic_MZp500_MChi1",22,0.,22.);
+  TH1D *nEvent_4l_w_ZpBaryonic_MZp500_MChi1 = new TH1D("nEvent_4l_w_ZpBaryonic_MZp500_MChi1","nEvent_4l_w_ZpBaryonic_MZp500_MChi1",23,0.,23.);
+  TH1D *nEvent_4l_ZpBaryonic_MZp500_MChi1 = new TH1D("nEvent_4l_ZpBaryonic_MZp500_MChi1","nEvent_4l_ZpBaryonic_MZp500_MChi1",23,0.,23.);
   nEvent_4l_w_ZpBaryonic_MZp500_MChi1->Sumw2();
   nEvent_4l_ZpBaryonic_MZp500_MChi1->Sumw2();
   TList *listZpBaryonic_MZp500_MChi1_w = new TList;
@@ -3250,6 +3271,24 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
 //& %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f  \\\\",nEvent_4l_w_ZZ->GetBinContent(15),nEvent_4l_w_DY->GetBinContent(15),nEvent_4l_w_WZ_WW_Wj->GetBinContent(15),nEvent_4l_w_TT->GetBinContent(15),nEvent_4l_w_TTV->GetBinContent(15),nEvent_4l_w_VVV->GetBinContent(15),nEvent_4l_w_totSM_H->GetBinContent(15),nEvent_4l_w_totalbkgMC->GetBinContent(15),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(15),nEvent_4l_w_data->GetBinContent(15));
   //cout << outformat <<endl;
   
+  sprintf (outformat,"$|m_{4l}-125| \\leq 10$ & %.2e $ \\pm $ %.2e & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
+       nEvent_4l_w_ZZ->GetBinContent(17), nEvent_4l_w_ZZ->GetBinError(17),
+       nEvent_4l_w_DY->GetBinContent(17), nEvent_4l_w_DY->GetBinError(17),
+       nEvent_4l_w_WZ_WW_Wj->GetBinContent(17),  nEvent_4l_w_WZ_WW_Wj->GetBinError(17), 
+       nEvent_4l_w_TT->GetBinContent(17), nEvent_4l_w_TT->GetBinError(17), 
+       nEvent_4l_w_TTV->GetBinContent(17), nEvent_4l_w_TTV->GetBinError(17), 
+       nEvent_4l_w_VVV->GetBinContent(17), nEvent_4l_w_VVV->GetBinError(17),
+       nEvent_4l_w_QCD->GetBinContent(17), nEvent_4l_w_QCD->GetBinError(17),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(17), nEvent_4l_w_totSM_HZZ->GetBinError(17),
+       nEvent_4l_w_totSM_HWW->GetBinContent(17), nEvent_4l_w_totSM_HWW->GetBinError(17),	   
+       nEvent_4l_w_totalbkgMC->GetBinContent(17), nEvent_4l_w_totalbkgMC->GetBinError(17),
+       nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(17), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(17),
+       int(nEvent_4l_w_data->GetBinContent(17)));
+  cout << outformat <<endl;
+// //& %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f  \\\\",nEvent_4l_w_ZZ->GetBinContent(17),nEvent_4l_w_DY->GetBinContent(17),nEvent_4l_w_WZ_WW_Wj->GetBinContent(17),nEvent_4l_w_TT->GetBinContent(17),nEvent_4l_w_TTV->GetBinContent(17),nEvent_4l_w_VVV->GetBinContent(17),nEvent_4l_w_totSM_H->GetBinContent(17),nEvent_4l_w_totalbkgMC->GetBinContent(17),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(17),nEvent_4l_w_data->GetBinContent(17));
+//   //cout << outformat <<endl;
+
+
   sprintf (outformat,"$|m_{4l}-125| \\leq 10$, $N_{l}=4$, $n_{b} \\leq 1$ & %.2e $ \\pm $ %.2e & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
        nEvent_4l_w_ZZ->GetBinContent(22), nEvent_4l_w_ZZ->GetBinError(22),
        nEvent_4l_w_DY->GetBinContent(22), nEvent_4l_w_DY->GetBinError(22),
@@ -3265,6 +3304,24 @@ if ( histlabel.find("hLogX")<10 || histlabel.find("hLogLinX")<10) {
        int(nEvent_4l_w_data->GetBinContent(22)));
   cout << outformat <<endl;
 //& %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f  \\\\",nEvent_4l_w_ZZ->GetBinContent(22),nEvent_4l_w_DY->GetBinContent(22),nEvent_4l_w_WZ_WW_Wj->GetBinContent(22),nEvent_4l_w_TT->GetBinContent(22),nEvent_4l_w_TTV->GetBinContent(22),nEvent_4l_w_VVV->GetBinContent(22),nEvent_4l_w_totSM_H->GetBinContent(22),nEvent_4l_w_totalbkgMC->GetBinContent(22),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(22),nEvent_4l_w_data->GetBinContent(22));
+  //cout << outformat <<endl;
+
+  
+   sprintf (outformat,"$|m_{4l}-125| \\leq 10$, $N_{l}=4$, $n_{b} \\leq 1$, $MET>50$ & %.2e $ \\pm $ %.2e & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %.2f $ \\pm $ %.2f & %d  \\\\",
+       nEvent_4l_w_ZZ->GetBinContent(23), nEvent_4l_w_ZZ->GetBinError(23),
+       nEvent_4l_w_DY->GetBinContent(23), nEvent_4l_w_DY->GetBinError(23),
+       nEvent_4l_w_WZ_WW_Wj->GetBinContent(23),  nEvent_4l_w_WZ_WW_Wj->GetBinError(23), 
+       nEvent_4l_w_TT->GetBinContent(23), nEvent_4l_w_TT->GetBinError(23), 
+       nEvent_4l_w_TTV->GetBinContent(23), nEvent_4l_w_TTV->GetBinError(23), 
+       nEvent_4l_w_VVV->GetBinContent(23), nEvent_4l_w_VVV->GetBinError(23),
+       nEvent_4l_w_QCD->GetBinContent(23), nEvent_4l_w_QCD->GetBinError(23),
+       nEvent_4l_w_totSM_HZZ->GetBinContent(23), nEvent_4l_w_totSM_HZZ->GetBinError(23),
+       nEvent_4l_w_totSM_HWW->GetBinContent(23), nEvent_4l_w_totSM_HWW->GetBinError(23),	   
+       nEvent_4l_w_totalbkgMC->GetBinContent(23), nEvent_4l_w_totalbkgMC->GetBinError(23),
+       nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(23), nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinError(23),
+       int(nEvent_4l_w_data->GetBinContent(23)));
+  cout << outformat <<endl;
+//& %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f  \\\\",nEvent_4l_w_ZZ->GetBinContent(23),nEvent_4l_w_DY->GetBinContent(23),nEvent_4l_w_WZ_WW_Wj->GetBinContent(23),nEvent_4l_w_TT->GetBinContent(23),nEvent_4l_w_TTV->GetBinContent(23),nEvent_4l_w_VVV->GetBinContent(23),nEvent_4l_w_totSM_H->GetBinContent(23),nEvent_4l_w_totalbkgMC->GetBinContent(23),nEvent_4l_w_ZpBaryonic_MZp500_MChi1->GetBinContent(23),nEvent_4l_w_data->GetBinContent(23));
   //cout << outformat <<endl;
 
  cout << 
