@@ -34,7 +34,10 @@ bash compilereference.sh 4mu
 
 
 ./RunReferenceAnalysis ./sig_input_h150.txt 1 ./bkg_input.txt 1 ./data_input.txt 1 site year mc >& ${workdir}/HZZ4LeptonsAnalysis_log
-cp -f ${workdir}/HZZ4LeptonsAnalysis_log /lustre/cms/store/user/defilip/MonoHiggs/80X/jobdir/HZZ4LeptonsAnalysis_log
+
+tar -zcvf ${workdir}/HZZ4LeptonsAnalysis_log.tgz ${workdir}/HZZ4LeptonsAnalysis_log
+
+cp -f ${workdir}/HZZ4LeptonsAnalysis_log.tgz /lustre/cms/store/user/defilip/MonoHiggs/80X/jobdir/.
 
 mv ${workdir}/output.root    ${savedir}/.
 mv ${workdir}/output_bnn.txt ${savedir}/.
