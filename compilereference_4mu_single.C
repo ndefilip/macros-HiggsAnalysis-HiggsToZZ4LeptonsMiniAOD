@@ -37,10 +37,16 @@ int main(int argc, char ** argv){
     sprintf(nome,"dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2013/HZZ4lExercise/sig/roottree_leptons_GluGluToHToZZTo4L_M-1000_8TeV-powheg-pythia6.root");
   }
   else {
-    sprintf(nome,"/localdata/Syncr13TeV/roottree_leptons_sync_Fall15_HiggsToZZ_76x.root");
-    //sprintf(nome,"roottree_leptons.root");
-  }
-
+  //  sprintf(nome,"roottree_DoubleMuon_Run2016H-03Feb2017_ver2-v1_part1_extraHLT_new.root");
+//     sprintf(nome,"roottree_DoubleMuon_Run2016H-03Feb2017_ver2-v1_part2_extraHLT_new.root");
+//    sprintf(nome,"roottree_DoubleMuon_Run2016H-03Feb2017_ver2-v1_part3_extraHLT_new.root");
+ //   sprintf(nome,"roottree_DoubleMuon_Run2016H-03Feb2017_ver2-v1_part4_extraHLT_new.root");
+//    sprintf(nome,"roottree_DoubleMuon_Run2016H-03Feb2017_ver3-v1_part4_extraHLT_new.root");
+ //   sprintf(nome,"roottree_DoubleMuon_Run2016G-03Feb2017-v1_part1_extraHLT_new.root");
+//   sprintf(nome,"roottree_DoubleMuon_Run2016G-03Feb2017-v1_part3_extraHLT_new.root");
+    sprintf(nome,"roottree_DoubleMuon_Run2016G-03Feb2017-v1_part2_extraHLT_new.root");
+ 
+}
 
   TFile *file3;
   file3 = TFile::Open(nome);
