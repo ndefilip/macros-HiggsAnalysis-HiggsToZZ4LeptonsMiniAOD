@@ -88,6 +88,27 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    isSignal=(datasetName.Contains("2HDM") || datasetName.Contains("Baryonic"));
    cout << "isSignal= " << isSignal << endl;
 
+   char *basename(char *path);
+   cout << "Basename " << basename(datasetChar) << endl;
+   TString datasetBase=basename(datasetChar);
+
+   // pT reweigthing
+   if ( datasetBase.Contains("2HDM") && datasetBase.Contains("Target") ){
+     datasetBase=datasetBase.ReplaceAll("_reweighted","");
+     datasetBase=datasetBase.ReplaceAll("output_ZprimeToA0hToA0chichihZZTo4l_2HDM_13TeV-madgraph_","");
+     datasetBase=datasetBase.ReplaceAll("MZp-","");
+     datasetBase=datasetBase.ReplaceAll("MA0-","");
+     cout << "DatasetBase is= " << datasetBase.Data() << endl;
+   }
+   else if ( datasetBase.Contains("Baryonic") && datasetBase.Contains("Target") ){
+     datasetBase=datasetBase.ReplaceAll("_reweighted","");
+     datasetBase=datasetBase.ReplaceAll("output_MonoHZZ4l_ZpBaryonic_13TeV-madgraph_","");
+     datasetBase=datasetBase.ReplaceAll("MZp-","");
+     datasetBase=datasetBase.ReplaceAll("MChi-","");
+     cout << "DatasetBase is= " << datasetBase.Data() << endl;
+   }
+
+
    TString ggH="GluGluHToZZTo4L";
    Bool_t isggH=false;
    TString ggHnew="SMHiggsToZZTo4L";
@@ -103,10 +124,6 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    Bool_t isvbf=false;
    isvbf=datasetName.Contains(vbf);
    cout << "isvbf= " << int(isvbf) << endl;
-
-   char *basename(char *path);
-   cout << "Basename " << basename(datasetChar) << endl;
-   TString datasetBase=basename(datasetChar);
 
    TString mhstring=datasetBase.ReplaceAll("GluGluToHToZZTo4L_M-","");
    mhstring=mhstring.ReplaceAll("VBF_HToZZTo4L_M-","");
@@ -124,6 +141,20 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    mHgen=atof(mhstring.Data());
    cout << "mHgen= " << mHgen << endl;
    
+   //pT gen reweighting 
+   char histotitle[500];
+   sprintf(histotitle,"%s",datasetBase.Data());
+   TH1F *pTweighthisto;
+
+   TFile *f2HDM=TFile::Open("HISTOShapes2HDM_READ_ext.root");
+   TFile *fBaryonic=TFile::Open("HISTOShapesZpB_READ.root");
+
+   if ( datasetBase.Contains("2HDM") && datasetBase.Contains("Target")){
+     pTweighthisto=(TH1F*)f2HDM->Get(histotitle);
+   }
+   else if ( datasetBase.Contains("Baryonic") && datasetBase.Contains("Target")){ 
+     pTweighthisto=(TH1F*)fBaryonic->Get(histotitle);
+   }
 
    // Pileup reweighting 2016 data vs Spring16 MC in 80x
 
@@ -270,11 +301,14 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    bool useMatchingRecoToGen=false;
 
    // Book Histos ***
-   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weighted", 22, 0., 22.);
-   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 22, 0., 22.);
+   TH1D *nEvent_4l_w = new TH1D("nEvent_4l_w", "nEventComplete Weighted", 23, 0., 23.);
+   TH1D *nEvent_4l = new TH1D("nEvent_4l", "nEventComplete", 23, 0., 23.);
 
    TH1D *nEvent_red = new TH1D("nEvent_red", "nEventCompleteReduced", 7, 0., 7.);
    TH1D *nEvent_ZZ = new TH1D("nEvent_ZZ", "nEventCompleteFromZZ", 5, 0., 5.);
+
+   TH1F *hweight = new TH1F("hweight", "hweight",10000,0.,10.);
+
 
    TH1F *hgenmu_eta              = new TH1F("hgenmu_eta", "hgenmu_eta",2000,-10.,10.);  
    TH1F *hgenmu_pt               = new TH1F("hgenmu_pt", "hgenmu_pt",5000,0.,500.);  
@@ -294,7 +328,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
    // pfmet with logaritmic bin width
    const int NMBINS = 10;
-   const double MMIN = 1.0, MMAX = 1000.0;
+   const double MMIN = 1.0, MMAX = 10000.0;
    double logMbins[NMBINS+1];
    float binNormNr=0.;
    for (int ibin = 0; ibin <= NMBINS; ibin++) {
@@ -303,8 +337,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    }
 
    const int NMOBINS = 5;
-   const double MOMIN = 0.0, MOMAX = 1000.0;
-   double loglinMbins[6]={0.,25.,50.,200., 500.,1000.};
+   const double MOMIN = 0.0, MOMAX = 10000.0;
+   double loglinMbins[6]={0.,25.,50.,200., 500.,10000.};
 
    // step 0
    TH1F * hPtLep_0 = new TH1F("hPtLep_0", "Pt of Lep after selection step 0", 200 , -0.5 , 199.5 );
@@ -362,7 +396,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1F * hVD_3 = new TH1F("hVD_3", "Discriminant vbf selection step 1", 200, -0.5, 9.5 );
    hMjj_3->SetXTitle("Discriminant");
    
-   TH1F * hPFMET_3 = new TH1F("hPFMET_3", "PF MET after selection step 3", 4000 , 0., 4000.);
+   TH1F * hPFMET_3 = new TH1F("hPFMET_3", "PF MET after selection step 3", 10000 , 0., 10000.);
    hPFMET_3->SetXTitle("PF MET");
 
    // Build the histo with constant log bin width   
@@ -655,11 +689,12 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    hSip_7->SetXTitle("Sip");
    TH1F * hIp_7 = new TH1F("hIp_7", "Ip maxima after selection step 7",  1000 , -20. , 40. );
    hIp_7->SetXTitle("Ip");
-   TH1F * hPFMET_7 = new TH1F("hPFMET_7", "PF MET after selection step 7", 1000 , 0., 1000.);
+   TH1F * hPFMET_7 = new TH1F("hPFMET_7", "PF MET after selection step 7", 10000 , 0., 10000.);
    hPFMET_7->SetXTitle("PF MET (GeV)"); 
 
    TH1F * hDPHI_7 = new TH1F("DPHI_7", "polar angle between 4l and E_{T,miss}", 1000, 0., 5. );
    hDPHI_7->SetXTitle("#DELTA#phi(4l,E_{T,miss})");
+
 
    //step 8
    TH1F * hM4l_8 = new TH1F("hM4l_8", "Mass of four leptons after selection step 8", 1200, 4.5, 1204.5 );
@@ -760,7 +795,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1F * hMZ2_noFSR_8 = new TH1F("hMZ2_noFSR_8", "Mass of Z2 after selection step 8 _noFSR", 200 , -0.5 , 199.5 );
    hMZ2_8->SetXTitle("mass_Z2  (GeV)");
    
-   TH1F * hPFMET_8 = new TH1F("hPFMET_8", "PF MET after selection step 8", 1000 , 0., 1000.);
+   TH1F * hPFMET_8 = new TH1F("hPFMET_8", "PF MET after selection step 8", 10000 , 0., 10000.);
    hPFMET_8->SetXTitle("PF MET");
 
    TH1F * hM4l_T_8 = new TH1F("hM4l_T_8", "Transverse Mass of four leptons after full selection + MET", 1200, 4.5, 1204.5 );
@@ -782,8 +817,34 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1F *hLogLinXPFMET_8          = new TH1F("hLogLinXPFMET_8","hLogLinXPFMET_8",NMOBINS, loglinMbins);
    hLogLinXPFMET_8->Sumw2();
 
+   TH1F * hPFMET_JetEnUp_8= new TH1F("hPFMET_JetEnUp_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_JetEnUp_8->Sumw2();
+   TH1F * hPFMET_JetEnDn_8= new TH1F("hPFMET_JetEnDn_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_JetEnDn_8->Sumw2();
+   TH1F * hPFMET_ElectronEnUp_8= new TH1F("hPFMET_ElectronEnUp_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_ElectronEnUp_8->Sumw2();
+   TH1F * hPFMET_ElectronEnDn_8= new TH1F("hPFMET_ElectronEnDn_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_ElectronEnDn_8->Sumw2();
+   TH1F * hPFMET_MuonEnUp_8= new TH1F("hPFMET_MuonEnUp_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_MuonEnUp_8->Sumw2();
+   TH1F * hPFMET_MuonEnDn_8= new TH1F("hPFMET_MuonEnDn_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_MuonEnDn_8->Sumw2();
+   TH1F * hPFMET_JetResUp_8= new TH1F("hPFMET_JetResUp_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_JetResUp_8->Sumw2();
+   TH1F * hPFMET_JetResDn_8= new TH1F("hPFMET_JetResDn_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_JetResDn_8->Sumw2();
+   TH1F * hPFMET_UnclusteredEnUp_8= new TH1F("hPFMET_UnclusteredEnUp_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_UnclusteredEnUp_8->Sumw2();
+   TH1F * hPFMET_UnclusteredEnDn_8= new TH1F("hPFMET_UnclusteredEnDn_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_UnclusteredEnDn_8->Sumw2();
+   TH1F * hPFMET_PhotonEnUp_8= new TH1F("hPFMET_PhotonEnUp_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_PhotonEnUp_8->Sumw2();
+   TH1F * hPFMET_PhotonEnDn_8= new TH1F("hPFMET_PhotonEnDn_8", "PF MET after selection step 8", 10000 , 0., 10000.);
+   hPFMET_PhotonEnDn_8->Sumw2();
+
+
    // Step 8a with m4l window cut
-   TH1F * hPFMET_8a = new TH1F("hPFMET_8a", "PF MET after selection step 8a", 1000 , 0., 1000.);
+   TH1F * hPFMET_8a = new TH1F("hPFMET_8a", "PF MET after selection step 8a", 10000 , 0., 10000.);
    hPFMET_8a->SetXTitle("PF MET (GeV)");   
    TH1F *hLogLinXPFMET_8a          = new TH1F("hLogLinXPFMET_8a","hLogLinXPFMET_8a",NMOBINS, loglinMbins);
    hLogLinXPFMET_8a->Sumw2();
@@ -801,7 +862,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    hNbjets_8a->SetXTitle("# b-jets");
 
    // Step 8b with mZ window cut
-   TH1F * hPFMET_8b = new TH1F("hPFMET_8b", "PF MET after selection step 8b", 1000 , 0., 1000.);
+   TH1F * hPFMET_8b = new TH1F("hPFMET_8b", "PF MET after selection step 8b", 10000 , 0., 10000.);
    hPFMET_8b->SetXTitle("PF MET (GeV)");   
    TH1F *hLogLinXPFMET_8b = new TH1F("hLogLinXPFMET_8b","hLogLinXPFMET_8b",NMOBINS, loglinMbins);
    hLogLinXPFMET_8b->Sumw2();   
@@ -810,7 +871,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TH1F * hM4l_9 = new TH1F("hM4l_9", "Mass of four leptons after selection step 9", 1200, 4.5, 1204.5 );
    hM4l_9->SetXTitle("4 lepton mass  (GeV)");
     
-   TH1F * hPFMET_9 = new TH1F("hPFMET_9", "PF MET after selection step 9", 1000 , 0., 1000.);
+   TH1F * hPFMET_9 = new TH1F("hPFMET_9", "PF MET after selection step 9", 10000 , 0., 10000.);
    hPFMET_9->SetXTitle("PF MET (GeV)");   
    
    TH1F * hM4l_T_9 = new TH1F("hM4l_T_9", "Transverse Mass of four leptons after full selection + MET", 1200, 4.5, 1204.5 );
@@ -826,10 +887,64 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
 
    // Step 10 with signal region cuts
-   TH1F * hPFMET_10 = new TH1F("hPFMET_10", "PF MET after selection step 10", 1000 , 0., 1000.);
+   TH1F * hPFMET_10 = new TH1F("hPFMET_10", "PF MET after selection step 10", 10000 , 0., 10000.);
    hPFMET_10->SetXTitle("PF MET (GeV)");  
+   hPFMET_10->Sumw2();
+
+   TH1F * hPFMET_JetEnUp_10= new TH1F("hPFMET_JetEnUp_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_JetEnUp_10->Sumw2();
+   TH1F * hPFMET_JetEnDn_10= new TH1F("hPFMET_JetEnDn_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_JetEnDn_10->Sumw2();
+   TH1F * hPFMET_ElectronEnUp_10= new TH1F("hPFMET_ElectronEnUp_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_ElectronEnUp_10->Sumw2();
+   TH1F * hPFMET_ElectronEnDn_10= new TH1F("hPFMET_ElectronEnDn_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_ElectronEnDn_10->Sumw2();
+   TH1F * hPFMET_MuonEnUp_10= new TH1F("hPFMET_MuonEnUp_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_MuonEnUp_10->Sumw2();
+   TH1F * hPFMET_MuonEnDn_10= new TH1F("hPFMET_MuonEnDn_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_MuonEnDn_10->Sumw2();
+   TH1F * hPFMET_JetResUp_10= new TH1F("hPFMET_JetResUp_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_JetResUp_10->Sumw2();
+   TH1F * hPFMET_JetResDn_10= new TH1F("hPFMET_JetResDn_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_JetResDn_10->Sumw2();
+   TH1F * hPFMET_UnclusteredEnUp_10= new TH1F("hPFMET_UnclusteredEnUp_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_UnclusteredEnUp_10->Sumw2();
+   TH1F * hPFMET_UnclusteredEnDn_10= new TH1F("hPFMET_UnclusteredEnDn_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_UnclusteredEnDn_10->Sumw2();
+   TH1F * hPFMET_PhotonEnUp_10= new TH1F("hPFMET_PhotonEnUp_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_PhotonEnUp_10->Sumw2();
+   TH1F * hPFMET_PhotonEnDn_10= new TH1F("hPFMET_PhotonEnDn_10", "PF MET after selection step 10", 10000 , 0., 10000.);
+   hPFMET_PhotonEnDn_10->Sumw2();
+
+   // variable bin width
    TH1F *hLogLinXPFMET_10             = new TH1F("hLogLinXPFMET_10","hLogLinXPFMET_10",NMOBINS, loglinMbins);
    hLogLinXPFMET_10->Sumw2();
+
+   TH1F * hLogLinXPFMET_JetEnUp_10= new TH1F("hLogLinXPFMET_JetEnUp_10", "hLogLinXPFMET_JetEnUp_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_JetEnUp_10->Sumw2();
+   TH1F * hLogLinXPFMET_JetEnDn_10= new TH1F("hLogLinXPFMET_JetEnDn_10", "hLogLinXPFMET_JetEnDn_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_JetEnDn_10->Sumw2();
+   TH1F * hLogLinXPFMET_ElectronEnUp_10= new TH1F("hLogLinXPFMET_ElectronEnUp_10", "hLogLinXPFMET_ElectronEnUp_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_ElectronEnUp_10->Sumw2();
+   TH1F * hLogLinXPFMET_ElectronEnDn_10= new TH1F("hLogLinXPFMET_ElectronEnDn_10", "hLogLinXPFMET_ElectronEnDn_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_ElectronEnDn_10->Sumw2();
+   TH1F * hLogLinXPFMET_MuonEnUp_10= new TH1F("hLogLinXPFMET_MuonEnUp_10", "hLogLinXPFMET_MuonEnUp_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_MuonEnUp_10->Sumw2();
+   TH1F * hLogLinXPFMET_MuonEnDn_10= new TH1F("hLogLinXPFMET_MuonEnDn_10", "hLogLinXPFMET_MuonEnDn_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_MuonEnDn_10->Sumw2();
+   TH1F * hLogLinXPFMET_JetResUp_10= new TH1F("hLogLinXPFMET_JetResUp_10", "hLogLinXPFMET_JetResUp_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_JetResUp_10->Sumw2();
+   TH1F * hLogLinXPFMET_JetResDn_10= new TH1F("hLogLinXPFMET_JetResDn_10", "hLogLinXPFMET_JetResDn_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_JetResDn_10->Sumw2();
+   TH1F * hLogLinXPFMET_UnclusteredEnUp_10= new TH1F("hLogLinXPFMET_UnclusteredEnUp_10", "hLogLinXPFMET_UnclusteredEnUp_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_UnclusteredEnUp_10->Sumw2();
+   TH1F * hLogLinXPFMET_UnclusteredEnDn_10= new TH1F("hLogLinXPFMET_UnclusteredEnDn_10", "hLogLinXPFMET_UnclusteredEnDn_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_UnclusteredEnDn_10->Sumw2();
+   TH1F * hLogLinXPFMET_PhotonEnUp_10= new TH1F("hLogLinXPFMET_PhotonEnUp_10", "hLogLinXPFMET_PhotonEnUp_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_PhotonEnUp_10->Sumw2();
+   TH1F * hLogLinXPFMET_PhotonEnDn_10= new TH1F("hLogLinXPFMET_PhotonEnDn_10", "hLogLinXPFMET_PhotonEnDn_10",NMOBINS, loglinMbins);
+   hLogLinXPFMET_PhotonEnDn_10->Sumw2();
+
    
    TH1F * hM4l_T_10 = new TH1F("hM4l_T_10", "Transverse Mass of four leptons + MET after step 10", 1000, 0., 1000. );
    hM4l_T_10->SetXTitle("m_{T} + PF MET (GeV)");
@@ -857,7 +972,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    hNbjets_10->SetXTitle("# b-jets");
 
    // reverted mass peak cut
-   TH1F * hPFMET_12 = new TH1F("hPFMET_12", "PF MET after selection step 12", 1000 , 0., 1000.);
+   TH1F * hPFMET_12 = new TH1F("hPFMET_12", "PF MET after selection step 12", 10000 , 0., 10000.);
    hPFMET_12->SetXTitle("PF MET (GeV)");  
    TH1F *hLogLinXPFMET_12 = new TH1F("hLogLinXPFMET_12","hLogLinXPFMET_12",NMOBINS, loglinMbins);
    hLogLinXPFMET_12->Sumw2();
@@ -965,6 +1080,26 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
    Int_t f_run, f_lumi, f_event;
 
+   //@
+   const int maxJets = 4;
+   const int maxJetsComponents = 60;
+   Int_t f_jets_highpt_charged_hadron_multiplicity[maxJets], f_jets_highpt_charged_multiplicity[maxJets], f_jets_highpt_component_pdgid[maxJets][maxJetsComponents], f_jets_highpt_electron_multiplicity[maxJets];
+   Int_t f_jets_highpt_hf_em_multiplicity[maxJets], f_jets_highpt_hf_hadron_multiplicity[maxJets], f_jets_highpt_muon_multiplicity[maxJets], f_jets_highpt_ncomponents[maxJets];
+   Int_t f_jets_highpt_neutral_hadron_multiplicity[maxJets], f_jets_highpt_neutral_multiplicity[maxJets], f_jets_highpt_photon_multiplicity[maxJets];
+   Float_t f_jets_highpt_pt[maxJets], f_jets_highpt_eta[maxJets], f_jets_highpt_phi[maxJets], f_jets_highpt_et[maxJets], f_jets_highpt_area[maxJets], f_jets_highpt_charged_hadron_energy[maxJets], f_jets_highpt_neutral_hadron_energy[maxJets];
+   Float_t f_jets_highpt_photon_energy[maxJets], f_jets_highpt_electron_energy[maxJets], f_jets_highpt_muon_energy[maxJets], f_jets_highpt_hf_hadron_energy[maxJets], f_jets_highpt_hf_em_energy[maxJets];
+   Float_t f_jets_highpt_charged_em_energy[maxJets], f_jets_highpt_charged_mu_energy[maxJets], f_jets_highpt_neutral_em_energy[maxJets], f_jets_highpt_ptd[maxJets];
+   Float_t f_jets_highpt_component_pt[maxJets][maxJetsComponents], f_jets_highpt_component_eta[maxJets][maxJetsComponents], f_jets_highpt_component_phi[maxJets][maxJetsComponents], f_jets_highpt_component_energy[maxJets][maxJetsComponents];
+   Float_t f_jets_highpt_component_charge[maxJets][maxJetsComponents], f_jets_highpt_component_mt[maxJetsComponents][maxJetsComponents], f_jets_highpt_component_xvertex[maxJets][maxJetsComponents];
+   Float_t f_jets_highpt_component_yvertex[maxJets][maxJetsComponents], f_jets_highpt_component_zvertex[maxJets][maxJetsComponents], f_jets_highpt_component_vertex_chi2[maxJets][maxJetsComponents];
+   //@
+   const int maxPartons = 8;
+   bool f_lhe_parton_clear[maxPartons];
+   Int_t f_lhe_npartons, f_lhe_parton_pdgid[maxPartons];
+   Float_t f_lhe_parton_pt[maxPartons], f_lhe_parton_eta[maxPartons], f_lhe_parton_phi[maxPartons], f_lhe_parton_e[maxPartons];
+   Float_t f_lept1_pt_error, f_lept2_pt_error, f_lept3_pt_error, f_lept4_pt_error, f_jets_highpt_pt_error[maxJets], f_Djet_VAJHU_UncUp, f_Djet_VAJHU_UncDn;
+   Float_t f_pfmet_JetEnUp, f_pfmet_JetEnDn, f_pfmet_ElectronEnUp, f_pfmet_ElectronEnDn, f_pfmet_MuonEnUp, f_pfmet_MuonEnDn, f_pfmet_JetResUp, f_pfmet_JetResDn, f_pfmet_UnclusteredEnUp, f_pfmet_UnclusteredEnDn, f_pfmet_PhotonEnUp, f_pfmet_PhotonEnDn;  
+
    TBranch *b_run= newtree->Branch("f_run", &f_run,"f_run/I");
    TBranch *b_lumi= newtree->Branch("f_lumi", &f_lumi,"f_lumi/I");    
    TBranch *b_event= newtree->Branch("f_event", &f_event,"f_event/I");    
@@ -974,6 +1109,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TBranch *b_pu_weight= newtree->Branch("f_pu_weight", &f_pu_weight,"f_pu_weight/F");
    TBranch *b_eff_weight= newtree->Branch("f_eff_weight", &f_eff_weight,"f_eff_weight/F");
    TBranch *b_lept1_pt= newtree->Branch("f_lept1_pt", &f_lept1_pt,"f_lept1_pt/F");
+   TBranch *b_lept1_pt_error= newtree->Branch("f_lept1_pt_error", &f_lept1_pt_error,"f_lept1_pt_error/F");
    TBranch *b_lept1_eta= newtree->Branch("f_lept1_eta", &f_lept1_eta,"f_lept1_eta/F");
    TBranch *b_lept1_phi= newtree->Branch("f_lept1_phi", &f_lept1_phi,"f_lept1_phi/F");
    TBranch *b_lept1_charge= newtree->Branch("f_lept1_charge", &f_lept1_charge,"f_lept1_charge/F");
@@ -981,6 +1117,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TBranch *b_lept1_sip= newtree->Branch("f_lept1_sip", &f_lept1_sip,"f_lept1_sip/F");
    TBranch *b_lept1_pdgid= newtree->Branch("f_lept1_pdgid", &f_lept1_pdgid,"f_lept1_pdgid/I");
    TBranch *b_lept2_pt= newtree->Branch("f_lept2_pt", &f_lept2_pt,"f_lept2_pt/F");
+   TBranch *b_lept2_pt_error= newtree->Branch("f_lept2_pt_error", &f_lept2_pt_error,"f_lept2_pt_error/F");
    TBranch *b_lept2_eta= newtree->Branch("f_lept2_eta", &f_lept2_eta,"f_lept2_eta/F");
    TBranch *b_lept2_phi= newtree->Branch("f_lept2_phi", &f_lept2_phi,"f_lept2_phi/F");
    TBranch *b_lept2_charge= newtree->Branch("f_lept2_charge", &f_lept2_charge,"f_lept2_charge/F");
@@ -988,6 +1125,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TBranch *b_lept2_sip= newtree->Branch("f_lept2_sip", &f_lept2_sip,"f_lept2_sip/F");
    TBranch *b_lept2_pdgid= newtree->Branch("f_lept2_pdgid", &f_lept2_pdgid,"f_lept2_pdgid/I");
    TBranch *b_lept3_pt= newtree->Branch("f_lept3_pt", &f_lept3_pt,"f_lept3_pt/F");
+   TBranch *b_lept3_pt_error= newtree->Branch("f_lept3_pt_error", &f_lept3_pt_error,"f_lept3_pt_error/F");
    TBranch *b_lept3_eta= newtree->Branch("f_lept3_eta", &f_lept3_eta,"f_lept3_eta/F");
    TBranch *b_lept3_phi= newtree->Branch("f_lept3_phi", &f_lept3_phi,"f_lept3_phi/F");
    TBranch *b_lept3_charge= newtree->Branch("f_lept3_charge", &f_lept3_charge,"f_lept3_charge/F");
@@ -995,6 +1133,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TBranch *b_lept3_sip= newtree->Branch("f_lept3_sip", &f_lept3_sip,"f_lept3_sip/F");
    TBranch *b_lept3_pdgid= newtree->Branch("f_lept3_pdgid", &f_lept3_pdgid,"f_lept3_pdgid/I");
    TBranch *b_lept4_pt= newtree->Branch("f_lept4_pt", &f_lept4_pt,"f_lept4_pt/F");
+   TBranch *b_lept4_pt_error= newtree->Branch("f_lept4_pt_error", &f_lept4_pt_error,"f_lept4_pt_error/F");
    TBranch *b_lept4_eta= newtree->Branch("f_lept4_eta", &f_lept4_eta,"f_lept4_eta/F");
    TBranch *b_lept4_phi= newtree->Branch("f_lept4_phi", &f_lept4_phi,"f_lept4_phi/F");
    TBranch *b_lept4_charge= newtree->Branch("f_lept4_charge", &f_lept4_charge,"f_lept4_charge/F");
@@ -1027,6 +1166,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TBranch *b_jet2_phi= newtree->Branch("f_jet2_phi", &f_jet2_phi,"f_jet2_phi/F");
    TBranch *b_jet2_e= newtree->Branch("f_jet2_e", &f_jet2_e,"f_jet2_e/F");
 
+   //
    TBranch *b_jet1_highpt_pt= newtree->Branch("f_jet1_highpt_pt", &f_jet1_highpt_pt,"f_jet1_highpt_pt/F");
    TBranch *b_jet1_highpt_eta= newtree->Branch("f_jet1_highpt_eta", &f_jet1_highpt_eta,"f_jet1_highpt_eta/F");
    TBranch *b_jet1_highpt_phi= newtree->Branch("f_jet1_highpt_phi", &f_jet1_highpt_phi,"f_jet1_highpt_phi/F");
@@ -1041,14 +1181,78 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    TBranch *b_jet3_highpt_eta= newtree->Branch("f_jet3_highpt_eta", &f_jet3_highpt_eta,"f_jet3_highpt_eta/F");
    TBranch *b_jet3_highpt_phi= newtree->Branch("f_jet3_highpt_phi", &f_jet3_highpt_phi,"f_jet3_highpt_phi/F");
    TBranch *b_jet3_highpt_e= newtree->Branch("f_jet3_highpt_e", &f_jet3_highpt_e,"f_jet3_highpt_e/F");
-
+   //
+   //@
+   TBranch *b_jets_highpt_pt = newtree->Branch("f_jets_highpt_pt", &f_jets_highpt_pt,Form("f_jets_highpt_pt[%i]/F",maxJets));
+   TBranch *b_jets_highpt_pt_error = newtree->Branch("f_jets_highpt_pt_error", &f_jets_highpt_pt_error,Form("f_jets_highpt_pt_error[%i]/F",maxJets));
+   TBranch *b_jets_highpt_eta = newtree->Branch("f_jets_highpt_eta", &f_jets_highpt_eta,Form("f_jets_highpt_eta[%i]/F",maxJets));
+   TBranch *b_jets_highpt_phi = newtree->Branch("f_jets_highpt_phi", &f_jets_highpt_phi,Form("f_jets_highpt_phi[%i]/F",maxJets));
+   TBranch *b_jets_highpt_et = newtree->Branch("f_jets_highpt_et", &f_jets_highpt_et,Form("f_jets_highpt_et[%i]/F",maxJets));
+   TBranch *b_jets_highpt_area = newtree->Branch("f_jets_highpt_area", &f_jets_highpt_area, Form("f_jets_highpt_area[%i]/F",maxJets));
+   TBranch *b_jets_highpt_ptd = newtree->Branch("f_jets_highpt_ptd", &f_jets_highpt_ptd, Form("f_jets_highpt_ptd[%i]/F",maxJets));
+   TBranch *b_jets_highpt_charged_hadron_energy = newtree->Branch("f_jets_highpt_charged_hadron_energy", &f_jets_highpt_charged_hadron_energy, Form("f_jets_highpt_charged_hadron_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_neutral_hadron_energy = newtree->Branch("f_jets_highpt_neutral_hadron_energy", &f_jets_highpt_neutral_hadron_energy, Form("f_jets_highpt_neutral_hadron_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_photon_energy = newtree->Branch("f_jets_highpt_photon_energy", &f_jets_highpt_photon_energy, Form("f_jets_highpt_photon_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_electron_energy = newtree->Branch("f_jets_highpt_electron_energy", &f_jets_highpt_electron_energy, Form("f_jets_highpt_electron_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_muon_energy = newtree->Branch("f_jets_highpt_muon_energy", &f_jets_highpt_muon_energy, Form("f_jets_highpt_muon_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_hf_hadron_energy = newtree->Branch("f_jets_highpt_hf_hadron_energy", &f_jets_highpt_hf_hadron_energy, Form("f_jets_highpt_hf_hadron_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_hf_em_energy = newtree->Branch("f_jets_highpt_hf_em_energy", &f_jets_highpt_hf_em_energy, Form("f_jets_highpt_hf_em_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_charged_em_energy = newtree->Branch("f_jets_highpt_charged_em_energy", &f_jets_highpt_charged_em_energy, Form("f_jets_highpt_charged_em_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_charged_mu_energy = newtree->Branch("f_jets_highpt_charged_mu_energy", &f_jets_highpt_charged_mu_energy, Form("f_jets_highpt_charged_mu_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_neutral_em_energy = newtree->Branch("f_jets_highpt_neutral_em_energy", &f_jets_highpt_neutral_em_energy, Form("f_jets_highpt_neutral_em_energy[%i]/F",maxJets));
+   TBranch *b_jets_highpt_charged_hadron_multiplicity = newtree->Branch("f_jets_highpt_charged_hadron_multiplicity", &f_jets_highpt_charged_hadron_multiplicity, Form("f_jets_highpt_charged_hadron_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_neutral_hadron_multiplicity = newtree->Branch("f_jets_highpt_neutral_hadron_multiplicity", &f_jets_highpt_neutral_hadron_multiplicity, Form("f_jets_highpt_neutral_hadron_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_photon_multiplicity = newtree->Branch("f_jets_highpt_photon_multiplicity", &f_jets_highpt_photon_multiplicity, Form("f_jets_highpt_photon_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_electron_multiplicity = newtree->Branch("f_jets_highpt_electron_multiplicity", &f_jets_highpt_electron_multiplicity, Form("f_jets_highpt_electron_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_muon_multiplicity = newtree->Branch("f_jets_highpt_muon_multiplicity", &f_jets_highpt_muon_multiplicity, Form("f_jets_highpt_muon_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_hf_hadron_multiplicity = newtree->Branch("f_jets_highpt_hf_hadron_multiplicity", &f_jets_highpt_hf_hadron_multiplicity, Form("f_jets_highpt_hf_hadron_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_hf_em_multiplicity = newtree->Branch("f_jets_highpt_hf_em_multiplicity", &f_jets_highpt_hf_em_multiplicity, Form("f_jets_highpt_hf_em_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_charged_multiplicity = newtree->Branch("f_jets_highpt_charged_multiplicity", &f_jets_highpt_charged_multiplicity, Form("f_jets_highpt_charged_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_neutral_multiplicity = newtree->Branch("f_jets_highpt_neutral_multiplicity", &f_jets_highpt_neutral_multiplicity, Form("f_jets_highpt_neutral_multiplicity[%i]/I",maxJets));
+   TBranch *b_jets_highpt_ncomponents = newtree->Branch("f_jets_highpt_ncomponents", &f_jets_highpt_ncomponents, Form("f_jets_highpt_ncomponents[%i]/I",maxJets));
+   TBranch *b_jets_highpt_component_pdgid = newtree->Branch("f_jets_highpt_component_pdgid", &f_jets_highpt_component_pdgid, Form("f_jets_highpt_component_pdgid[%i][%i]/I",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_pt = newtree->Branch("f_jets_highpt_component_pt", &f_jets_highpt_component_pt, Form("f_jets_highpt_component_pt[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_eta = newtree->Branch("f_jets_highpt_component_eta", &f_jets_highpt_component_eta, Form("f_jets_highpt_component_eta[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_phi = newtree->Branch("f_jets_highpt_component_phi", &f_jets_highpt_component_phi, Form("f_jets_highpt_component_phi[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_energy = newtree->Branch("f_jets_highpt_component_energy", &f_jets_highpt_component_energy, Form("f_jets_highpt_component_energy[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_charge = newtree->Branch("f_jets_highpt_component_charge", &f_jets_highpt_component_charge, Form("f_jets_highpt_component_charge[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_mt = newtree->Branch("f_jets_highpt_component_mt", &f_jets_highpt_component_mt, Form("f_jets_highpt_component_mt[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_xvertex = newtree->Branch("f_jets_highpt_component_xvertex", &f_jets_highpt_component_xvertex, Form("f_jets_highpt_component_xvertex[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_yvertex = newtree->Branch("f_jets_highpt_component_yvertex", &f_jets_highpt_component_yvertex, Form("f_jets_highpt_component_yvertex[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_zvertex = newtree->Branch("f_jets_highpt_component_zvertex", &f_jets_highpt_component_zvertex, Form("f_jets_highpt_component_zvertex[%i][%i]/F",maxJets,maxJetsComponents));
+   TBranch *b_jets_highpt_component_vertex_chi2 = newtree->Branch("f_jets_highpt_component_vertex_chi2", &f_jets_highpt_component_vertex_chi2, Form("f_jets_highpt_component_vertex_chi2[%i][%i]/F",maxJets,maxJetsComponents));
+   //@
+   TBranch *b_lhe_npartons = newtree->Branch("f_lhe_npartons", &f_lhe_npartons, "f_lhe_npartons/I");
+   TBranch *b_lhe_parton_clear = newtree->Branch("f_lhe_parton_clear", &f_lhe_parton_clear, Form("f_lhe_parton_clear[%i]/b",maxPartons));
+   TBranch *b_lhe_parton_pdgid = newtree->Branch("f_lhe_parton_pdgid", &f_lhe_parton_pdgid, Form("f_lhe_parton_pdgid[%i]/I",maxPartons));
+   TBranch *b_lhe_parton_pt = newtree->Branch("f_lhe_parton_pt", &f_lhe_parton_pt, Form("f_lhe_parton_pt[%i]/F",maxPartons));
+   TBranch *b_lhe_parton_eta = newtree->Branch("f_lhe_parton_eta", &f_lhe_parton_eta, Form("f_lhe_parton_eta[%i]/F",maxPartons));
+   TBranch *b_lhe_parton_phi = newtree->Branch("f_lhe_parton_phi", &f_lhe_parton_phi, Form("f_lhe_parton_phi[%i]/F",maxPartons));
+   TBranch *b_lhe_parton_e = newtree->Branch("f_lhe_parton_e", &f_lhe_parton_e, Form("f_lhe_parton_e[%i]/F",maxPartons));
+   
 
    TBranch *b_D_bkg_kin= newtree->Branch("f_D_bkg_kin", &f_D_bkg_kin,"f_D_bkg_kin/F");
    TBranch *b_D_bkg= newtree->Branch("f_D_bkg", &f_D_bkg,"f_D_bkg/F");
    TBranch *b_D_gg= newtree->Branch("f_D_gg", &f_D_gg,"f_D_gg/F");
    TBranch *b_D_g4= newtree->Branch("f_D_g4", &f_D_g4,"f_D_g4/F");
    TBranch *b_Djet_VAJHU= newtree->Branch("f_Djet_VAJHU", &f_Djet_VAJHU,"f_Djet_VAJHU/F");
+   TBranch *b_Djet_VAJHU_UncUp = newtree->Branch("f_Djet_VAJHU_UncUp", &f_Djet_VAJHU_UncUp,"f_Djet_VAJHU_UncUp/F");
+   TBranch *b_Djet_VAJHU_UncDn = newtree->Branch("f_Djet_VAJHU_UncDn", &f_Djet_VAJHU_UncDn,"f_Djet_VAJHU_UncDn/F");
+
    TBranch *b_pfmet= newtree->Branch("f_pfmet", &f_pfmet,"f_pfmet/F");
+   TBranch *b_pfmet_JetEnUp = newtree->Branch("f_pfmet_JetEnUp", &f_pfmet_JetEnUp, "f_pfmet_JetEnUp/F");
+   TBranch *b_pfmet_JetEnDn = newtree->Branch("f_pfmet_JetEnDn", &f_pfmet_JetEnDn, "f_pfmet_JetEnDn/F");
+   TBranch *b_pfmet_ElectronEnUp = newtree->Branch("f_pfmet_ElectronEnUp", &f_pfmet_ElectronEnUp, "f_pfmet_ElectronEnUp/F");
+   TBranch *b_pfmet_ElectronEnDn = newtree->Branch("f_pfmet_ElectronEnDn", &f_pfmet_ElectronEnDn, "f_pfmet_ElectronEnDn/F");
+   TBranch *b_pfmet_MuonEnUp = newtree->Branch("f_pfmet_MuonEnUp", &f_pfmet_MuonEnUp, "f_pfmet_MuonEnUp/F");
+   TBranch *b_pfmet_MuonEnDn = newtree->Branch("f_pfmet_MuonEnDn", &f_pfmet_MuonEnDn, "f_pfmet_MuonEnDn/F");
+   TBranch *b_pfmet_JetResUp = newtree->Branch("f_pfmet_JetResUp", &f_pfmet_JetResUp, "f_pfmet_JetResUp/F");
+   TBranch *b_pfmet_JetResDn = newtree->Branch("f_pfmet_JetResDn", &f_pfmet_JetResDn, "f_pfmet_JetResDn/F");
+   TBranch *b_pfmet_UnclusteredEnUp = newtree->Branch("f_pfmet_UnclusteredEnUp", &f_pfmet_UnclusteredEnUp, "f_pfmet_UnclusteredEnUp/F");
+   TBranch *b_pfmet_UnclusteredEnDn = newtree->Branch("f_pfmet_UnclusteredEnDn", &f_pfmet_UnclusteredEnDn, "f_pfmet_UnclusteredEnDn/F");
+   TBranch *b_pfmet_PhotonEnUp = newtree->Branch("f_pfmet_PhotonEnUp", &f_pfmet_PhotonEnUp, "f_pfmet_PhotonEnUp/F");
+   TBranch *b_pfmet_PhotonEnDn = newtree->Branch("f_pfmet_PhotonEnDn", &f_pfmet_PhotonEnDn, "f_pfmet_PhotonEnDn/F");
+   
    TBranch *b_genmet= newtree->Branch("f_genmet", &f_genmet,"f_genmet/F");
    TBranch *b_f_mT= newtree->Branch("f_mT", &f_mT,"f_mT/F");
    TBranch *b_f_dphi= newtree->Branch("f_dphi", &f_dphi,"f_dphi/F");
@@ -1079,6 +1283,84 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
       // Initialize reduced tree variables
       f_weight=1., f_int_weight=1., f_pu_weight=1., f_eff_weight=1., f_lept1_pt=-999., f_lept1_eta=-999., f_lept1_phi=-999., f_lept1_charge=-999., f_lept1_pfx=-999., f_lept1_sip=-999., f_lept1_mvaid=-999., f_lept2_pt=-999., f_lept2_eta=-999., f_lept2_phi=-999., f_lept2_charge=-999., f_lept2_pfx=-999., f_lept2_sip=-999., f_lept2_mvaid=-999., f_lept3_pt=-999., f_lept3_eta=-999., f_lept3_phi=-999., f_lept3_charge=-999., f_lept3_pfx=-999., f_lept3_sip=-999., f_lept3_mvaid=-999., f_lept4_pt=-999., f_lept4_eta=-999., f_lept4_phi=-999., f_lept4_charge=-999., f_lept4_pfx=-999., f_lept4_sip=-999., f_lept4_mvaid=-999., f_iso_max=-999., f_sip_max=-999., f_Z1mass=-999., f_Z2mass=-999., f_angle_costhetastar=-999., f_angle_costheta1=-999., f_angle_costheta2=-999., f_angle_phi=-999., f_angle_phistar1=-999., f_eta4l=-999., f_pt4l=-999., f_mass4l=-999., f_mass4lErr=-999., f_njets_pass=-999., f_deltajj=-999., f_massjj=-999., f_D_jet=-999., f_jet1_pt=-999., f_jet1_eta=-999., f_jet1_phi=-999., f_jet1_e=-999., f_jet2_pt=-999., f_jet2_eta=-999., f_jet2_phi=-999., f_jet2_e=-999.,f_D_bkg_kin=-999.,f_D_bkg=-999.,f_D_gg=-999.,f_D_g4=-999.,f_Djet_VAJHU=-999.,f_genmet=-999.,f_pfmet=-999.,f_mT=-999.,f_dphi=-999.,f_lept1_pdgid=-999,f_lept2_pdgid=-999,f_lept3_pdgid=-999,f_lept4_pdgid=-999,f_run=-999, f_lumi=-999, f_event=-999, f_category=-999, f_Ngood=-999, f_Nbjets=-999, f_jet1_highpt_pt=-999., f_jet1_highpt_eta=-999., f_jet1_highpt_phi=-999., f_jet1_highpt_e=-999., f_jet2_highpt_pt=-999., f_jet2_highpt_eta=-999., f_jet2_highpt_phi=-999., f_jet2_highpt_e=-999.,f_jet3_highpt_pt=-999., f_jet3_highpt_eta=-999., f_jet3_highpt_phi=-999., f_jet3_highpt_e=-999.;
 
+       //@
+      f_lept1_pt_error=-999., f_lept2_pt_error=-999., f_lept3_pt_error=-999., f_lept4_pt_error=-999.;
+      f_Djet_VAJHU_UncUp = -999, f_Djet_VAJHU_UncDn = -999;
+      f_pfmet_JetEnUp = -999., f_pfmet_JetEnDn = -999., f_pfmet_ElectronEnUp = -999., f_pfmet_ElectronEnDn = -999., f_pfmet_MuonEnUp = -999., f_pfmet_MuonEnDn = -999., f_pfmet_JetResUp = -999., f_pfmet_JetResDn = -999., f_pfmet_UnclusteredEnUp = -999., f_pfmet_UnclusteredEnDn = -999., f_pfmet_PhotonEnUp = -999., f_pfmet_PhotonEnDn = -999.;
+      for(unsigned int ijet=0; ijet<maxJets; ++ijet){
+        f_jets_highpt_charged_hadron_multiplicity[ijet] = -999;
+        f_jets_highpt_charged_multiplicity[ijet] = -999;
+        f_jets_highpt_electron_multiplicity[ijet] = -999;
+        f_jets_highpt_hf_em_multiplicity[ijet] = -999;
+        f_jets_highpt_hf_hadron_multiplicity[ijet] = -999;
+        f_jets_highpt_muon_multiplicity[ijet] = -999;
+        f_jets_highpt_ncomponents[ijet] = -999;
+        f_jets_highpt_neutral_hadron_multiplicity[ijet] = -999;
+        f_jets_highpt_neutral_multiplicity[ijet] = -999;
+        f_jets_highpt_photon_multiplicity[ijet] = -999;
+        f_jets_highpt_pt[ijet] = -999;
+        f_jets_highpt_eta[ijet] = -999;
+        f_jets_highpt_phi[ijet] = -999;
+        f_jets_highpt_et[ijet] = -999;
+        f_jets_highpt_pt_error[ijet] = -999;
+        f_jets_highpt_area[ijet] = -999;
+        f_jets_highpt_charged_hadron_energy[ijet] = -999;
+        f_jets_highpt_neutral_hadron_energy[ijet] = -999;
+        f_jets_highpt_photon_energy[ijet] = -999;
+        f_jets_highpt_electron_energy[ijet] = -999;
+        f_jets_highpt_muon_energy[ijet] = -999;
+        f_jets_highpt_hf_hadron_energy[ijet] = -999;
+        f_jets_highpt_hf_em_energy[ijet] = -999;
+        f_jets_highpt_charged_em_energy[ijet] = -999;
+        f_jets_highpt_charged_mu_energy[ijet] = -999;
+        f_jets_highpt_neutral_em_energy[ijet] = -999;
+        f_jets_highpt_ptd[ijet] = -999;
+        for(unsigned int ijetc=0; ijetc<maxJetsComponents; ++ijetc){
+          f_jets_highpt_component_pdgid[ijet][ijetc] = -999;
+          f_jets_highpt_component_pt[ijet][ijetc] = -999;
+          f_jets_highpt_component_eta[ijet][ijetc] = -999;
+          f_jets_highpt_component_phi[ijet][ijetc] = -999;
+          f_jets_highpt_component_energy[ijet][ijetc] = -999;
+          f_jets_highpt_component_charge[ijet][ijetc] = -999;
+          f_jets_highpt_component_mt[ijet][ijetc] = -999;
+          f_jets_highpt_component_xvertex[ijet][ijetc] = -999;
+          f_jets_highpt_component_yvertex[ijet][ijetc] = -999;
+          f_jets_highpt_component_zvertex[ijet][ijetc] = -999;
+          f_jets_highpt_component_vertex_chi2[ijet][ijetc] = -999;
+        }
+      }
+      //@
+      f_lhe_npartons = LHE_PARTON_N;
+      for(unsigned int iparton=0; iparton<maxPartons; ++iparton){
+	if(iparton < LHE_PARTON_N){
+	  unsigned int index = -1;
+	  float max_pt = -1;
+	  //To sort the partons by decreasing pt
+	  for(int jparton=0; jparton<LHE_PARTON_N; ++jparton){
+	    if(LHE_PARTON_PT[jparton] > max_pt){
+	      max_pt = LHE_PARTON_PT[jparton];
+	      index = jparton;
+	    }
+	  }
+	  
+	  f_lhe_parton_clear[iparton] = LHE_PARTON_CLEAR[index];
+	  f_lhe_parton_pdgid[iparton] = LHE_PARTON_PDGID[index];
+	  f_lhe_parton_pt[iparton]    = LHE_PARTON_PT[index];
+	  f_lhe_parton_eta[iparton]   = LHE_PARTON_ETA[index];
+	  f_lhe_parton_phi[iparton]   = LHE_PARTON_PHI[index];
+	  f_lhe_parton_e[iparton]     = LHE_PARTON_E[index];
+	  LHE_PARTON_PT[index] = -2;
+	}
+	else{
+	  f_lhe_parton_clear[iparton] = -999;
+	  f_lhe_parton_pdgid[iparton] = -999;
+	  f_lhe_parton_pt[iparton]    = -999;
+	  f_lhe_parton_eta[iparton]   = -999;
+	  f_lhe_parton_phi[iparton]   = -999;
+	  f_lhe_parton_e[iparton]     = -999;
+	}
+      }
+
       //if (!(Run==1 && LumiSection==2591 && Event==497247)) continue;
       //if (Run==LumiSection && Run==Event) continue;   
       //if (jentry!=1276102) continue;
@@ -1094,6 +1376,22 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
       newweight=weight;
       cout << "Starting weight= " << newweight << endl;
       
+      // pT gen reweighting
+      double pT_weight=1.;
+      if ( (datasetBase.Contains("2HDM") || datasetBase.Contains("Baryonic") ) && datasetBase.Contains("Target") ){
+	if (MC_PT[0] > 0.) {
+	  Int_t binx = pTweighthisto->GetXaxis()->FindBin(MC_PT[0]);
+	  cout << " bin x= " << binx << " " << pTweighthisto->GetBinContent(binx) << endl;
+	  pT_weight=double(pTweighthisto->GetBinContent(binx));
+	}
+	else {
+	  cout << "No pT reweighting of 2HDM samples" << endl;
+	}
+      }      
+      // Changing the weight for gen reweighting                                                                                                                                                 
+      newweight=weight*pT_weight;
+      cout << "Starting weight + pT gen = " << newweight << endl;
+ 
       // pileup reweighting 2016
       if (DATA_type=="NO" && num_PU_vertices < 0) continue;                                                                                                                                             
       hPUvertices->Fill(num_PU_vertices,weight);
@@ -1110,8 +1408,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 
 
       // Changing the weight for pileup
-      newweight=weight*pu_weight;
-      cout << "Starting weight + pileup = " << newweight << endl;
+      newweight=weight*pT_weight*pu_weight;
+      cout << "Starting weight + pT weight + pileup = " << newweight << endl;
       
       // ggZZ kfactor
       double ggzz_kf_wgt[9];
@@ -1120,13 +1418,13 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 	//if( datasetName.Contains("GluGluHToZZ")){
 	//  for(int f=0;f<9;f++) ggzz_kf_wgt[f] = ggZZ_kf[f]->Eval(MC_MASS[0]); // Evaluate at the true m4l
 	//  weight_kfactor=ggzz_kf_wgt[0]; // Using the nominal one  
-	//  newweight=weight*pu_weight*weight_kfactor;
+	//  newweight=weight*pT_weight*pu_weight*weight_kfactor;
 	//  cout << "The kfactor for ggZZ is= " << weight_kfactor<< endl;	  
 	//}
 	if ( datasetName.Contains("GluGluToZZ") ||  datasetName.Contains("GluGluToContinToZZ")){	  
 	  for(int f=0;f<9;f++) ggzz_kf_wgt[f] = ggZZ_kf[f]->Eval(MC_ZZ_MASS[0][0]); // Evaluate at the true m4l
 	  weight_kfactor=ggzz_kf_wgt[0]; // Using the nominal one
-	  newweight=weight*pu_weight*weight_kfactor;
+	  newweight=weight*pT_weight*pu_weight*weight_kfactor;
 	  cout << "The kfactor for ggZZ is= " << weight_kfactor<< endl;
 	}
 	//weight_kfactor=2.3;
@@ -1145,7 +1443,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 		fabs(MC_ZZ_PDGID[l][3])==fabs(MC_ZZ_PDGID[l][6])) finalState=1; // 4e, 4mu, 4tau
 	    else finalState=2;
 	    weight_kfactor=HZZ4LeptonsAnalysis::kfactor_qqZZ_qcd_M(MC_ZZ_MASS[l][0],finalState);
-	    newweight=weight*pu_weight*weight_kfactor;
+	    newweight=weight*pT_weight*pu_weight*weight_kfactor;
 	  }	
 	}
       }
@@ -1153,7 +1451,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
       // Weight for MCNLO samples  
       if( datasetName.Contains("amcatnlo")) {
         cout << "Reweighting sample of amcatnlo with weight= " << MC_weighting << endl;
-        if (MC_weighting!=0) newweight=weight*pu_weight*weight_kfactor*MC_weighting;
+        if (MC_weighting!=0) newweight=weight*pT_weight*pu_weight*weight_kfactor*MC_weighting;
       }
 
           
@@ -1164,7 +1462,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
       if( debug ) cout << "\n** Step 0: \nAnalyzing entry: " << jentry << " Run: " << Run << " Event: " << Event << " LumiSection: " << LumiSection << endl ;
       ++N_0 ;  // fill counter
       N_0_w=N_0_w+newweight;
-      
+      hweight->Fill(newweight);
+
       // ** Step 0.1:
       // number of 4L (4mu)...
       
@@ -2101,8 +2400,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 	
 	// Changing the weight for pileup and efficiency
 	if (DATA_type == "2016") eff_weight_3=1.; 
-	if (eff_weight_3>0.) newweight=weight*pu_weight*weight_kfactor*eff_weight_3;
-	else newweight=weight*pu_weight*weight_kfactor;
+	if (eff_weight_3>0.) newweight=weight*pT_weight*pu_weight*weight_kfactor*eff_weight_3;
+	else newweight=weight*pT_weight*pu_weight*weight_kfactor;
 
 	hPtLep_3->Fill( RECOMU_PT[ ipt1_3 ],newweight );
 	hYLep_3->Fill( RECOMU_ETA[ ipt1_3 ],newweight );
@@ -2417,8 +2716,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 	    // evaluate the mass
 	    double mass;
 	    
-	    Lepton1qcd.SetPtEtaPhiM(RECOMU_PT[ileptonsmumu.at(i)], RECOMU_ETA[ileptonsmumu.at(i)], RECOMU_PHI[ileptonsmumu.at(i)], 0.000511);
-	    Lepton2qcd.SetPtEtaPhiM(RECOMU_PT[ileptonsmumu.at(j)], RECOMU_ETA[ileptonsmumu.at(j)], RECOMU_PHI[ileptonsmumu.at(j)], 0.000511);
+	    Lepton1qcd.SetPtEtaPhiM(RECOMU_PT[ileptonsmumu.at(i)], RECOMU_ETA[ileptonsmumu.at(i)], RECOMU_PHI[ileptonsmumu.at(i)], 0.105);
+	    Lepton2qcd.SetPtEtaPhiM(RECOMU_PT[ileptonsmumu.at(j)], RECOMU_ETA[ileptonsmumu.at(j)], RECOMU_PHI[ileptonsmumu.at(j)], 0.105);
 
 	    DiLeptonQCD=Lepton1qcd+Lepton2qcd;       
 	    mass = DiLeptonQCD.M();
@@ -2764,8 +3063,8 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
             
       if (DATA_type == "2016") eff_weight=1.; 
       // // Changing the weight for pileup and efficiency
-      if (eff_weight>0.) newweight=weight*pu_weight*weight_kfactor*eff_weight;
-      else newweight=weight*pu_weight*weight_kfactor;
+      if (eff_weight>0.) newweight=weight*pT_weight*pu_weight*weight_kfactor*eff_weight;
+      else newweight=weight*pT_weight*pu_weight*weight_kfactor;
       
       cout << "Starting weight + pileup + efficiency= " << newweight << endl;
       if(debug) cout << "Efficiency Weight for the 4l: " << eff_weight << " Final weight= " << newweight << endl;
@@ -3308,7 +3607,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      //hSip_7->Fill( Sip_max,newweight ) ;
      //hIp_7->Fill( Ip_max,newweight ) ;
      
-
+     
      // **** Step 8:
      // mass4l > 100 
      
@@ -3380,6 +3679,20 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      hPFMET_8->Fill(RECO_PFMET,newweight);
      hLogXPFMET_8->Fill(RECO_PFMET,newweight); 
      hLogLinXPFMET_8->Fill(RECO_PFMET,newweight);
+
+     hPFMET_JetEnUp_8->Fill(RECO_PFMET_JetEnUp,newweight);
+     hPFMET_JetEnDn_8->Fill(RECO_PFMET_JetEnDn,newweight);
+     hPFMET_ElectronEnUp_8->Fill(RECO_PFMET_ElectronEnUp,newweight);
+     hPFMET_ElectronEnDn_8->Fill(RECO_PFMET_ElectronEnDn,newweight);
+     hPFMET_MuonEnUp_8->Fill(RECO_PFMET_MuonEnUp,newweight);
+     hPFMET_MuonEnDn_8->Fill(RECO_PFMET_MuonEnDn,newweight);
+     hPFMET_JetResUp_8->Fill(RECO_PFMET_JetResUp,newweight);
+     hPFMET_JetResDn_8->Fill(RECO_PFMET_JetResDn,newweight);
+     hPFMET_UnclusteredEnUp_8->Fill(RECO_PFMET_UnclusteredEnUp,newweight);
+     hPFMET_UnclusteredEnDn_8->Fill(RECO_PFMET_UnclusteredEnDn,newweight);
+     hPFMET_PhotonEnUp_8->Fill(RECO_PFMET_PhotonEnUp,newweight);
+     hPFMET_PhotonEnDn_8->Fill(RECO_PFMET_PhotonEnDn,newweight);
+
 
      // //VBF
      cout << "Starting VBF analysis " << endl;
@@ -3492,6 +3805,50 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
 	     f_jet3_highpt_phi = RECO_PFJET_PHI[i];
 	     f_jet3_highpt_e = RECO_PFJET_ET[i];
 	   }
+
+	   //@ fills all jets
+	  if(njets_pass <= maxJets){
+            f_jets_highpt_pt[njets_pass-1]                           = RECO_PFJET_PT[i];
+	    f_jets_highpt_pt_error[njets_pass-1]                     = RECO_PFJET_PT[i]-RECO_PFJET_PT_UncDn[i];//The error is symmetric
+            f_jets_highpt_eta[njets_pass-1]                          = RECO_PFJET_ETA[i];
+            f_jets_highpt_phi[njets_pass-1]                          = RECO_PFJET_PHI[i];
+            f_jets_highpt_et[njets_pass-1]                           = RECO_PFJET_ET[i];
+            f_jets_highpt_area[njets_pass-1]                         = RECO_PFJET_AREA[i];
+            f_jets_highpt_charged_hadron_multiplicity[njets_pass-1]  = RECO_PFJET_CHARGED_HADRON_MULTIPLICITY[i];
+            f_jets_highpt_charged_multiplicity[njets_pass-1]         = RECO_PFJET_CHARGED_MULTIPLICITY[i];
+            f_jets_highpt_electron_multiplicity[njets_pass-1]        = RECO_PFJET_ELECTRON_MULTIPLICITY[i];
+            f_jets_highpt_hf_em_multiplicity[njets_pass-1]           = RECO_PFJET_HF_EM_MULTIPLICITY[i];
+            f_jets_highpt_hf_hadron_multiplicity[njets_pass-1]       = RECO_PFJET_HF_HADRON_MULTIPLICTY[i];
+            f_jets_highpt_muon_multiplicity[njets_pass-1]            = RECO_PFJET_MUON_MULTIPLICITY[i];
+            f_jets_highpt_neutral_hadron_multiplicity[njets_pass-1]  = RECO_PFJET_NEUTRAL_HADRON_MULTIPLICITY[i];
+            f_jets_highpt_neutral_multiplicity[njets_pass-1]         = RECO_PFJET_NEUTRAL_MULTIPLICITY[i];
+            f_jets_highpt_photon_multiplicity[njets_pass-1]          = RECO_PFJET_PHOTON_MULTIPLICITY[i];
+            f_jets_highpt_charged_hadron_energy[njets_pass-1]        = RECO_PFJET_CHARGED_HADRON_ENERGY[i];
+            f_jets_highpt_neutral_hadron_energy[njets_pass-1]        = RECO_PFJET_NEUTRAL_HADRON_ENERGY[i];
+            f_jets_highpt_photon_energy[njets_pass-1]                = RECO_PFJET_PHOTON_ENERGY[i];
+            f_jets_highpt_electron_energy[njets_pass-1]              = RECO_PFJET_ELECTRON_ENERGY[i];
+            f_jets_highpt_muon_energy[njets_pass-1]                  = RECO_PFJET_MUON_ENERGY[i];
+            f_jets_highpt_hf_hadron_energy[njets_pass-1]             = RECO_PFJET_HF_HADRON_ENERGY[i];
+            f_jets_highpt_hf_em_energy[njets_pass-1]                 = RECO_PFJET_HF_EM_ENERGY[i];
+            f_jets_highpt_charged_em_energy[njets_pass-1]            = RECO_PFJET_CHARGED_EM_ENERGY[i];
+            f_jets_highpt_charged_mu_energy[njets_pass-1]            = RECO_PFJET_CHARGED_MU_ENERGY[i];
+            f_jets_highpt_neutral_em_energy[njets_pass-1]            = RECO_PFJET_NEUTRAL_EM_ENERGY[i];
+            f_jets_highpt_ptd[njets_pass-1]                          = RECO_PFJET_PTD[i];
+            f_jets_highpt_ncomponents[njets_pass-1]                  = RECO_PFJET_NCOMPONENTS[i];
+            for(int ic=0; ic<maxJetsComponents; ++ic){
+              f_jets_highpt_component_pdgid[njets_pass-1][ic]        = RECO_PFJET_COMPONENT_PDGID[i][ic];
+              f_jets_highpt_component_pt[njets_pass-1][ic]           = RECO_PFJET_COMPONENT_PT[i][ic];
+              f_jets_highpt_component_eta[njets_pass-1][ic]          = RECO_PFJET_COMPONENT_ETA[i][ic];
+              f_jets_highpt_component_phi[njets_pass-1][ic]          = RECO_PFJET_COMPONENT_PHI[i][ic];
+              f_jets_highpt_component_energy[njets_pass-1][ic]       = RECO_PFJET_COMPONENT_E[i][ic];
+              f_jets_highpt_component_charge[njets_pass-1][ic]       = RECO_PFJET_COMPONENT_CHARGE[i][ic];
+              f_jets_highpt_component_mt[njets_pass-1][ic]           = RECO_PFJET_COMPONENT_TRANSVERSE_MASS[i][ic];
+              f_jets_highpt_component_xvertex[njets_pass-1][ic]      = RECO_PFJET_COMPONENT_XVERTEX[i][ic];
+              f_jets_highpt_component_yvertex[njets_pass-1][ic]      = RECO_PFJET_COMPONENT_YVERTEX[i][ic];
+              f_jets_highpt_component_zvertex[njets_pass-1][ic]      = RECO_PFJET_COMPONENT_ZVERTEX[i][ic];
+              f_jets_highpt_component_vertex_chi2[njets_pass-1][ic]  = RECO_PFJET_COMPONENT_VERTEX_CHI2[i][ic];
+            }
+          }
 
 	 }
 
@@ -3698,6 +4055,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      f_lumi = LumiSection;
 
      f_lept1_pt = RECOMU_PT[iptcorr[0]] ;
+     f_lept1_pt_error = RECOMU_mubesttrkPTError[iptcorr[0]] ;
      f_lept1_eta = RECOMU_ETA[iptcorr[0]] ;
      f_lept1_phi = RECOMU_PHI[iptcorr[0]];
      f_lept1_charge = RECOMU_CHARGE[iptcorr[0]];
@@ -3706,6 +4064,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      //    f_lept1_mvaid = RECOMU_mvaNonTrigV0[iptcorr[0]];
      
      f_lept2_pt = RECOMU_PT[iptcorr[1]] ;
+     f_lept2_pt_error = RECOMU_mubesttrkPTError[iptcorr[1]] ;
      f_lept2_eta = RECOMU_ETA[iptcorr[1]] ;
      f_lept2_phi = RECOMU_PHI[iptcorr[1]];
      f_lept2_charge = RECOMU_CHARGE[iptcorr[1]];
@@ -3713,6 +4072,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      f_lept2_sip = RECOMU_SIP[iptcorr[1]];
      //    f_lept2_mvaid = RECOMU_mvaNonTrigV0[iptcorr[1]];
      f_lept3_pt = RECOMU_PT[iptcorr[2]] ;
+     f_lept3_pt_error = RECOMU_mubesttrkPTError[iptcorr[2]] ;
      f_lept3_eta = RECOMU_ETA[iptcorr[2]] ;
      f_lept3_phi = RECOMU_PHI[iptcorr[2]];
      f_lept3_charge = RECOMU_CHARGE[iptcorr[2]];
@@ -3720,6 +4080,7 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      f_lept3_sip = RECOMU_SIP[iptcorr[2]];
      //    f_lept3_mvaid = RECOMU_mvaNonTrigV0[iptcorr[2]];
      f_lept4_pt = RECOMU_PT[iptcorr[3]] ;
+     f_lept4_pt_error = RECOMU_mubesttrkPTError[iptcorr[3]] ;
      f_lept4_eta = RECOMU_ETA[iptcorr[3]] ;
      f_lept4_phi = RECOMU_PHI[iptcorr[3]];
      f_lept4_charge = RECOMU_CHARGE[iptcorr[3]];
@@ -3781,6 +4142,19 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
      }
      
      f_pfmet=RECO_PFMET;
+     f_pfmet_JetEnUp = RECO_PFMET_JetEnUp;
+     f_pfmet_JetEnDn = RECO_PFMET_JetEnDn;
+     f_pfmet_ElectronEnUp = RECO_PFMET_ElectronEnUp;
+     f_pfmet_ElectronEnDn = RECO_PFMET_ElectronEnDn;
+     f_pfmet_MuonEnUp = RECO_PFMET_MuonEnUp;
+     f_pfmet_MuonEnDn = RECO_PFMET_MuonEnDn;
+     f_pfmet_JetResUp = RECO_PFMET_JetResUp;
+     f_pfmet_JetResDn = RECO_PFMET_JetResDn;
+     f_pfmet_UnclusteredEnUp = RECO_PFMET_UnclusteredEnUp;
+     f_pfmet_UnclusteredEnDn = RECO_PFMET_UnclusteredEnDn;
+     f_pfmet_PhotonEnUp = RECO_PFMET_PhotonEnUp;
+     f_pfmet_PhotonEnDn = RECO_PFMET_PhotonEnDn;
+     
      f_genmet=MC_GENMET;
      f_category=category;
      f_Ngood=N_good;
@@ -3956,6 +4330,91 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        f_angle_phistar1 = angle_Phi1;
        f_pt4l = pt4l;
        f_eta4l = eta4l;
+
+        //@ Computes the variations of MELA due to systematic uncertainties
+       if(njets_pass >= 2){
+	 TLorentzVector partP;
+	 vector<TLorentzVector> vpartP;
+	 vector<vector<TLorentzVector>> vpartsP;
+	 vector<int> partsId;
+       
+	 partsId.push_back(L11PID);
+         partsId.push_back(L12PID);
+         partsId.push_back(L21PID);
+         partsId.push_back(L22PID);
+         partsId.push_back(0);
+         partsId.push_back(0);
+	 
+	 vpartP.clear();
+	 partP.SetPtEtaPhiE(L11P4.Pt(),L11P4.Eta(),L11P4.Phi(),L11P4.E());							vpartP.push_back( partP );//Nominal
+	 partP.SetPtEtaPhiE(L11P4.Pt()+RECOMU_mubesttrkPTError[indexleptonfinal[0]],L11P4.Eta(),L11P4.Phi(),L11P4.E());		vpartP.push_back( partP );//+ Pt Uncertainty
+	 partP.SetPtEtaPhiE(L11P4.Pt()-RECOMU_mubesttrkPTError[indexleptonfinal[0]],L11P4.Eta(),L11P4.Phi(),L11P4.E());		vpartP.push_back( partP );//- Pt Uncertainty
+	 vpartsP.push_back( vpartP );
+
+	 vpartP.clear();
+	 partP.SetPtEtaPhiE(L12P4.Pt(),L12P4.Eta(),L12P4.Phi(),L12P4.E());							vpartP.push_back( partP );//Nominal
+	 partP.SetPtEtaPhiE(L12P4.Pt()+RECOMU_mubesttrkPTError[indexleptonfinal[1]],L12P4.Eta(),L12P4.Phi(),L12P4.E());		vpartP.push_back( partP );//+Pt Uncertainty
+	 partP.SetPtEtaPhiE(L12P4.Pt()-RECOMU_mubesttrkPTError[indexleptonfinal[1]],L12P4.Eta(),L12P4.Phi(),L12P4.E());		vpartP.push_back( partP );//-Pt Uncertainty
+	 vpartsP.push_back( vpartP );
+
+	 vpartP.clear();
+	 partP.SetPtEtaPhiE(L21P4.Pt(),L21P4.Eta(),L21P4.Phi(),L21P4.E());							vpartP.push_back( partP );//Nominal
+	 partP.SetPtEtaPhiE(L21P4.Pt()+RECOMU_mubesttrkPTError[indexleptonfinal[2]],L21P4.Eta(),L21P4.Phi(),L21P4.E());		vpartP.push_back( partP );//+Pt Uncertainty
+	 partP.SetPtEtaPhiE(L21P4.Pt()-RECOMU_mubesttrkPTError[indexleptonfinal[2]],L21P4.Eta(),L21P4.Phi(),L21P4.E());		vpartP.push_back( partP );//-Pt Uncertainty
+	 vpartsP.push_back( vpartP );
+	 
+	 vpartP.clear();
+	 partP.SetPtEtaPhiE(L22P4.Pt(),L22P4.Eta(),L22P4.Phi(),L22P4.E());							vpartP.push_back( partP );//Nominal
+	 partP.SetPtEtaPhiE(L22P4.Pt()+RECOMU_mubesttrkPTError[indexleptonfinal[3]],L22P4.Eta(),L22P4.Phi(),L22P4.E());		vpartP.push_back( partP );//+Pt Uncertainty
+	 partP.SetPtEtaPhiE(L22P4.Pt()-RECOMU_mubesttrkPTError[indexleptonfinal[3]],L22P4.Eta(),L22P4.Phi(),L22P4.E());		vpartP.push_back( partP );//-Pt Uncertainty
+	 vpartsP.push_back( vpartP );
+	 
+	 vpartP.clear();
+	 TLorentzVector Jet1, Jet2;
+	 Jet1.SetPtEtaPhiE(f_jets_highpt_pt[0],f_jets_highpt_eta[0],f_jets_highpt_phi[0],f_jets_highpt_et[0]*TMath::CosH(f_jets_highpt_eta[0]));
+	 Jet2.SetPtEtaPhiE(f_jets_highpt_pt[1],f_jets_highpt_eta[1],f_jets_highpt_phi[1],f_jets_highpt_et[1]*TMath::CosH(f_jets_highpt_eta[1]));
+	 partP.SetPtEtaPhiE(Jet1.Pt(),Jet1.Eta(),Jet1.Phi(),Jet1.E());								vpartP.push_back( partP );//Nominal
+	 partP.SetPtEtaPhiE(Jet1.Pt()+f_jets_highpt_pt_error[0],Jet1.Eta(),Jet1.Phi(),Jet1.E());				vpartP.push_back( partP );//+Pt Uncertainty
+	 partP.SetPtEtaPhiE(Jet1.Pt()-f_jets_highpt_pt_error[0],Jet1.Eta(),Jet1.Phi(),Jet1.E());				vpartP.push_back( partP );//-Pt Uncertainty
+	 vpartsP.push_back( vpartP );
+	 
+	 vpartP.clear();
+	 partP.SetPtEtaPhiE(Jet2.Pt(),Jet2.Eta(),Jet2.Phi(),Jet2.E());								vpartP.push_back( partP );//Nominal
+	 partP.SetPtEtaPhiE(Jet2.Pt()+f_jets_highpt_pt_error[1],Jet2.Eta(),Jet2.Phi(),Jet2.E());				vpartP.push_back( partP );//+Pt Uncertainty
+	 partP.SetPtEtaPhiE(Jet2.Pt()-f_jets_highpt_pt_error[1],Jet2.Eta(),Jet2.Phi(),Jet2.E());				vpartP.push_back( partP );//-Pt Uncertainty
+	 vpartsP.push_back( vpartP );
+       
+	 float Djet_VAJHU_max = f_Djet_VAJHU, Djet_VAJHU_min = f_Djet_VAJHU;
+         for(int il1=0; il1<3; ++il1){
+	   for(int il2=0; il2<3; ++il2){
+	     for(int il3=0; il3<3; ++il3){
+	       for(int il4=0; il4<3; ++il4){
+		 for(int ij1=0; ij1<3; ++ij1){
+		   for(int ij2=0; ij2<3; ++ij2){
+		     vector<TLorentzVector> partsP = {vpartsP[0][il1],vpartsP[1][il2],vpartsP[2][il3],vpartsP[3][il4],vpartsP[4][ij1],vpartsP[5][ij2]};
+		     int f=combinedMEM.computeME(MEMNames::kJJ_SMHiggs_GG, MEMNames::kJHUGen, partsP, partsId, phjj_VAJHU); // SM gg->H+2j
+		     int g=combinedMEM.computeME(MEMNames::kJJ_SMHiggs_VBF, MEMNames::kJHUGen, partsP, partsId, pvbf_VAJHU);  // SM VBF->H	   
+		     float Djet_VAJHU = pvbf_VAJHU / ( pvbf_VAJHU + phjj_VAJHU ); // D^VBF_HJJ
+		     if(Djet_VAJHU > Djet_VAJHU_max) Djet_VAJHU_max = Djet_VAJHU;
+		     if(Djet_VAJHU < Djet_VAJHU_min) Djet_VAJHU_min = Djet_VAJHU;
+		   }
+		 }
+	       }
+	     }
+	   }
+         }
+         f_Djet_VAJHU_UncUp = Djet_VAJHU_max;
+	 f_Djet_VAJHU_UncDn = Djet_VAJHU_min;
+	 //To assure that the f_Djet_VAJHU is computed with the 2 highest pt jets
+         vector<TLorentzVector> partsP = {vpartsP[0][0],vpartsP[1][0],vpartsP[2][0],vpartsP[3][0],vpartsP[4][0],vpartsP[5][0]};
+         int f=combinedMEM.computeME(MEMNames::kJJ_SMHiggs_GG, MEMNames::kJHUGen, partsP, partsId, phjj_VAJHU); // SM gg->H+2j
+         int g=combinedMEM.computeME(MEMNames::kJJ_SMHiggs_VBF, MEMNames::kJHUGen, partsP, partsId, pvbf_VAJHU);  // SM VBF->H	   
+         f_Djet_VAJHU = pvbf_VAJHU / ( pvbf_VAJHU + phjj_VAJHU ); // D^VBF_HJJ
+       }else{
+	 f_Djet_VAJHU_UncUp =-1;
+	 f_Djet_VAJHU_UncDn =-1;
+       }
+
        newtree->Fill();              
        
        // Filling BNN input       
@@ -4047,6 +4506,33 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        hDPHI_10->Fill(fabs(DPHI),newweight);
        hNgood_10->Fill(f_Ngood,newweight);
        hNbjets_10->Fill(f_Nbjets,newweight);
+      
+       // shifts up and down
+       hPFMET_JetEnUp_10->Fill(RECO_PFMET_JetEnUp,newweight);
+       hPFMET_JetEnDn_10->Fill(RECO_PFMET_JetEnDn,newweight);
+       hPFMET_ElectronEnUp_10->Fill(RECO_PFMET_ElectronEnUp,newweight);
+       hPFMET_ElectronEnDn_10->Fill(RECO_PFMET_ElectronEnDn,newweight);
+       hPFMET_MuonEnUp_10->Fill(RECO_PFMET_MuonEnUp,newweight);
+       hPFMET_MuonEnDn_10->Fill(RECO_PFMET_MuonEnDn,newweight);
+       hPFMET_JetResUp_10->Fill(RECO_PFMET_JetResUp,newweight);
+       hPFMET_JetResDn_10->Fill(RECO_PFMET_JetResDn,newweight);
+       hPFMET_UnclusteredEnUp_10->Fill(RECO_PFMET_UnclusteredEnUp,newweight);
+       hPFMET_UnclusteredEnDn_10->Fill(RECO_PFMET_UnclusteredEnDn,newweight);
+       hPFMET_PhotonEnUp_10->Fill(RECO_PFMET_PhotonEnUp,newweight);
+       hPFMET_PhotonEnDn_10->Fill(RECO_PFMET_PhotonEnDn,newweight);
+
+       hLogLinXPFMET_JetEnUp_10->Fill(RECO_PFMET_JetEnUp,newweight);
+       hLogLinXPFMET_JetEnDn_10->Fill(RECO_PFMET_JetEnDn,newweight);
+       hLogLinXPFMET_ElectronEnUp_10->Fill(RECO_PFMET_ElectronEnUp,newweight);
+       hLogLinXPFMET_ElectronEnDn_10->Fill(RECO_PFMET_ElectronEnDn,newweight);
+       hLogLinXPFMET_MuonEnUp_10->Fill(RECO_PFMET_MuonEnUp,newweight);
+       hLogLinXPFMET_MuonEnDn_10->Fill(RECO_PFMET_MuonEnDn,newweight);
+       hLogLinXPFMET_JetResUp_10->Fill(RECO_PFMET_JetResUp,newweight);
+       hLogLinXPFMET_JetResDn_10->Fill(RECO_PFMET_JetResDn,newweight);
+       hLogLinXPFMET_UnclusteredEnUp_10->Fill(RECO_PFMET_UnclusteredEnUp,newweight);
+       hLogLinXPFMET_UnclusteredEnDn_10->Fill(RECO_PFMET_UnclusteredEnDn,newweight);
+       hLogLinXPFMET_PhotonEnUp_10->Fill(RECO_PFMET_PhotonEnUp,newweight);
+       hLogLinXPFMET_PhotonEnDn_10->Fill(RECO_PFMET_PhotonEnDn,newweight);
 
        for(int i = 0; i < 4; ++i){
 	 

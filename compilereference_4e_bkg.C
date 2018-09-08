@@ -54,135 +54,75 @@ int main (int argc, char ** argv){
   float lumifb=0.;
 
   if (mcconf.find("Spring16")<5) lumifb=35.867;
-  //if (mcconf.find("Spring16")<5) lumifb=10.693;
+  //if (mcconf.find("Spring16")<5) lumifb=26.958;
 
-  Double_t mH=150.;
-  cout << "mH= " << mH << endl;
-    
   // Run on bkg
-  bool runonbkg=true;
-   
-  if (runonbkg==true){
-
-      bool itera=false;
-      
-      //if (mH<=160.){
-      //	if (i==0) itera=true;  
-      //}
-      //else {
-      itera=true;
-      //}
-      
-      for(int i=0;i<nlines && itera==true;i++){
-	
-	string name= "roottree_leptons_crab_"+bkgsamples[i]+".root";
-	
-	TString dirInput;
-	if (site.find("CERN")<5){
-          if (mcconf.find("Fall11")<5) dirInput="/castor/cern.ch/user/n/ndefilip/Paper/MCFall11";    // to run at CERN
-	  else dirInput="/castor/cern.ch/user/n/ndefilip/Paper/MCSummer12";    // to run at CERN
-	}
-	else if (site.find("DESY")<5){
-	  dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/bkg"; //to run at DESY
-	}
-        else if (site.find("FNAL")<5 && mcconf.find("Fall11")<5){
-          dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/bkg/Fall11";
-        }
-        else if (site.find("FNAL")<5 && mcconf.find("Summer12")<5 ){
-          dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/bkg/Summer12";
-        }
-        else if (site.find("FNAL")<5 && mcconf.find("Spring16")<5 ){
-          dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
-        }
-	else if (mcconf.find("Fall11")<5){
-          dirInput="/lustre/cms/store/user/defilip/Fall11_445_paper_step_analysis_merged";
-	}
-	else if (mcconf.find("Summer12")<5){
-          dirInput="/lustre/cms/store/user/defilip/Summer12_53X_paper_step_analysis_merged";
-	}
-        else if (mcconf.find("Fall15")<5){
-	  dirInput="/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged";  
-	}       
-        else if (mcconf.find("Spring16")<5){
-          dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Spring16_merged";
-        }
-
-
-	
-	TString bkgFile=name;
-
-	if (bkgFile.Contains("WWTo2L2Nu") ||
-            bkgFile.Contains("WZTo3LNu_") ||
-            bkgFile.Contains("TTTo2L2Nu_noSC") ||
-	    bkgFile.Contains("GluGluToContinToZZTo") ||
-            bkgFile.Contains("WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8") ||
-	    bkgFile.Contains("ZZZ_TuneCUETP8M1") ||
-            bkgFile.Contains("ZZTo2L2Nu") ||
-            bkgFile.Contains("WWZ_TuneCUETP8M1") ||
-            bkgFile.Contains("WZZ_TuneCUETP8M1") ||
-            bkgFile.Contains("TTWJetsToLNu") ||
-            bkgFile.Contains("TTZToLLNuNu_M-10") 
-            ){
-          TString datasetName=bkgFile.ReplaceAll("_","_");
-          bkgFile=datasetName;
-          dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged";  
-        }
-
-       if (bkgFile.Contains("HToWW")  ){
-          TString datasetName=bkgFile.ReplaceAll("_","_");
-          bkgFile=datasetName;
-          dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";
-        }
-
-	Char_t nome[300];
-	sprintf(nome,"%s/%s",dirInput.Data(),bkgFile.Data());
-	
-	float weight= lumifb*(bkgxsection[i]*1000.*bkgnskim[i]/bkgninput[i])/bkgnskim[i];
-        cout << "weight is " << weight << endl;	
-
-	TFile *file3;
-	TTree *tree3;
-
-        //if (bkgFile.Contains("ZZTo4L_13TeV_powheg_pythia8")){
-        //  TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
-        //  chain->Add("/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged/roottree_leptons_crab_ZZTo4L_13TeV_powheg_pythia8.root");
-        //  tree3 = chain;
-        //}
-
-	if (bkgFile.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")){
-          TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
-          chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
-          chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
-          chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Moriond17_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_2.root");
-          
-          tree3 = chain;
-        }
-
-        /*
-	if (bkgFile.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")){
-          TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
-          chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root");
-	  chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_1.root");
-	  chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_2.root");
-	  chain->Add("/lustre/cms/store/user/gminiell/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_3.root");
-          tree3 = chain;
-        }
-	else if (bkgFile.Contains("TTTo2L2Nu_13TeV-powheg")){
-	  TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
-	  chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_TTTo2L2Nu_13TeV-powheg.root");
-	  chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_TTTo2L2Nu_13TeV-powheg_1.root");
-	  tree3 = chain;
-	}	
-	// else if (bkgFile.Contains("WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8")){
-	//   TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
-	//   chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root");
-	//   chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_1.root");
-	//   chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_2.root");
-	//   chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_3.root");
-	//   chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_4.root");
-  	//   tree3 = chain;
-	// }
-	else if (bkgFile.Contains("QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8")){
+  for(int i=0;i<nlines;i++){
+    
+    string name= "roottree_leptons_crab_"+bkgsamples[i]+".root";
+    
+    TString dirInput;
+    if (site.find("CERN")<5){
+      if (mcconf.find("Fall11")<5) dirInput="/castor/cern.ch/user/n/ndefilip/Paper/MCFall11";    // to run at CERN
+      else dirInput="/castor/cern.ch/user/n/ndefilip/Paper/MCSummer12";    // to run at CERN
+    }
+    else if (site.find("DESY")<5){
+      dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/bkg"; //to run at DESY
+    }
+    else if (site.find("FNAL")<5){
+      dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
+    }
+    else if (mcconf.find("Spring16")<5){
+      dirInput="/lustre/cms/store/user/mmelodea/RunIISummer16";
+    }
+    
+    TString bkgFile=name;
+    cout << bkgFile.Data() << endl;
+    
+    if (bkgFile.Contains("HHTo2B4L")  ){
+      TString datasetName=bkgFile.ReplaceAll("_","_");
+      bkgFile=datasetName;
+      dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged_Syst";
+    }
+    
+    //if (bkgFile.Contains("QCD")  ){
+    //  TString datasetName=bkgFile.ReplaceAll("_","_");
+    //  bkgFile=datasetName;
+    //  dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Spring16_merged";
+    //}
+    
+    
+    Char_t nome[300];
+    sprintf(nome,"%s/%s",dirInput.Data(),bkgFile.Data());
+    
+    float weight= lumifb*(bkgxsection[i]*1000.*bkgnskim[i]/bkgninput[i])/bkgnskim[i];
+    cout << "weight is " << weight << endl;	
+    
+    TFile *file3;
+    TTree *tree3;
+    
+    if (bkgFile.Contains("DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")){
+      TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_2.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_3.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_4.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_5.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_6.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_7.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_8.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_9.root");
+      tree3 = chain;
+    }
+    else if (bkgFile.Contains("WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")){
+      TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
+      chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
+      tree3 = chain;
+    }  
+    /*
+	if (bkgFile.Contains("QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8")){
 	  TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
 	  chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8.root");
 	  chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8_1.root");
@@ -249,34 +189,32 @@ int main (int argc, char ** argv){
 	  chain->Add("/lustre/cms/store/user/dburns/MonoHiggs/Fall15_25ns_merged/roottree_leptons_crab_QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8_1.root");
 	  tree3 = chain;
 	}
-	*/	
-	else {	          
-	  file3 = TFile::Open(nome);
-	  cout << "Read file with name: " << nome << endl;
-	  tree3 = (TTree*)file3->Get("HZZ4LeptonsAnalysis");	  
-	}
-        
-
-	HZZ4LeptonsAnalysis make3(tree3,weight,dataconf,mcconf);
-
-	char *path=NULL;
-	size_t size=300;
-	path=getcwd(path,size);
-
-	// cout << "Path is " << path << endl;
-	sprintf(nome,"%s/output_%s.root",path,bkgsamples[i].c_str());
-
-	// cout << "Output file name is " << nome << endl;
-	make3.Loop(nome);
-		
-	cout << "Create file with name: " << nome << endl;
-	delete tree3;
-	file3 -> Close();
-	
-      }
-
+        */
+    else {	          
+      file3 = TFile::Open(nome);
+      cout << "Read file with name: " << nome << endl;
+      tree3 = (TTree*)file3->Get("HZZ4LeptonsAnalysis");	  
+    }
+    
+    
+    HZZ4LeptonsAnalysis make3(tree3,weight,dataconf,mcconf);
+    
+    char *path=NULL;
+    size_t size=300;
+    path=getcwd(path,size);
+    
+    // cout << "Path is " << path << endl;
+    sprintf(nome,"%s/output_%s.root",path,bkgsamples[i].c_str());
+    
+    // cout << "Output file name is " << nome << endl;
+    make3.Loop(nome);
+    
+    cout << "Create file with name: " << nome << endl;
+    delete tree3;
+    file3 -> Close();
+    
   }
-
+  
   return 0; 
 
 }

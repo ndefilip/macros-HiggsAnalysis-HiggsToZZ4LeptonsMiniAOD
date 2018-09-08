@@ -78,7 +78,7 @@ while [ $n -lt ${nlines} ]; do
        qsub submit_ReferenceAnalysis_sig_${samplename}_$4.sh   
     elif  [ $1 = ${SBARI} ]; then
        echo "Submitting jobs via CONDOR at BARI"
-        condor_submit -name ettore  condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
+       condor_submit -name ettore  condor_ReferenceAnalysis_sig_${samplename}_$4.cfg
     else
        echo "Submitting jobs via PBS"
        qsub -q local submit_ReferenceAnalysis_sig_${samplename}_$4.sh
