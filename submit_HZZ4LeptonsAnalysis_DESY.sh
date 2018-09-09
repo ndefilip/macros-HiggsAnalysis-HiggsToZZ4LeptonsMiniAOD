@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-mkdir -p /nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/jobdir
-mkdir -p /nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/histodir
+mkdir -p /afs/desy.de/user/s/school15/jobdir
+mkdir -p /afs/desy.de/user/s/school15/histodir
 
 echo "Running HtoZZto4Leptons Analysis with executables RunHZZ4LeptonsAnalysis"
 source /cvmfs/cms.cern.ch/cmsset_default.sh
@@ -23,7 +23,7 @@ else
     cd ${workdir};
 fi
 
-savedir=`echo /nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/histodir`
+savedir=`echo /afs/desy.de/user/s/school15/histodir`
 
 echo "Working dir is $workdir"
 #echo "Executable dir is $exedir"
@@ -37,7 +37,7 @@ bash compilereference.sh 4mu
 
 tar -zcvf ${workdir}/HZZ4LeptonsAnalysis_log.tgz ${workdir}/HZZ4LeptonsAnalysis_log
 
-cp -f ${workdir}/HZZ4LeptonsAnalysis_log.tgz /nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/jobdir/.
+cp -f ${workdir}/HZZ4LeptonsAnalysis_log.tgz /afs/desy.de/user/s/school15/jobdir/.
 
 mv ${workdir}/output.root    ${savedir}/.
 mv ${workdir}/output_bnn.txt ${savedir}/.
