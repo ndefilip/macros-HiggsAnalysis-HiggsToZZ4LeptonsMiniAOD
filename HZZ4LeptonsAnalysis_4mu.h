@@ -368,6 +368,7 @@ public :
    Float_t         RECOMU_mubesttrkDxyError[100];
    Float_t         RECOMU_mubesttrkDz[100];
    Float_t         RECOMU_mubesttrkDzError[100];
+   Float_t         RECOMU_mubesttrkPTError[100];
    Double_t        ftsigma[100];
    Double_t        gdX[100];
    Double_t        gdY[100];
@@ -534,6 +535,51 @@ public :
    Float_t         RECO_PFJET_PUID_MVA[100];
    Double_t        RHO_ele;
    Double_t        RHO_mu;
+
+     Float_t         RECO_PFJET_PT_UncUp[200];
+   Float_t         RECO_PFJET_PT_UncDn[200];
+   Float_t         RECO_PFJET_AREA[200];
+   Float_t         RECO_PFJET_PTD[200];
+   Float_t         RECO_PFJET_CHARGED_HADRON_ENERGY[200];
+   Float_t         RECO_PFJET_NEUTRAL_HADRON_ENERGY[200];
+   Float_t         RECO_PFJET_PHOTON_ENERGY[200];
+   Float_t         RECO_PFJET_ELECTRON_ENERGY[200];
+   Float_t         RECO_PFJET_MUON_ENERGY[200];
+   Float_t         RECO_PFJET_HF_HADRON_ENERGY[200];
+   Float_t         RECO_PFJET_HF_EM_ENERGY[200];
+   Float_t         RECO_PFJET_CHARGED_EM_ENERGY[200];
+   Float_t         RECO_PFJET_CHARGED_MU_ENERGY[200];
+   Float_t         RECO_PFJET_NEUTRAL_EM_ENERGY[200];
+   Int_t           RECO_PFJET_CHARGED_HADRON_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_NEUTRAL_HADRON_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_PHOTON_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_ELECTRON_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_MUON_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_HF_HADRON_MULTIPLICTY[200];
+   Int_t           RECO_PFJET_HF_EM_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_CHARGED_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_NEUTRAL_MULTIPLICITY[200];
+   Int_t           RECO_PFJET_NCOMPONENTS[200];
+   Int_t           RECO_PFJET_COMPONENT_PDGID[200][100];
+   Float_t         RECO_PFJET_COMPONENT_PT[200][100];
+   Float_t         RECO_PFJET_COMPONENT_ETA[200][100];
+   Float_t         RECO_PFJET_COMPONENT_PHI[200][100];
+   Float_t         RECO_PFJET_COMPONENT_E[200][100];
+   Float_t         RECO_PFJET_COMPONENT_CHARGE[200][100];
+   Float_t         RECO_PFJET_COMPONENT_TRANSVERSE_MASS[200][100];
+   Float_t         RECO_PFJET_COMPONENT_XVERTEX[200][100];
+   Float_t         RECO_PFJET_COMPONENT_YVERTEX[200][100];
+   Float_t         RECO_PFJET_COMPONENT_ZVERTEX[200][100];
+   Float_t         RECO_PFJET_COMPONENT_VERTEX_CHI2[200][100];
+   //@
+   Int_t           LHE_PARTON_N;
+   UChar_t         LHE_PARTON_CLEAR[10];
+   Int_t           LHE_PARTON_PDGID[10];
+   Float_t         LHE_PARTON_PT[10];
+   Float_t         LHE_PARTON_ETA[10];
+   Float_t         LHE_PARTON_PHI[10];
+   Float_t         LHE_PARTON_E[10];
+
    Float_t         RECO_CALOMET;
    Float_t         RECO_PFMET;
    Float_t         RECO_PFMET_X;
@@ -547,6 +593,21 @@ public :
    Float_t         RECO_PFMETT1_THETA;
    Float_t         RECO_TCMET;
    Float_t         RECO_CORMETMUONS;
+
+ //@Type I correction MET
+   Float_t         RECO_PFMET_JetEnUp;
+   Float_t         RECO_PFMET_JetEnDn;
+   Float_t         RECO_PFMET_ElectronEnUp;
+   Float_t         RECO_PFMET_ElectronEnDn;
+   Float_t         RECO_PFMET_MuonEnUp;
+   Float_t         RECO_PFMET_MuonEnDn;
+   Float_t         RECO_PFMET_JetResUp;
+   Float_t         RECO_PFMET_JetResDn;
+   Float_t         RECO_PFMET_UnclusteredEnUp;
+   Float_t         RECO_PFMET_UnclusteredEnDn;
+   Float_t         RECO_PFMET_PhotonEnUp;
+   Float_t         RECO_PFMET_PhotonEnDn;
+
    Float_t         tCHighEff_BTagJet_PT[50];
    Float_t         tCHighPur_BTagJet_PT[50];
    Float_t         cSV_BTagJet_PT[50];
@@ -900,6 +961,7 @@ public :
    TBranch        *b_RECOMU_mubesttrkDxyError;   //!
    TBranch        *b_RECOMU_mubesttrkDz;   //!
    TBranch        *b_RECOMU_mubesttrkDzError;   //!
+   TBranch        *b_RECOMU_mubesttrkPTError; //!
    TBranch        *b_ftsigma;   //!
    TBranch        *b_gdX;   //!
    TBranch        *b_gdY;   //!
@@ -1066,6 +1128,51 @@ public :
    TBranch        *b_RECO_PFJET_PUID_MVA; //!
    TBranch        *b_RHO_ele;   //!
    TBranch        *b_RHO_mu;   //!
+
+ TBranch        *b_RECO_PFJET_PT_UncUp;//!
+   TBranch        *b_RECO_PFJET_PT_UncDn;//!
+   TBranch        *b_RECO_PFJET_AREA;   //!
+   TBranch        *b_RECO_PFJET_PTD;   //!
+   TBranch        *b_RECO_PFJET_CHARGED_HADRON_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_NEUTRAL_HADRON_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_PHOTON_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_ELECTRON_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_MUON_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_HF_HADRON_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_HF_EM_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_CHARGED_EM_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_CHARGED_MU_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_NEUTRAL_EM_ENERGY;   //!
+   TBranch        *b_RECO_PFJET_CHARGED_HADRON_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_NEUTRAL_HADRON_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_PHOTON_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_ELECTRON_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_MUON_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_HF_HADRON_MULTIPLICTY;   //!
+   TBranch        *b_RECO_PFJET_HF_EM_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_CHARGED_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_NEUTRAL_MULTIPLICITY;   //!
+   TBranch        *b_RECO_PFJET_NCOMPONENTS;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_PDGID;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_PT;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_ETA;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_PHI;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_E;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_CHARGE;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_TRANSVERSE_MASS;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_XVERTEX;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_YVERTEX;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_ZVERTEX;   //!
+   TBranch        *b_RECO_PFJET_COMPONENT_VERTEX_CHI2;   //!
+   //@
+   TBranch        *b_LHE_PARTON_N;   //!
+   TBranch        *b_LHE_PARTON_CLEAR;   //!
+   TBranch        *b_LHE_PARTON_PDGID;   //!
+   TBranch        *b_LHE_PARTON_PT;   //!
+   TBranch        *b_LHE_PARTON_ETA;   //!
+   TBranch        *b_LHE_PARTON_PHI;   //!
+   TBranch        *b_LHE_PARTON_E;   //!
+
    TBranch        *b_RECO_CALOMET;   //!
    TBranch        *b_RECO_PFMET;   //!
    TBranch        *b_RECO_PFMET_X;   //!
@@ -1079,6 +1186,21 @@ public :
    TBranch        *b_RECO_PFMETT1_THETA;   //!
    TBranch        *b_RECO_TCMET;   //!
    TBranch        *b_RECO_CORMETMUONS;   //!
+
+ //@Type I correction MET
+   TBranch        *b_RECO_PFMET_JetEnUp;
+   TBranch        *b_RECO_PFMET_JetEnDn;
+   TBranch        *b_RECO_PFMET_ElectronEnUp;
+   TBranch        *b_RECO_PFMET_ElectronEnDn;
+   TBranch        *b_RECO_PFMET_MuonEnUp;
+   TBranch        *b_RECO_PFMET_MuonEnDn;
+   TBranch        *b_RECO_PFMET_JetResUp;
+   TBranch        *b_RECO_PFMET_JetResDn;
+   TBranch        *b_RECO_PFMET_UnclusteredEnUp;
+   TBranch        *b_RECO_PFMET_UnclusteredEnDn;
+   TBranch        *b_RECO_PFMET_PhotonEnUp;
+   TBranch        *b_RECO_PFMET_PhotonEnDn;
+
    TBranch        *b_tCHighEff_BTagJet_PT;   //!
    TBranch        *b_tCHighPur_BTagJet_PT;   //!
    TBranch        *b_cSV_BTagJet_PT;   //!
@@ -1517,6 +1639,7 @@ void HZZ4LeptonsAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("RECOMU_mubesttrkDxyError", RECOMU_mubesttrkDxyError, &b_RECOMU_mubesttrkDxyError);
    fChain->SetBranchAddress("RECOMU_mubesttrkDz", RECOMU_mubesttrkDz, &b_RECOMU_mubesttrkDz);
    fChain->SetBranchAddress("RECOMU_mubesttrkDzError", RECOMU_mubesttrkDzError, &b_RECOMU_mubesttrkDzError);
+   fChain->SetBranchAddress("RECOMU_mubesttrkPTError", RECOMU_mubesttrkPTError, &b_RECOMU_mubesttrkPTError);
    fChain->SetBranchAddress("ftsigma", ftsigma, &b_ftsigma);
    fChain->SetBranchAddress("gdX", gdX, &b_gdX);
    fChain->SetBranchAddress("gdY", gdY, &b_gdY);
@@ -1683,6 +1806,51 @@ void HZZ4LeptonsAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("RECO_PFJET_PUID_MVA", RECO_PFJET_PUID_MVA, &b_RECO_PFJET_PUID_MVA);
    fChain->SetBranchAddress("RHO_ele", &RHO_ele, &b_RHO_ele);
    fChain->SetBranchAddress("RHO_mu", &RHO_mu, &b_RHO_mu);
+
+  fChain->SetBranchAddress("RECO_PFJET_PT_UncUp",  RECO_PFJET_PT_UncUp,  &b_RECO_PFJET_PT_UncUp);
+   fChain->SetBranchAddress("RECO_PFJET_PT_UncDn",  RECO_PFJET_PT_UncDn,  &b_RECO_PFJET_PT_UncDn);   
+   fChain->SetBranchAddress("RECO_PFJET_AREA", RECO_PFJET_AREA, &b_RECO_PFJET_AREA);
+   fChain->SetBranchAddress("RECO_PFJET_PTD", RECO_PFJET_PTD, &b_RECO_PFJET_PTD);
+   fChain->SetBranchAddress("RECO_PFJET_CHARGED_HADRON_ENERGY", RECO_PFJET_CHARGED_HADRON_ENERGY, &b_RECO_PFJET_CHARGED_HADRON_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_NEUTRAL_HADRON_ENERGY", RECO_PFJET_NEUTRAL_HADRON_ENERGY, &b_RECO_PFJET_NEUTRAL_HADRON_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_PHOTON_ENERGY", RECO_PFJET_PHOTON_ENERGY, &b_RECO_PFJET_PHOTON_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_ELECTRON_ENERGY", RECO_PFJET_ELECTRON_ENERGY, &b_RECO_PFJET_ELECTRON_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_MUON_ENERGY", RECO_PFJET_MUON_ENERGY, &b_RECO_PFJET_MUON_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_HF_HADRON_ENERGY", RECO_PFJET_HF_HADRON_ENERGY, &b_RECO_PFJET_HF_HADRON_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_HF_EM_ENERGY", RECO_PFJET_HF_EM_ENERGY, &b_RECO_PFJET_HF_EM_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_CHARGED_EM_ENERGY", RECO_PFJET_CHARGED_EM_ENERGY, &b_RECO_PFJET_CHARGED_EM_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_CHARGED_MU_ENERGY", RECO_PFJET_CHARGED_MU_ENERGY, &b_RECO_PFJET_CHARGED_MU_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_NEUTRAL_EM_ENERGY", RECO_PFJET_NEUTRAL_EM_ENERGY, &b_RECO_PFJET_NEUTRAL_EM_ENERGY);
+   fChain->SetBranchAddress("RECO_PFJET_CHARGED_HADRON_MULTIPLICITY", RECO_PFJET_CHARGED_HADRON_MULTIPLICITY, &b_RECO_PFJET_CHARGED_HADRON_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_NEUTRAL_HADRON_MULTIPLICITY", RECO_PFJET_NEUTRAL_HADRON_MULTIPLICITY, &b_RECO_PFJET_NEUTRAL_HADRON_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_PHOTON_MULTIPLICITY", RECO_PFJET_PHOTON_MULTIPLICITY, &b_RECO_PFJET_PHOTON_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_ELECTRON_MULTIPLICITY", RECO_PFJET_ELECTRON_MULTIPLICITY, &b_RECO_PFJET_ELECTRON_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_MUON_MULTIPLICITY", RECO_PFJET_MUON_MULTIPLICITY, &b_RECO_PFJET_MUON_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_HF_HADRON_MULTIPLICTY", RECO_PFJET_HF_HADRON_MULTIPLICTY, &b_RECO_PFJET_HF_HADRON_MULTIPLICTY);
+   fChain->SetBranchAddress("RECO_PFJET_HF_EM_MULTIPLICITY", RECO_PFJET_HF_EM_MULTIPLICITY, &b_RECO_PFJET_HF_EM_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_CHARGED_MULTIPLICITY", RECO_PFJET_CHARGED_MULTIPLICITY, &b_RECO_PFJET_CHARGED_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_NEUTRAL_MULTIPLICITY", RECO_PFJET_NEUTRAL_MULTIPLICITY, &b_RECO_PFJET_NEUTRAL_MULTIPLICITY);
+   fChain->SetBranchAddress("RECO_PFJET_NCOMPONENTS", RECO_PFJET_NCOMPONENTS, &b_RECO_PFJET_NCOMPONENTS);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_PDGID", RECO_PFJET_COMPONENT_PDGID, &b_RECO_PFJET_COMPONENT_PDGID);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_PT", RECO_PFJET_COMPONENT_PT, &b_RECO_PFJET_COMPONENT_PT);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_ETA", RECO_PFJET_COMPONENT_ETA, &b_RECO_PFJET_COMPONENT_ETA);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_PHI", RECO_PFJET_COMPONENT_PHI, &b_RECO_PFJET_COMPONENT_PHI);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_E", RECO_PFJET_COMPONENT_E, &b_RECO_PFJET_COMPONENT_E);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_CHARGE", RECO_PFJET_COMPONENT_CHARGE, &b_RECO_PFJET_COMPONENT_CHARGE);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_TRANSVERSE_MASS", RECO_PFJET_COMPONENT_TRANSVERSE_MASS, &b_RECO_PFJET_COMPONENT_TRANSVERSE_MASS);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_XVERTEX", RECO_PFJET_COMPONENT_XVERTEX, &b_RECO_PFJET_COMPONENT_XVERTEX);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_YVERTEX", RECO_PFJET_COMPONENT_YVERTEX, &b_RECO_PFJET_COMPONENT_YVERTEX);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_ZVERTEX", RECO_PFJET_COMPONENT_ZVERTEX, &b_RECO_PFJET_COMPONENT_ZVERTEX);
+   fChain->SetBranchAddress("RECO_PFJET_COMPONENT_VERTEX_CHI2", RECO_PFJET_COMPONENT_VERTEX_CHI2, &b_RECO_PFJET_COMPONENT_VERTEX_CHI2);
+   //@
+   fChain->SetBranchAddress("LHE_PARTON_N", &LHE_PARTON_N, &b_LHE_PARTON_N);
+   fChain->SetBranchAddress("LHE_PARTON_CLEAR", LHE_PARTON_CLEAR, &b_LHE_PARTON_CLEAR);
+   fChain->SetBranchAddress("LHE_PARTON_PDGID", LHE_PARTON_PDGID, &b_LHE_PARTON_PDGID);
+   fChain->SetBranchAddress("LHE_PARTON_PT", LHE_PARTON_PT, &b_LHE_PARTON_PT);
+   fChain->SetBranchAddress("LHE_PARTON_ETA", LHE_PARTON_ETA, &b_LHE_PARTON_ETA);
+   fChain->SetBranchAddress("LHE_PARTON_PHI", LHE_PARTON_PHI, &b_LHE_PARTON_PHI);
+   fChain->SetBranchAddress("LHE_PARTON_E", LHE_PARTON_E, &b_LHE_PARTON_E);
+
    fChain->SetBranchAddress("RECO_CALOMET", &RECO_CALOMET, &b_RECO_CALOMET);
    fChain->SetBranchAddress("RECO_PFMET", &RECO_PFMET, &b_RECO_PFMET);
    fChain->SetBranchAddress("RECO_PFMET_X", &RECO_PFMET_X, &b_RECO_PFMET_X);
@@ -1696,6 +1864,22 @@ void HZZ4LeptonsAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("RECO_PFMETT1_THETA", &RECO_PFMETT1_THETA, &b_RECO_PFMETT1_THETA);
    fChain->SetBranchAddress("RECO_TCMET", &RECO_TCMET, &b_RECO_TCMET);
    fChain->SetBranchAddress("RECO_CORMETMUONS", &RECO_CORMETMUONS, &b_RECO_CORMETMUONS);
+
+ //@Type I correction MET
+   fChain->SetBranchAddress("RECO_PFMET_JetEnUp", &RECO_PFMET_JetEnUp, &b_RECO_PFMET_JetEnUp);
+   fChain->SetBranchAddress("RECO_PFMET_JetEnDn", &RECO_PFMET_JetEnDn, &b_RECO_PFMET_JetEnDn);
+   fChain->SetBranchAddress("RECO_PFMET_ElectronEnUp", &RECO_PFMET_ElectronEnUp, &b_RECO_PFMET_ElectronEnUp);
+   fChain->SetBranchAddress("RECO_PFMET_ElectronEnDn", &RECO_PFMET_ElectronEnDn, &b_RECO_PFMET_ElectronEnDn);
+   fChain->SetBranchAddress("RECO_PFMET_MuonEnUp", &RECO_PFMET_MuonEnUp, &b_RECO_PFMET_MuonEnUp);
+   fChain->SetBranchAddress("RECO_PFMET_MuonEnDn", &RECO_PFMET_MuonEnDn, &b_RECO_PFMET_MuonEnDn);
+   fChain->SetBranchAddress("RECO_PFMET_JetResUp", &RECO_PFMET_JetResUp, &b_RECO_PFMET_JetResUp);
+   fChain->SetBranchAddress("RECO_PFMET_JetResDn", &RECO_PFMET_JetResDn, &b_RECO_PFMET_JetResDn);
+   fChain->SetBranchAddress("RECO_PFMET_UnclusteredEnUp", &RECO_PFMET_UnclusteredEnUp, &b_RECO_PFMET_UnclusteredEnUp);
+   fChain->SetBranchAddress("RECO_PFMET_UnclusteredEnDn", &RECO_PFMET_UnclusteredEnDn, &b_RECO_PFMET_UnclusteredEnDn);
+   fChain->SetBranchAddress("RECO_PFMET_PhotonEnUp", &RECO_PFMET_PhotonEnUp, &b_RECO_PFMET_PhotonEnUp);
+   fChain->SetBranchAddress("RECO_PFMET_PhotonEnDn", &RECO_PFMET_PhotonEnDn, &b_RECO_PFMET_PhotonEnDn);
+   
+
    fChain->SetBranchAddress("tCHighEff_BTagJet_PT", tCHighEff_BTagJet_PT, &b_tCHighEff_BTagJet_PT);
    fChain->SetBranchAddress("tCHighPur_BTagJet_PT", tCHighPur_BTagJet_PT, &b_tCHighPur_BTagJet_PT);
    fChain->SetBranchAddress("cSV_BTagJet_PT", cSV_BTagJet_PT, &b_cSV_BTagJet_PT);
