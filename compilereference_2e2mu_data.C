@@ -78,6 +78,8 @@ int main (int argc, char ** argv){
       dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Data2016_MonoHiggs_13TeV_merged_Syst/";	
     }
     
+    if (site.find("DESY")<5) dirInput="/nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/Data2016_MonoHiggs_13TeV_merged_Syst/";
+
     cout << "Input directory is:" << dirInput<< endl;
     
     TString dataFile=name;
