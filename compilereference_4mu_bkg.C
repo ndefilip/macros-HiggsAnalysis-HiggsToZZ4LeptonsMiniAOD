@@ -75,6 +75,8 @@ int main (int argc, char ** argv){
     else if (mcconf.find("Spring16")<5){
       dirInput="/lustre/cms/store/user/mmelodea/RunIISummer16";
     }
+
+    if (site.find("DESY")<5) dirInput="/nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/Moriond17_merged_Syst";
     
     TString bkgFile=name;
     cout << bkgFile.Data() << endl;
