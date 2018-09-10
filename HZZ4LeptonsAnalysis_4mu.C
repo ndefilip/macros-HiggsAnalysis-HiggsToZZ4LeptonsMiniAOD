@@ -24,14 +24,14 @@
 #include "ZZMatrixElement/MELA/src/computeAngles.h"
 #include "ZZMatrixElement/MELA/src/computeAngles.cc"
 #include "ZZMatrixElement/MEMCalculators/interface/MEMCalculators.h"
-#include "CondFormats/JetMETObjects/interface/JetResolutionObject.h"
-#include "JetMETCorrections/Modules/interface/JetResolution.h"
+//#include "CondFormats/JetMETObjects/interface/JetResolutionObject.h"
+//#include "JetMETCorrections/Modules/interface/JetResolution.h"
 
 using namespace std;
 // using namespace RooFit;
 // using namespace meMCFM;
 using namespace MEMNames;
-using namespace JME;
+//using namespace JME;
 
 const double Zmass = 91.188; // nominal Z boson mass
 const double mPI = 3.141592654; 
@@ -45,9 +45,9 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
    MEMs combinedMEM(13,125,"CTEQ6L");  
 
    // JME
-   JME::JetParameters jetparameters;
-   JME::JetResolution jetresolution;
-   JME::JetResolutionScaleFactor jetresolution_sf;
+  // JME::JetParameters jetparameters;
+  // JME::JetResolution jetresolution;
+  // JME::JetResolutionScaleFactor jetresolution_sf;
       
    // BNN
    Char_t datasetChar[500],bnnOUT[500],eventsOUT[500];
@@ -3712,9 +3712,9 @@ void HZZ4LeptonsAnalysis::Loop(Char_t *output)
        double jercorr = 1.0; double jercorrup = 1.0; double jercorrdn = 1.0;
 
        if (MC_type == "Spring16" || MC_type== "Moriond17") {
-	 jetparameters.setJetPt(RECO_PFJET_PT[i]);
-	 jetparameters.setJetEta(RECO_PFJET_ETA[i]);
-	 jetparameters.setRho(RHO_mu);
+	 //jetparameters.setJetPt(RECO_PFJET_PT[i]);
+	 //jetparameters.setJetEta(RECO_PFJET_ETA[i]);
+	 //jetparameters.setRho(RHO_mu);
 	 
 	 /*
 	 float relpterr = jetresolution.getResolution(jetparameters); // jet pt resolution	
