@@ -24,6 +24,8 @@ else
     cd ${workdir};
 fi
 
+export CMSSW_SEARCH_PATH=/afs/desy.de/user/s/school15/CMSSW_8_0_24/src:/afs/desy.de/user/s/school15/CMSSW_8_0_24/external/slc6_amd64_gcc530/data:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_24/src:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_24/external/slc6_amd64_gcc530/data
+
 savedir=`echo /nfs/dust/cms/group/cmsdas2018/users/${username}/histodir`
 
 echo "Working dir is $workdir"
@@ -33,6 +35,7 @@ echo "Saving dir is $savedir"
 echo "Compiling the macros"
 bash compilereference.sh 4mu
 
+ls -la *
 
 ./RunReferenceAnalysis ./sig_input_h150.txt 1 ./bkg_input.txt 1 ./data_input.txt 1 site year mc >& ${workdir}/HZZ4LeptonsAnalysis_log
 
@@ -46,6 +49,6 @@ mv ${workdir}/output_bnn.root ${savedir}/.
 mv ${workdir}/output_txt.txt ${savedir}/.
 mv ${workdir}/output_txt_vbf.txt ${savedir}/.
 
-if [ -d "$_CONDOR_SCRATCH_DIR" ]; then
- rm -f $_CONDOR_SCRATCH_DIR/*
-fi
+#if [ -d "$_CONDOR_SCRATCH_DIR" ]; then
+# rm -f $_CONDOR_SCRATCH_DIR/*
+#fi
