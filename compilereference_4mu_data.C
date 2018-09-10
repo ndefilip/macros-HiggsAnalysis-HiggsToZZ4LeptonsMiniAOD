@@ -77,12 +77,14 @@ int main (int argc, char ** argv){
     else if ( site.find("BARI")<5 && name.find("03Feb2017")<100){
       dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Data2016_MonoHiggs_13TeV_merged_Syst/";        
     }
-    
+
+    if (site.find("DESY")<5) dirInput="/nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/Data2016_MonoHiggs_13TeV_merged_Syst/";    
     cout << "Input directory is:" << dirInput<< endl;
    
     
     TString dataFile=name;
     if (dataFile.Contains("miniaod")) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Data2016_MonoHiggs_13TeV_merged/";  
+
     
     Char_t nome[300];
     sprintf(nome,"%s/%s",dirInput.Data(),name.c_str());

@@ -94,6 +94,7 @@ int main (int argc, char ** argv){
  
     //if (sigFile.Contains("2HDM") ) dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Spring16_merged";
     if (sigFile.Contains("2HDM") || sigFile.Contains("Baryon") ) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";    
+    if (site.find("DESY")<5 && (sigFile.Contains("2HDM") || sigFile.Contains("Baryoni")) ) dirInput="/nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/Moriond17_merged_Syst";
     if (sigFile.Contains("HHTo2B4L_madgraph_pythia8") ) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";
 
     Char_t nome[300];
