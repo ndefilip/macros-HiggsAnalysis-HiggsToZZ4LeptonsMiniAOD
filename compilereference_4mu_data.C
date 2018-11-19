@@ -71,20 +71,19 @@ int main (int argc, char ** argv){
     else if (site.find("DESY")<5){
       dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/data"; //to run at DESY
     }
-    else if ( site.find("FNAL")<5 && name.find("2011")<38){
-      dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/data/2011";
+    else if ( site.find("FNAL")<5 && name.find("03Feb2017")<100){
+      // dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/data/2011";
+      dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Data2016_MonoHiggs_13TeV_merged_Syst";
     }      
     else if ( site.find("BARI")<5 && name.find("03Feb2017")<100){
       dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Data2016_MonoHiggs_13TeV_merged_Syst/";        
     }
-
-    if (site.find("DESY")<5) dirInput="/nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/Data2016_MonoHiggs_13TeV_merged_Syst/";    
+    
     cout << "Input directory is:" << dirInput<< endl;
    
     
     TString dataFile=name;
     if (dataFile.Contains("miniaod")) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Data2016_MonoHiggs_13TeV_merged/";  
-
     
     Char_t nome[300];
     sprintf(nome,"%s/%s",dirInput.Data(),name.c_str());
