@@ -70,7 +70,7 @@ int main (int argc, char ** argv){
       dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/bkg"; //to run at DESY
     }
     else if (site.find("FNAL")<5){
-      # dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
+      // dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
       dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst";
     }
     else if (mcconf.find("Spring16")<5){
