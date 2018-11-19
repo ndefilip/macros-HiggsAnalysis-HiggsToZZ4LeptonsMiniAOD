@@ -114,14 +114,36 @@ int main (int argc, char ** argv){
       chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_7.root");
       chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_8.root");
       chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_9.root");
+
+      if (site.find("FNAL")<5){
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_2.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_3.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_4.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_5.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_6.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_7.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_8.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_9.root");
+      }
+
       tree3 = chain;
     }
     else if (bkgFile.Contains("WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8")){
       TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
       chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
       chain->Add("/lustre/cms/store/user/mmelodea/RunIISummer16/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
+
+      if (site.find("FNAL")<5){
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root");
+	chain->Add("root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst/roottree_leptons_crab_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_1.root");
+      }
+
       tree3 = chain;
     }  
+
+   
     /*
 	if (bkgFile.Contains("QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8")){
 	  TChain* chain = new TChain("HZZ4LeptonsAnalysis","");
