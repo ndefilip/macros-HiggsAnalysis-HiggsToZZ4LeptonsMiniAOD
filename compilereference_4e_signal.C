@@ -70,19 +70,8 @@ int main (int argc, char ** argv){
       dirInput="dcap://cmsgridftp.fnal.gov:24125/pnfs/fnal.gov/usr/cms/WAX/11/store/user/cmsdas/2014/HZZ4lExercise/sig/Summer12";
     }
     else if (site.find("FNAL")<5 && mcconf.find("Spring16")<5 ){
-      dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
-    }
-    else if (mcconf.find("Fall11")<5){
-      dirInput="/lustre/cms/store/user/defilip/Fall11_445_paper_step_analysis_merged"; 
-    }
-    else if (mcconf.find("Summer12")<5){
-      dirInput="/lustre/cms/store/user/defilip/Summer12_53X_paper_step_analysis_merged";  
-    }
-    else if (mcconf.find("Phys14")<5){
-       dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Phys14_720_merged";  
-    }
-    else if (mcconf.find("Fall15")<5){
-       dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Signal_MonoHiggs_76X_merged";  
+      // dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
+      dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst";
     }
     else if (mcconf.find("Spring16")<5){
       dirInput="/lustre/cms/store/user/dburns/MonoHiggs/Spring16_merged";
@@ -93,9 +82,9 @@ int main (int argc, char ** argv){
     sigFile=sigFile.ReplaceAll("-4e","");
  
     //if (sigFile.Contains("2HDM") ) dirInput="/lustre/cms/store/user/gminiell/MonoHiggs/Spring16_merged";
-    if (sigFile.Contains("2HDM") || sigFile.Contains("Baryon") ) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";    
-    if (site.find("DESY")<5 && (sigFile.Contains("2HDM") || sigFile.Contains("Baryoni")) ) dirInput="/nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/Moriond17_merged_Syst";
-    if (sigFile.Contains("HHTo2B4L_madgraph_pythia8") ) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged";
+    if (sigFile.Contains("2HDM") || sigFile.Contains("Baryon") ) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged_Syst";    
+    if (site.find("FNAL")<5) dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst";
+    if (sigFile.Contains("HHTo2B4L_madgraph_pythia8") ) dirInput="/lustre/cms/store/user/defilip/MonoHiggs/Moriond17_merged_Syst";
 
     Char_t nome[300];
     sprintf(nome,"%s/%s",dirInput.Data(),sigFile.Data());

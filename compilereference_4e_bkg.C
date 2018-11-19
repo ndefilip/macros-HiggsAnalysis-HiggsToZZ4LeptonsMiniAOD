@@ -70,13 +70,12 @@ int main (int argc, char ** argv){
       dirInput="/nfs/dust/test/cmsdas/school16/HZZ4lExercise/bkg"; //to run at DESY
     }
     else if (site.find("FNAL")<5){
-      dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
+      // dirInput="root://cmseos.fnal.gov///store/user/cmsdas/2017/long_exercises/MonoHiggsHZZ/Spring16_merged";
+      dirInput="root://cmseos.fnal.gov///store/group/lpchzz4leptons/Moriond17_merged_Syst";
     }
     else if (mcconf.find("Spring16")<5){
       dirInput="/lustre/cms/store/user/mmelodea/RunIISummer16";
     }
-
-    if (site.find("DESY")<5) dirInput="/nfs/dust/cms/group/cmsdas2018/long_exercises/MonoHiggs/Moriond17_merged_Syst";
     
     TString bkgFile=name;
     cout << bkgFile.Data() << endl;
