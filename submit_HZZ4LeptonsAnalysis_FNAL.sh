@@ -38,7 +38,9 @@ bash compilereference.sh 4mu
 
 ./RunReferenceAnalysis ./sig_input_h150.txt 1 ./bkg_input.txt 1 ./data_input.txt 1 site year mc >& ${workdir}/HZZ4LeptonsAnalysis_log
 
-xrdcp --force ${workdir}/HZZ4LeptonsAnalysis_log root://cmseos.fnal.gov///store/user/`whoami`/80X/jobdir/HZZ4LeptonsAnalysis_log
+tar -zcvf ${workdir}/HZZ4LeptonsAnalysis_log.tgz ${workdir}/HZZ4LeptonsAnalysis_log
+
+xrdcp --force  ${workdir}/HZZ4LeptonsAnalysis_log.tgz root://cmseos.fnal.gov///store/user/`whoami`/80X/jobdir/HZZ4LeptonsAnalysis_log.tgz
 
 xrdcp --force ${workdir}/output.root    ${savedir}/.
 xrdcp --force ${workdir}/output_bnn.txt ${savedir}/.
