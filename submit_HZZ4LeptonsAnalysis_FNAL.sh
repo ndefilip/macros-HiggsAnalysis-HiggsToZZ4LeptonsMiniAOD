@@ -20,6 +20,7 @@ cd TARfile
 tar -zxvf ../TARfile.tgz
 rm ../TARfile.tgz
 cd src
+rm ../.SCRAM/arch/ProjectCache.db.gz
 scramv1 b ProjectRename
 eval `scramv1 runtime -sh`
 cd ${workdir}
